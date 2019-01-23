@@ -1,13 +1,13 @@
 import { JoiType, createJoiItem, JoiArray, JoiSchema } from "./types";
 import { JSONSchema4 } from "json-schema";
 import * as _ from 'lodash';
-import { resolve } from "./resolve";
+import { resolveJSONSchema } from "./resolve";
 
 function resolveAsArray(schema: JSONSchema4 | JSONSchema4[]): JoiSchema[] {
   if (_.isArray(schema)) {
-    return schema.map((v) => resolve(v));
+    return schema.map((v) => resolveJSONSchema(v));
   }
-  return [resolve(schema)];
+  return [resolveJSONSchema(schema)];
 }
 
 export function getJoiArraySchema(schema: JSONSchema4): JoiArray {

@@ -1,6 +1,6 @@
 import { JoiNumber, createJoiItem } from "./types";
 import { JSONSchema4 } from "json-schema";
-import { generateAnyJoi, getTailChar } from "./generate";
+import { generateAnyJoi, JoiStatement, openJoi, closeJoi } from "./generate";
 
 export function getJoiNumberSchema(schema: JSONSchema4): JoiNumber {
   const joiSchema = createJoiItem('number') as JoiNumber;
@@ -21,23 +21,20 @@ export function getJoiNumberSchema(schema: JSONSchema4): JoiNumber {
   return joiSchema;
 }
 
-export function generateNumberJoi(schema: JoiNumber, level: number = 0): string {
-  let head = 'Joi.number()';
-  let content = '';
-  let tail = '';
+export function generateNumberJoi(schema: JoiNumber, level: number = 0): JoiStatement[] {
+  let content = openJoi(['Joi.number()']);
   if (schema.min !== undefined) {
-    content += `.min(${schema.min})`;
+    content.push(`.min(${schema.min})`);
   }
   if (schema.max !== undefined) {
-    content += `.max(${schema.max})`;
+    content.push(`.max(${schema.max})`);
   }
 
-  if (schema.integer !== undefined) {
-    content += `.integer()`;
+  if (schema.integer) {
+    content.push(`.integer()`);
   }
 
-  content += generateAnyJoi(schema, level + 1);
+  content.push(...generateAnyJoi(schema, level + 1));
 
-  tail += getTailChar(level);
-  return head + content + tail;
+  return closeJoi(content);
 }

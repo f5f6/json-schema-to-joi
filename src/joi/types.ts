@@ -15,12 +15,7 @@ export interface JoiAny {
   default?: any;
   description?: string;
   label?: string;
-}
-
-export function createJoiItem(type: JoiType): JoiSchema {
-  return {
-    type,
-  }
+  [k: string]: any;
 }
 
 export interface JoiArray extends JoiAny {
@@ -70,7 +65,7 @@ export interface JoiObject extends JoiAny {
   max?: number;
   length?: number;
   pattern?: {
-    pattern: RegExp;
+    pattern: JoiSchema | string;
     schema: JoiSchema;
   };
   and?: string[];
@@ -99,7 +94,7 @@ export interface JoiString extends JoiAny {
   min?: number;
   max?: number;
   length?: number;
-  regex?: RegExp;
+  regex?: string[];
   alphanum?: boolean;
   token?: boolean;
   email?: boolean;
@@ -114,5 +109,11 @@ export interface JoiString extends JoiAny {
   uppercase?: boolean;
   trim?: boolean;
   isoDate?: boolean;
+}
+
+export function createJoiItem(type: JoiType): JoiSchema {
+  return {
+    type,
+  }
 }
 

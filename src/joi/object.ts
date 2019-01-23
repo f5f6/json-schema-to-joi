@@ -4,8 +4,8 @@
 import { createJoiItem, JoiObject, JoiSchema } from "./types";
 import { JSONSchema4 } from "json-schema";
 import * as _ from 'lodash';
-import { resolve } from "./resolve";
-import { generateAnyJoi, getTailChar, generate as generateJoi } from "./generate";
+import { resolveJSONSchema } from "./resolve";
+import { generateAnyJoi, generateJoi as generateJoi, JoiStatement, JoiSpecialChar, openJoi, closeJoi } from "./generate";
 
 function resolveProperties(schema: JSONSchema4): { [k: string]: JoiSchema } | undefined {
   const properties = schema.properties;
@@ -14,7 +14,7 @@ function resolveProperties(schema: JSONSchema4): { [k: string]: JoiSchema } | un
   }
 
   return _.mapValues(properties, (property, key) => {
-    const joiSchema = resolve(property);
+    const joiSchema = resolveJSONSchema(property);
     joiSchema.required = (schema.required && schema.required.includes(key));
     return joiSchema;
   });
@@ -28,8 +28,8 @@ export function resolveJoiObjectSchema(schema: JSONSchema4): JoiObject {
     joiSchema.unknown = true;
   } else if (additionalProperties) {
     joiSchema.pattern = {
-      pattern: /^/,
-      schema: resolve(additionalProperties),
+      pattern: '^',
+      schema: resolveJSONSchema(additionalProperties),
     };
   }
   joiSchema.min = schema.minProperties;
@@ -37,27 +37,61 @@ export function resolveJoiObjectSchema(schema: JSONSchema4): JoiObject {
   return joiSchema;
 }
 
-export function generateObjectJoi(schema: JoiObject, level: number = 0): string {
-  let head = 'Joi.object()';
-  let content = '';
+export function generateObjectJoi(schema: JoiObject, level: number = 0): JoiStatement[] {
+  let content: JoiStatement[] = openJoi(['Joi.object()']);
 
   const keys = schema.keys;
   if (keys) {
-    content += '.keys({\n';
+    content.push(...[
+      '.keys',
+      JoiSpecialChar.OPEN_PAREN,
+      JoiSpecialChar.OPEN_BRACE,
+    ]);
     _.keys(keys).forEach((key) => {
       let printKey = key;
       if (key.includes(' ') || key.includes('-')) {
         printKey = '\'' + printKey + '\''
       }
-      content += ' '.repeat(level + 1) + printKey + ': ' + generateJoi(keys[key], level + 1) + '\n';
+      content.push(printKey)
+      content.push(JoiSpecialChar.COLON);
+      content.push(...generateJoi(keys[key], level + 1));
+      content.push(JoiSpecialChar.COMMA);
     });
-    content += '})';
+    content.push(...[
+      JoiSpecialChar.CLOSE_BRACE,
+      JoiSpecialChar.CLOSE_PAREN,
+    ]);
   }
   if (schema.unknown) {
-    content += '.unknown()';
+    content.push('.unknown()');
+  }
+  if (schema.max !== undefined) {
+    content.push(`.max(${schema.max})`);
+  }
+  if (schema.min !== undefined) {
+    content.push(`.min(${schema.min})`);
   }
 
-  content += generateAnyJoi(schema, level + 1);
+  if (schema.pattern) {
+    const pattern = schema.pattern.pattern;
+    const subSchema = schema.pattern.schema;
+    content.push(...[
+      '.pattern', 
+      JoiSpecialChar.OPEN_PAREN,
+    ]);
+    if (typeof pattern === 'string') {
+      content.push('/' + pattern + '/');
+    } else {
+      content.push(...generateJoi(pattern));
+    }
+    content.push(JoiSpecialChar.COMMA);
 
-  return head + content + getTailChar(level);
+    content.push(...generateAnyJoi(subSchema, level + 1));
+
+    content.push(JoiSpecialChar.CLOSE_PAREN);
+  }
+
+  content.push(...generateAnyJoi(schema, level + 1));
+
+  return closeJoi(content);
 }

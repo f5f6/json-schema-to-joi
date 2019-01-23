@@ -1,3 +1,4 @@
-export { resolve } from './resolve';
+export { resolveJSONSchema } from './resolve';
 export { SubSchemas } from './options';
-export { generate } from './generate';
+export { generateJoi } from './generate';
+export { formatJoi } from './format';
