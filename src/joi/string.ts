@@ -1,6 +1,6 @@
 import { createJoiItem, JoiString, JoiSchema, JoiAny, JoiBinary } from "./types";
 import { JSONSchema4 } from "json-schema";
-import { getTailChar, generateAnyJoi } from "./generate";
+import { generateAnyJoi, JoiStatement, openJoi, closeJoi } from "./generate";
 
 const dateRegex = '(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])';
 const timeRegex = '([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(.[0-9]{3})?(Z|(\\+|-)([01][0-9]|2[0-3]):([0-5][0-9]))';
@@ -23,10 +23,10 @@ export function resolveJoiStringSchema(schema: JSONSchema4): JoiString | JoiAny 
 
   switch (schema.format) {
     case 'data':
-      joiSchema.regex = new RegExp('^' + dateRegex + '$', 'i');
+      joiSchema.regex = ['^' + dateRegex + '$', 'i'];
       break;
     case 'date-time':
-      joiSchema.regex = new RegExp('^' + dateTimeRegex + '$', 'i');
+      joiSchema.regex = ['^' + dateTimeRegex + '$', 'i'];
       break;
     case 'binary':
       return resolveJoiBinarySchema(schema);
@@ -56,7 +56,7 @@ export function resolveJoiStringSchema(schema: JSONSchema4): JoiString | JoiAny 
   }
 
   if (schema.pattern) {
-    joiSchema.regex = new RegExp(schema.pattern);
+    joiSchema.regex = [schema.pattern];
   }
   joiSchema.min = schema.minLength ? schema.minLength : 0;
   joiSchema.max = schema.maxLength;
@@ -67,19 +67,23 @@ export function resolveJoiStringSchema(schema: JSONSchema4): JoiString | JoiAny 
   return joiSchema;
 }
 
-export function generateStringJoi(schema: JoiString, level: number = 0): string {
-  let head = 'Joi.string()';
-  let content = '';
-  let tail = '';
+export function generateStringJoi(schema: JoiString, level: number = 0): JoiStatement[] {
+  let content: JoiStatement[] = openJoi(['Joi.string()']);
   if (schema.min !== undefined) {
-    content += `.min(${schema.min})`;
+    content.push(`.min(${schema.min})`);
   }
   if (schema.max !== undefined) {
-    content += `.max(${schema.max})`;
+    content.push(`.max(${schema.max})`);
   }
 
-  content += generateAnyJoi(schema, level + 1);
+  if (schema.regex) {
+    content.push(`.pattern(new RegExp(\'${schema.regex.join('\', \'')}\'))`);
+  }
 
-  tail += getTailChar(level);
-  return head + content + tail;
+  if (schema.ip) {
+    content.push(`.ip({ version: '${schema.ip}' })`);
+  }
+
+  content.push(...generateAnyJoi(schema, level + 1));
+  return closeJoi(content);
 }

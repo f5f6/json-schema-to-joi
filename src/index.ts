@@ -1,4 +1,4 @@
-import { resolve, generate } from './joi';
+import { resolveJSONSchema, generateJoi, formatJoi } from './joi';
 import { JSONSchema4 } from 'json-schema';
 
 const schemas: JSONSchema4[] = [
@@ -81,11 +81,12 @@ const schemas: JSONSchema4[] = [
 ];
 
 schemas.forEach((schema) => {
-  const joiSchema = resolve(schema);
-  console.dir(joiSchema, {
-    depth: 1000,
-    maxArrayLength:1000,
-  });
-  const joiString = generate(joiSchema);
-  console.log(joiString);
+  const joiSchema = resolveJSONSchema(schema);
+  // console.dir(joiSchema, {
+  //   depth: 1000,
+  //   maxArrayLength:1000,
+  // });
+  const joiString = generateJoi(joiSchema);
+  // console.log(joiString.toString());
+  console.log(formatJoi(joiString));
 });

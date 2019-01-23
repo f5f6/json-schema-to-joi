@@ -6,19 +6,19 @@ import { join } from "path";
 
 function resolveAnyOf(schemas: JSONSchema4[]): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
-  joiSchema.try = schemas.map((schema) => resolve(schema));
+  joiSchema.try = schemas.map((schema) => resolveJSONSchema(schema));
   return joiSchema;
 }
 
 function resolveOneOf(schemas: JSONSchema4[]): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
-  joiSchema.try = schemas.map((schema) => resolve(schema));
+  joiSchema.try = schemas.map((schema) => resolveJSONSchema(schema));
   return joiSchema;
 }
 
 function resolveNot(schema: JSONSchema4): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
-  joiSchema.not = resolve(schema);
+  joiSchema.not = resolveJSONSchema(schema);
   return joiSchema;
 }
 
@@ -45,7 +45,7 @@ function resolveReference(ref: string, schema: JSONSchema4, subSchema?: SubSchem
   return fragment;
 }
 
-export function resolve(schema: JSONSchema4, subSchema?: SubSchemas): JoiSchema {
+export function resolveJSONSchema(schema: JSONSchema4, subSchema?: SubSchemas): JoiSchema {
   if (schema.type) {
     return resolveType(schema);
   }
@@ -65,7 +65,7 @@ export function resolve(schema: JSONSchema4, subSchema?: SubSchemas): JoiSchema 
   }
 
   if (schema.$ref) {
-    return resolve(resolveReference(schema.$ref, schema, subSchema));
+    return resolveJSONSchema(resolveReference(schema.$ref, schema, subSchema));
   }
 
   if (schema.enum) {
