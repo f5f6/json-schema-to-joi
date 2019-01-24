@@ -1,4 +1,4 @@
-import { JoiSchema, JoiObject, JoiString, JoiAny, JoiNumber } from './types';
+import { JoiSchema, JoiObject, JoiString, JoiAny, JoiNumber, JoiArray } from './types';
 import * as _ from 'lodash';
 import { generateStringJoi } from './string';
 import { generateNumberJoi } from './number';
@@ -6,7 +6,7 @@ import { generateObjectJoi } from './object';
 
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
-  OPEN_TITLE, CLOSE_TITLE, // 
+  OPEN_TITLE, CLOSE_TITLE, //
   OPEN_BRACE,
   OPEN_BRACKET,
   OPEN_PAREN,
@@ -15,7 +15,7 @@ export const enum JoiSpecialChar {
   CLOSE_PAREN, // ()
   LEVEL_S = OPEN_BRACE,
   LEVEL_E = CLOSE_PAREN,
-  COMMA = 88, 
+  COMMA = 88,
   COLON = 99,
 }
 
@@ -30,12 +30,11 @@ export function closeJoi(statement: JoiStatement[]): JoiStatement[] {
   return statement;
 }
 
-
 export function generateJoi(schema: JoiSchema, level: number = 0): JoiStatement[] {
-  let content: JoiStatement[] = level === 0 ?
-  openJoi([ 
-    JoiSpecialChar.OPEN_TITLE, schema.label!, JoiSpecialChar.CLOSE_TITLE 
-  ]) : [];
+  const content: JoiStatement[] = level === 0 ?
+    openJoi([
+      JoiSpecialChar.OPEN_TITLE, schema.label!, JoiSpecialChar.CLOSE_TITLE
+    ]) : [];
   let realSchema;
   switch (schema.type) {
     case 'object':
@@ -47,13 +46,16 @@ export function generateJoi(schema: JoiSchema, level: number = 0): JoiStatement[
     case 'number':
       content.push(...generateNumberJoi(schema as JoiNumber, level + 1));
       break;
+    // case 'array':
+    //   content.push(...generateArrayJoi(schema as JoiArray, level + 1));
+    //   break;
   }
   return level === 0 ? closeJoi(content) : content;
 }
 
 export function generateAnyJoi(schema: JoiAny, level: number = 0): JoiStatement[] {
   let content: JoiStatement[]
-  = (schema.type === 'any') ? openJoi(['Joi.any()']) : [];
+    = (schema.type === 'any') ? openJoi(['Joi.any()']) : [];
   if (schema.allow) {
     content.push(`.allow(${JSON.stringify(schema.allow)})`);
   }
@@ -81,8 +83,10 @@ export function generateBooleanKeys(schema: JoiAny, content: JoiStatement[]): Jo
   _.keys(schema).forEach((key) => {
     if (schema[key] === true) {
       content.push(`.${key}()`);
+    } else if (schema[key] === false) {
+      content.push(`.${key}(false)`);
     }
-  })
+  });
 
   return content;
 }

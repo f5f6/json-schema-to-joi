@@ -1,15 +1,39 @@
 {
   "name": "json-schema-to-joi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Converts JSON schema to Joi typescript code",
   "main": "dist/src/index.js",
   "author": "Marshall Ma",
   "license": "MIT",
+  "scripts": {
+    "format": "tsfmt -r",
+    "clean": "rm -rf dist build",
+    "compile": "tsc",
+    "build": "yarn clean && yarn format && yarn compile",
+    "test": "scripty",
+    "lint": "scripty"
+  },
   "devDependencies": {
-    "@types/json-schema": "^7.0.1",
+    "@types/bunyan": "^1.8.5",
+    "@types/chai": "^4.1.7",
     "@types/lodash": "^4.14.120",
+    "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
-    "typescript": "^3.2.4"
+    "@types/json-schema": "^7.0.1",
+    "bunyan": "^1.8.12",
+    "chai": "^4.2.0",
+    "json-diff": "^0.5.3",
+    "mocha": "^5.2.0",
+    "scripty": "^1.9.0",
+    "source-map-support": "^0.5.10",
+    "tslint": "^5.12.1",
+    "tslint-consistent-codestyle": "^1.15.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-no-unused-expression-chai": "^0.1.4",
+    "tslint-sonarts": "^1.9.0",
+    "tslint-strict-error-throw": "^1.0.1",
+    "typescript": "^3.2.4",
+    "typescript-formatter": "^7.2.2"
   },
   "dependencies": {
     "lodash": "^4.17.11"

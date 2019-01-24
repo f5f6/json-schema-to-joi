@@ -1,19 +1,19 @@
-import { JSONSchema4 } from "json-schema";
-import { JoiSchema, createJoiItem, JoiAlternatives } from "./types";
-import { resolveType } from "./resolveType";
-import { SubSchemas } from "./options";
-import { join } from "path";
+import { JSONSchema4 } from 'json-schema';
+import { JoiSchema, createJoiItem, JoiAlternatives } from './types';
+import { resolveType } from './resolveType';
+import { SubSchemas } from './options';
+import { join } from 'path';
 
 function resolveAnyOf(schemas: JSONSchema4[]): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
-  joiSchema.try = schemas.map((schema) => resolveJSONSchema(schema));
+  joiSchema.try = schemas.map((v) => {
+    return resolveJSONSchema(v);
+  });
   return joiSchema;
 }
 
 function resolveOneOf(schemas: JSONSchema4[]): JoiAlternatives {
-  const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
-  joiSchema.try = schemas.map((schema) => resolveJSONSchema(schema));
-  return joiSchema;
+  return resolveAnyOf(schemas);
 }
 
 function resolveNot(schema: JSONSchema4): JoiAlternatives {
@@ -40,11 +40,12 @@ function resolveReference(ref: string, schema: JSONSchema4, subSchema?: SubSchem
   path.split('/').some((p) => {
     fragment = typeof fragment === 'object' && fragment[p];
     return fragment === undefined;
-  })
+  });
 
   return fragment;
 }
 
+// tslint:disable-next-line:naming-convention
 export function resolveJSONSchema(schema: JSONSchema4, subSchema?: SubSchemas): JoiSchema {
   if (schema.type) {
     return resolveType(schema);
@@ -54,7 +55,6 @@ export function resolveJSONSchema(schema: JSONSchema4, subSchema?: SubSchemas): 
   }
 
   // TODO schema.allOf
-
 
   if (schema.oneOf) {
     return resolveOneOf(schema.oneOf);
