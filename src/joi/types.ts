@@ -1,5 +1,5 @@
-export type JoiType = 'any' | 'array' | 'boolean' | 'binary' 
-| 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives';
+export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
+  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives';
 
 export type JoiSchema = JoiAny | JoiArray | JoiDate | JoiNumber | JoiObject | JoiString | JoiAlternatives | JoiBinary;
 
@@ -20,7 +20,7 @@ export interface JoiAny {
 
 export interface JoiArray extends JoiAny {
   items?: JoiSchema[];
-  ordered?: JoiType[];
+  ordered?: JoiSchema[];
   min?: number;
   max?: number;
   length?: number;
@@ -46,8 +46,8 @@ export interface JoiNumber extends JoiAny {
   unsafe?: boolean;
   min?: number;
   max?: number;
-  greater?: boolean;
-  less?: boolean;
+  greater?: number;
+  less?: number;
   integer?: boolean;
   precision?: number;
   multiple?: number;
@@ -114,6 +114,5 @@ export interface JoiString extends JoiAny {
 export function createJoiItem(type: JoiType): JoiSchema {
   return {
     type,
-  }
+  };
 }
-

@@ -1,5 +1,23 @@
 # Change log
 
+## 0.2.0 (2019-01-24)
+
+* Added
+  * joi: ut
+    * `test-number`
+    * `test-string`
+
+* Changed
+  * joi: rename
+    * `resolve` to `resolveJSONSchema`
+    * `generate` to `generateJoi`
+    * `format` to `formatJoi`
+  
+* Fixed
+  * joi: follow the JSONSchema Draft 4
+    * `string`
+    * `number` 
+
 ## 0.1.0 (2019-01-23)
 
 * Added
@@ -10,3 +28,4 @@
 
 * Added
   * joi: `resolve` generate `JoiSchema` from JSON schema file (version 4)
+

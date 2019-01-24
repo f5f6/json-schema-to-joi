@@ -1,0 +1,163 @@
+extends:
+  - 'tslint:latest'
+  - tslint-eslint-rules
+  - tslint-consistent-codestyle
+  - tslint-no-unused-expression-chai
+  - tslint-sonarts
+  - tslint-strict-error-throw
+rules:
+  naming-convention:
+    severity: warning
+    options:
+      - type: default
+        format: strictCamelCase
+        leadingUnderscore: forbid
+        trailingUnderscore: forbid
+      - type: variable
+        modifiers:
+          - const
+        format:
+          - strictCamelCase
+          - UPPER_CASE
+      - type: functionVariable
+        modifiers:
+          - const
+        format: strictCamelCase
+      - type: parameter
+        modifiers: unused
+        leadingUnderscore: allow
+      - type: method
+        filter: ^toJSON$
+        format: null
+      - type: property
+        modifiers:
+          - public
+          - static
+          - const
+        format: UPPER_CASE
+      - type: member
+        leadingUnderscore: allow
+      - type: type
+        format: StrictPascalCase
+      - type: enumMember
+        format:
+          - StrictPascalCase
+          - UPPER_CASE
+  no-collapsible-if: true
+  no-static-this: true
+  no-unused: true
+  no-var-before-return: true
+  prefer-const-enum: true
+  prefer-while: true
+  arrow-return-shorthand: true
+  await-promise:
+    options:
+      - Bluebird
+      - PromiseLike
+  ban:
+    severity: warning
+    options:
+      - name:
+          - chai
+          - assert
+        message: Use 'expect' rather then 'assert'
+  cyclomatic-complexity: false
+  deprecation:
+    severity: warning
+  interface-name: false
+  max-classes-per-file: false
+  max-file-line-count:
+    options:
+      - 500
+  member-access: false
+  no-angle-bracket-type-assertion: false
+  no-floating-promises: true
+  no-for-in-array: true
+  no-invalid-this: true
+  no-irregular-whitespace: true
+  no-null-keyword: true
+  no-parameter-reassignment:
+    severity: warning
+  no-require-imports: true
+  no-submodule-imports:
+    options:
+      - lodash
+      - '@ses/database'
+  no-switch-case-fall-through: true
+  no-unnecessary-callback-wrapper: true
+  no-unnecessary-class: true
+  no-unsafe-any:
+    severity: warning
+  no-unused-expression: false
+  no-var-requires: false
+  object-literal-sort-keys: false
+  ordered-imports: false
+  prefer-const: true
+  prefer-readonly: true
+  quotemark:
+    options:
+      - single
+  radix: false
+  trailing-comma:
+    options:
+      - multiline:
+          - arrays: always
+          - objects: always
+      - singleline: never
+  typedef:
+    options:
+      - call-signature
+  variable-name:
+    options:
+      - ban-keywords
+      - check-format
+      - allow-leading-underscore
+  whitespace:
+    options:
+      - check-branch
+      - check-decl
+      - check-operator
+      - check-module
+      - check-separator
+      - check-rest-spread
+      - check-type
+      - check-type-operator
+      - check-preblock
+  handle-callback-err:
+    options:
+      - ^(err|error|anySpecificError)$
+  no-control-regex: true
+  no-duplicate-case: true
+  no-empty-character-class: true
+  no-ex-assign: true
+  no-extra-boolean-cast: true
+  no-extra-semi: false
+  no-implicit-dependencies:
+    options:
+      - optional
+      - dev
+  no-inner-declarations:
+    options:
+      - functions
+  no-invalid-regexp: true
+  no-regex-spaces: true
+  no-unexpected-multiline: true
+  ter-no-self-compare: true
+  valid-typeof: true
+  cognitive-complexity:
+    severity: error
+    options:
+      - 40
+  no-big-function: false
+  no-commented-code:
+    severity: error
+  no-duplicate-string: false
+  no-hardcoded-credentials: false
+  no-identical-functions: false
+  no-invalid-await: false
+  no-redundant-boolean: false
+  no-small-switch: false
+  parameters-max-number:
+    severity: warning
+  strict-error-throw:
+    severity: warning

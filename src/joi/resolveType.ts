@@ -1,14 +1,14 @@
-import { JSONSchema4, JSONSchema4Type, JSONSchema4TypeName } from "json-schema";
-import { JoiType, JoiSchema, createJoiItem, JoiAlternatives } from "./types";
-import { getJoiArraySchema as resolveJoiArraySchema } from "./array";
+import { JSONSchema4, JSONSchema4Type, JSONSchema4TypeName } from 'json-schema';
+import { JoiType, JoiSchema, createJoiItem, JoiAlternatives } from './types';
+import { resolveJoiArraySchema } from './array';
 import * as _ from 'lodash';
-import { getJoiNumberSchema as resolveJoiNumberSchema } from "./number";
-import { resolveJoiObjectSchema as resolveJoiObjectSchema } from "./object";
-import { resolveJoiStringSchema } from "./string";
+import { resolveJoiNumberSchema } from './number';
+import { resolveJoiObjectSchema } from './object';
+import { resolveJoiStringSchema } from './string';
 
 export function resolveType(schema: JSONSchema4): JoiSchema {
   const getJoiType = (type: JSONSchema4TypeName): JoiSchema => {
-    switch(type) {
+    switch (type) {
       case 'array':
         return resolveJoiArraySchema(schema);
         break;
@@ -35,12 +35,12 @@ export function resolveType(schema: JSONSchema4): JoiSchema {
     return {
       type: 'any',
     };
-  }
+  };
 
   let joiSchema = createJoiItem('any');
 
   if (_.isArray(schema.type)) {
-    const schemas = schema.type.map((type) => getJoiType(type));
+    const schemas = schema.type.map(getJoiType);
     (joiSchema as JoiAlternatives).alternatives = schemas;
   } else if (schema.type) {
     joiSchema = getJoiType(schema.type);

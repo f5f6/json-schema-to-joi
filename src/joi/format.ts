@@ -1,20 +1,18 @@
 import { JoiStatement, JoiSpecialChar } from './generate';
 
-
 let level = 0;
 let joiLevel = 0;
 let parenLevel = 0;
 let bracketLevel = 0;
 let braceLevel = 0;
 
-enum Status {
+const enum Status {
   BRACE,
   BRACKET,
   PAREN,
 }
 
 const status: Status[] = [];
-
 
 function processLevelSpecialChar(statements: JoiStatement[], i: number): string {
   const char = statements[i];
@@ -28,7 +26,7 @@ function processLevelSpecialChar(statements: JoiStatement[], i: number): string 
     return '';
   }
 
-  if ((prevChar === undefined) || typeof prevChar === 'string' || 
+  if ((prevChar === undefined) || typeof prevChar === 'string' ||
     prevChar > JoiSpecialChar.LEVEL_E || prevChar < JoiSpecialChar.LEVEL_S) {
     newLine = false;
   }
@@ -74,11 +72,11 @@ function processLevelSpecialChar(statements: JoiStatement[], i: number): string 
       break;
   }
   let tail = '';
-  
+
   if (newLine) {
     tail = '\n' + '  '.repeat(level);
   }
-  
+
   return ret + tail;
 }
 
@@ -135,6 +133,8 @@ export function formatJoi(statements: JoiStatement[]): string {
     }
   });
   result = result.trim();
-  result += ';';
+  if (title) {
+    result += ';';
+  }
   return result.replace(/\"/g, '\'');
 }
