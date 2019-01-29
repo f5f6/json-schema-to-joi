@@ -1,5 +1,12 @@
 # Change log
 
+## 0.3.0 (2019-01-29)
+
+* Added
+  * joi: almost all expect
+    * oneOf, allOf
+    * `object`: Dependencies, Pattern Properties
+
 ## 0.2.0 (2019-01-24)
 
 * Added
