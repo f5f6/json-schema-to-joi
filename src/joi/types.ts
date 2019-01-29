@@ -80,7 +80,7 @@ export interface JoiObject extends JoiAny {
 
 export interface JoiAlternatives extends JoiAny {
   alternatives?: JoiSchema[];
-  try?: JoiSchema[];
+  anyOf?: JoiSchema[];
   not?: JoiSchema;
 }
 

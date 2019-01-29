@@ -1,22 +1,19 @@
-import * as chai from 'chai';
+// tslint:disable-next-line:no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import * as _ from 'lodash';
-import * as bunyan from 'bunyan';
-import { resolveJoiStringSchema, generateStringJoi, dateTimeRegex } from '../../src/joi/string';
-import { formatJoi } from '../../src/joi';
+import {
+  resolveJoiStringSchema, generateStringJoi, dateTimeRegex,
+  dateRegex, generateBinaryJoi
+} from '../../src/joi/string';
+import { createLogger, TestItem, runTest } from './common';
 
-const logger = bunyan.createLogger({
-  level: 'trace',
-  name: 'test-string',
-});
+const logger = createLogger('test-string');
 
-const expect = chai.expect;
-
+// tslint:disable-next-line:naming-convention
 const stringJSONSchemaTemplate: JSONSchema4 = {
   type: 'string',
 };
 
-const testItems = [
+const testItems: TestItem[] = [
   {
     title: 'regexp',
     schema: {
@@ -128,6 +125,17 @@ const testItems = [
     targetJoiString: `Joi.string().regex(new RegExp(\'^${dateTimeRegex}$\', \'i\'))`,
   },
   {
+    title: 'date',
+    schema: {
+      format: 'date',
+    },
+    targetJoiSchema: {
+      type: 'string',
+      regex: ['^' + dateRegex + '$', 'i'],
+    },
+    targetJoiString: `Joi.string().regex(new RegExp(\'^${dateRegex}$\', \'i\'))`,
+  },
+  {
     title: 'min > 0 && max',
     schema: {
       minLength: 1,
@@ -156,21 +164,25 @@ const testItems = [
   },
 ];
 
+const testItemsForBinary: TestItem[] = [
+  {
+    title: 'binary min == 0 && max',
+    schema: {
+      format: 'binary',
+      minLength: 0,
+      maxLength: 3,
+    },
+    targetJoiSchema: {
+      type: 'binary',
+      min: 0,
+      max: 3,
+      allow: [''],
+    },
+    targetJoiString: 'Joi.binary().min(0).max(3).allow([\'\'])',
+  },
+];
+
 describe('joi string', () => {
-  testItems.forEach((item) => {
-    it(item.title, () => {
-      const schema = _.assign({}, stringJSONSchemaTemplate, item.schema);
-      const joiSchema = resolveJoiStringSchema(schema);
-      const joiStatements = generateStringJoi(joiSchema);
-      const joiString = formatJoi(joiStatements);
-      logger.debug({
-        targetJoiSchema: item.targetJoiSchema,
-        joiSchema,
-        targetJoiString: item.targetJoiString,
-        joiString,
-      });
-      expect(_.isEqual(item.targetJoiSchema, joiSchema), 'Joi schema equal').to.be.equal(true);
-      expect(_.isEqual(item.targetJoiString, joiString), 'Joi string equal').to.be.equal(true);
-    });
-  });
+  runTest(testItems, stringJSONSchemaTemplate, resolveJoiStringSchema, generateStringJoi, logger);
+  runTest(testItemsForBinary, stringJSONSchemaTemplate, resolveJoiStringSchema, generateBinaryJoi, logger);
 });

@@ -1,24 +1,16 @@
-import * as chai from 'chai';
 // tslint:disable-next-line:no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import * as _ from 'lodash';
-import * as bunyan from 'bunyan';
-import { formatJoi } from '../../src/joi';
 import { resolveJoiNumberSchema, generateNumberJoi } from '../../src/joi/number';
+import { createLogger, TestItem, runTest } from './common';
 
-const logger = bunyan.createLogger({
-  level: 'trace',
-  name: 'test-number',
-});
-
-const expect = chai.expect;
+const logger = createLogger('test-number');
 
 // tslint:disable-next-line:naming-convention
 const numberJSONSchemaTemplate: JSONSchema4 = {
   type: 'number',
 };
 
-const testItems = [
+const testItems: TestItem[] = [
   {
     title: 'integer',
     schema: {
@@ -85,20 +77,5 @@ const testItems = [
 ];
 
 describe('joi number', () => {
-  testItems.forEach((item) => {
-    it(item.title, () => {
-      const schema = _.assign({}, numberJSONSchemaTemplate, item.schema);
-      const joiSchema = resolveJoiNumberSchema(schema);
-      const joiStatements = generateNumberJoi(joiSchema);
-      const joiString = formatJoi(joiStatements);
-      logger.debug({
-        targetJoiSchema: item.targetJoiSchema,
-        joiSchema,
-        targetJoiString: item.targetJoiString,
-        joiString,
-      });
-      expect(_.isEqual(item.targetJoiSchema, joiSchema), 'Joi schema equal').to.be.equal(true);
-      expect(_.isEqual(item.targetJoiString, joiString), 'Joi string equal').to.be.equal(true);
-    });
-  });
+  runTest(testItems, numberJSONSchemaTemplate, resolveJoiNumberSchema, generateNumberJoi, logger);
 });

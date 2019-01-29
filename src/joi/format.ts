@@ -1,89 +1,74 @@
-import { JoiStatement, JoiSpecialChar } from './generate';
+import { JoiStatement, JoiSpecialChar, OPEN, CLOSE, OPEN_CLOSE } from './generate';
+import { createLogger } from '../common/logger';
+
+const logger = createLogger('format');
 
 let level = 0;
-let joiLevel = 0;
-let parenLevel = 0;
-let bracketLevel = 0;
-let braceLevel = 0;
-
-const enum Status {
-  BRACE,
-  BRACKET,
-  PAREN,
-}
-
-const status: Status[] = [];
 
 function processLevelSpecialChar(statements: JoiStatement[], i: number): string {
   const char = statements[i];
+  const nextChar = statements[i + 1];
   const prevChar = statements[i - 1];
-  let newLine = true;
   if (typeof char === 'string') {
     return '';
   }
 
-  if (char < JoiSpecialChar.LEVEL_S || char > JoiSpecialChar.LEVEL_E) {
+  if (!OPEN_CLOSE.includes(char)) {
     return '';
   }
 
-  if ((prevChar === undefined) || typeof prevChar === 'string' ||
-    prevChar > JoiSpecialChar.LEVEL_E || prevChar < JoiSpecialChar.LEVEL_S) {
-    newLine = false;
-  }
-
   let ret = '';
+  let head = '';
+
+  // tslint:disable-next-line: no-console
+  logger.debug({
+    char, nextChar, level,
+  });
 
   switch (char) {
     case JoiSpecialChar.OPEN_PAREN:
-      newLine && level++;
-      parenLevel++;
+      // tslint:disable:no-unused-expression-chai
+      OPEN.includes(nextChar as JoiSpecialChar) || level++;
       ret = '(';
-      status.push(Status.BRACE);
       break;
     case JoiSpecialChar.CLOSE_PAREN:
-      newLine && level--;
-      parenLevel--;
+      // tslint:disable:no-unused-expression-chai
+      CLOSE.includes(nextChar as JoiSpecialChar) || level--;
       ret = ')';
-      status.pop();
       break;
     case JoiSpecialChar.OPEN_BRACKET:
-      newLine && level++;
-      bracketLevel++;
+      // tslint:disable:no-unused-expression-chai
+      OPEN.includes(nextChar as JoiSpecialChar) || level++;
       ret = '[';
-      status.push(Status.BRACKET);
       break;
     case JoiSpecialChar.CLOSE_BRACKET:
-      newLine && level--;
-      bracketLevel--;
+      // tslint:disable:no-unused-expression-chai
+      CLOSE.includes(nextChar as JoiSpecialChar) || level--;
       ret = ']';
-      status.pop();
       break;
     case JoiSpecialChar.OPEN_BRACE:
-      newLine && level++;
-      braceLevel++;
+      // tslint:disable:no-unused-expression-chai
+      OPEN.includes(nextChar as JoiSpecialChar) || level++;
       ret = '{';
-      status.push(Status.BRACE);
       break;
     case JoiSpecialChar.CLOSE_BRACE:
-      newLine && level--;
-      braceLevel--;
+      // tslint:disable:no-unused-expression-chai
+      CLOSE.includes(nextChar as JoiSpecialChar) || level--;
+      if (prevChar === JoiSpecialChar.NEWLINE && level > 0) {
+        head = '  '.repeat(level - 1);
+      }
       ret = '}';
-      status.pop();
       break;
   }
-  let tail = '';
 
-  if (newLine) {
-    tail = '\n' + '  '.repeat(level);
-  }
-
-  return ret + tail;
+  return head + ret;
 }
 
 export function formatJoi(statements: JoiStatement[]): string {
   let title;
   let result = '';
   let titleSector = false;
+  level = 0;
 
   statements.forEach((statement, i, all) => {
     if (typeof statement === 'string') {
@@ -92,12 +77,11 @@ export function formatJoi(statements: JoiStatement[]): string {
       }
       result += statement;
     } else {
+      const nextChar = all[i + 1];
       switch (statement) {
         case JoiSpecialChar.OPEN_JOI:
-          joiLevel++;
           break;
         case JoiSpecialChar.CLOSE_JOI:
-          joiLevel--;
           break;
         case JoiSpecialChar.OPEN_TITLE:
           titleSector = true;
@@ -120,15 +104,21 @@ export function formatJoi(statements: JoiStatement[]): string {
           result += processLevelSpecialChar(statements, i);
           break;
         case JoiSpecialChar.COMMA:
-          result += ',\n';
-          if (typeof statements[i + 1] === 'string') {
-            result += '  '.repeat(level);
+          result += ',';
+          if (nextChar >= JoiSpecialChar.OPEN_BRACE && nextChar <= JoiSpecialChar.OPEN_PAREN) {
+            result += ' ';
           }
           break;
         case JoiSpecialChar.COLON:
           result += ': ';
           break;
-
+        case JoiSpecialChar.NEWLINE:
+          result += '\n';
+          if (level > 0 &&
+            (typeof (nextChar) === 'string' || nextChar === JoiSpecialChar.OPEN_JOI)) {
+            result += '  '.repeat(level);
+          }
+          break;
       }
     }
   });

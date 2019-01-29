@@ -28,7 +28,7 @@ export function resolveJoiNumberSchema(schema: JSONSchema4): JoiNumber {
   return joiSchema;
 }
 
-export function generateNumberJoi(schema: JoiNumber, level: number = 0): JoiStatement[] {
+export function generateNumberJoi(schema: JoiNumber): JoiStatement[] {
   const content = openJoi(['Joi.number()']);
   if (schema.greater !== undefined) {
     content.push(`.greater(${schema.min})`);
@@ -42,7 +42,7 @@ export function generateNumberJoi(schema: JoiNumber, level: number = 0): JoiStat
     content.push(`.max(${schema.max})`);
   }
 
-  content.push(...generateAnyJoi(schema, level + 1));
+  content.push(...generateAnyJoi(schema));
 
   return closeJoi(content);
 }

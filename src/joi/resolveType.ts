@@ -1,26 +1,29 @@
-import { JSONSchema4, JSONSchema4Type, JSONSchema4TypeName } from 'json-schema';
-import { JoiType, JoiSchema, createJoiItem, JoiAlternatives } from './types';
+// tslint:disable-next-line:no-implicit-dependencies
+import { JSONSchema4, JSONSchema4TypeName } from 'json-schema';
+import { JoiSchema, createJoiItem, JoiAlternatives } from './types';
 import { resolveJoiArraySchema } from './array';
 import * as _ from 'lodash';
 import { resolveJoiNumberSchema } from './number';
 import { resolveJoiObjectSchema } from './object';
 import { resolveJoiStringSchema } from './string';
+import { resolveJoiBooleanSchema } from './boolean';
+import { Options } from './options';
 
-export function resolveType(schema: JSONSchema4): JoiSchema {
+export function resolveType(schema: JSONSchema4, options?: Options): JoiSchema {
   const getJoiType = (type: JSONSchema4TypeName): JoiSchema => {
     switch (type) {
       case 'array':
-        return resolveJoiArraySchema(schema);
+        return resolveJoiArraySchema(schema, options);
         break;
       case 'boolean':
-        return createJoiItem('boolean');
+        return resolveJoiBooleanSchema(schema);
         break;
       case 'integer':
       case 'number':
         return resolveJoiNumberSchema(schema);
         break;
       case 'object':
-        return resolveJoiObjectSchema(schema);
+        return resolveJoiObjectSchema(schema, options);
         break;
       case 'string':
         return resolveJoiStringSchema(schema);
@@ -28,6 +31,7 @@ export function resolveType(schema: JSONSchema4): JoiSchema {
       case 'null':
         return {
           type: 'any',
+          // tslint:disable-next-line:no-null-keyword
           valid: [null],
         };
         break;
@@ -46,9 +50,10 @@ export function resolveType(schema: JSONSchema4): JoiSchema {
     joiSchema = getJoiType(schema.type);
   }
 
-  joiSchema.default = schema.default;
-  joiSchema.description = schema.description;
-  joiSchema.label = schema.title;
-
+  // tslint:disable:no-unused-expression-chai
+  (!_.isUndefined(schema.default)) && (joiSchema.default = schema.default);
+  (!!schema.description) && (joiSchema.description = schema.description);
+  (!!schema.title) && (joiSchema.label = schema.title);
+  // tslint:enable:no-unused-expression-chai
   return joiSchema;
 }

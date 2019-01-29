@@ -1,23 +1,30 @@
-import { JoiSchema, JoiObject, JoiString, JoiAny, JoiNumber, JoiArray } from './types';
+import { JoiSchema, JoiString, JoiAny, JoiNumber, JoiBinary, JoiObject, JoiBoolean, JoiArray } from './types';
 import * as _ from 'lodash';
-import { generateStringJoi } from './string';
+import { generateStringJoi, generateBinaryJoi } from './string';
 import { generateNumberJoi } from './number';
 import { generateObjectJoi } from './object';
+import { generateBooleanJoi } from './boolean';
+import { generateArrayJoi } from './array';
 
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
   OPEN_TITLE, CLOSE_TITLE, //
-  OPEN_BRACE,
-  OPEN_BRACKET,
-  OPEN_PAREN,
-  CLOSE_BRACE, // {}
-  CLOSE_BRACKET, // []
-  CLOSE_PAREN, // ()
+  OPEN_BRACE,     // {
+  OPEN_BRACKET,   // [
+  OPEN_PAREN,     // (
+  CLOSE_BRACE,    // }
+  CLOSE_BRACKET,  // ]
+  CLOSE_PAREN,    // )
   LEVEL_S = OPEN_BRACE,
   LEVEL_E = CLOSE_PAREN,
   COMMA = 88,
   COLON = 99,
+  NEWLINE = 100,
 }
+
+export const OPEN = [JoiSpecialChar.OPEN_BRACE, JoiSpecialChar.OPEN_BRACKET, JoiSpecialChar.OPEN_PAREN];
+export const CLOSE = [JoiSpecialChar.CLOSE_BRACE, JoiSpecialChar.CLOSE_BRACKET, JoiSpecialChar.CLOSE_PAREN];
+export const OPEN_CLOSE = [...OPEN, ...CLOSE];
 
 export type JoiStatement = string | JoiSpecialChar;
 
@@ -30,30 +37,42 @@ export function closeJoi(statement: JoiStatement[]): JoiStatement[] {
   return statement;
 }
 
-export function generateJoi(schema: JoiSchema, level: number = 0): JoiStatement[] {
-  const content: JoiStatement[] = level === 0 ?
+export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiStatement[] {
+  const content: JoiStatement[] = withTitle ?
     openJoi([
       JoiSpecialChar.OPEN_TITLE, schema.label!, JoiSpecialChar.CLOSE_TITLE
     ]) : [];
-  let realSchema;
   switch (schema.type) {
     case 'object':
-      content.push(...generateObjectJoi(schema as JoiString, level + 1));
+      content.push(...generateObjectJoi(schema as JoiObject));
       break;
     case 'string':
-      content.push(...generateStringJoi(schema as JoiString, level + 1));
+      content.push(...generateStringJoi(schema as JoiString));
       break;
     case 'number':
-      content.push(...generateNumberJoi(schema as JoiNumber, level + 1));
+      content.push(...generateNumberJoi(schema as JoiNumber));
       break;
-    // case 'array':
-    //   content.push(...generateArrayJoi(schema as JoiArray, level + 1));
-    //   break;
+    case 'binary':
+      content.push(...generateBinaryJoi(schema as JoiBinary));
+      break;
+    case 'boolean':
+      content.push(...generateBooleanJoi(schema as JoiBoolean));
+      break;
+    case 'alternatives':
+      content.push(...generateBooleanJoi(schema as JoiBoolean));
+      break;
+    case 'array':
+      content.push(...generateArrayJoi(schema as JoiArray));
+      break;
+    case 'any':
+    default:
+      content.push(...generateAnyJoi(schema));
+      break;
   }
-  return level === 0 ? closeJoi(content) : content;
+  return withTitle ? closeJoi(content) : content;
 }
 
-export function generateAnyJoi(schema: JoiAny, level: number = 0): JoiStatement[] {
+export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
   let content: JoiStatement[]
     = (schema.type === 'any') ? openJoi(['Joi.any()']) : [];
   if (schema.allow) {
