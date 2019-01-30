@@ -1,0 +1,8 @@
+# First exclude everything
+*
+
+# Include what we need
+!dist/**
+!public/**
+!views/**
+!lib/**
