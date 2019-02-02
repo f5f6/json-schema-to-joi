@@ -1,5 +1,10 @@
 # Change log
 
+## 0.4.1 (2019-02-02)
+
+* Fixed
+  * `generateJoi`: put the `description` at the tail of each Joi statement
+
 ## 0.4.0 (2019-01-30)
 
 * Added
