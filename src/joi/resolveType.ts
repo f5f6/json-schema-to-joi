@@ -53,7 +53,7 @@ export function resolveType(schema: JSONSchema4, options?: Options): JoiSchema {
   // tslint:disable:no-unused-expression-chai
   (!_.isUndefined(schema.default)) && (joiSchema.default = schema.default);
   (!!schema.description) && (joiSchema.description = schema.description);
-  (!!schema.title) && (joiSchema.label = schema.title);
+  (!!schema.title) && (joiSchema.label = _.camelCase(schema.title));
   // tslint:enable:no-unused-expression-chai
   return joiSchema;
 }

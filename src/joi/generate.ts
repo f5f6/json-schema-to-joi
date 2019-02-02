@@ -91,9 +91,11 @@ export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
 
   content = generateBooleanKeys(schema, content);
 
-  if (schema.description) {
-    content.push(`.description(${JSON.stringify(schema.description)})`);
-  }
+  // tslint:disable-next-line: no-commented-code
+  // TODO
+  // if (schema.description) {
+  //   content.push(`.description(${JSON.stringify(schema.description)})`);
+  // }
 
   return (schema.type === 'any') ? closeJoi(content) : content;
 }
