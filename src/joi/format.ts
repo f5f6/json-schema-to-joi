@@ -88,7 +88,7 @@ export function formatJoi(statements: JoiStatement[]): string {
           title = all[i + 1];
           const close = all[i + 2];
           if (typeof title !== 'string' || close !== JoiSpecialChar.CLOSE_TITLE) {
-            throw new Error('tile not exist');
+            throw new Error('title not exist');
           }
           result += `const ${title}JoiSchema = `;
           break;

@@ -1,6 +1,6 @@
 {
   "name": "json-schema-to-joi",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Converts JSON schema to Joi typescript code",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,7 +30,6 @@
     "@types/mocha": "^5.2.5",
     "@types/mz": "0.0.32",
     "@types/node": "^10.12.18",
-    "bunyan": "^1.8.12",
     "chai": "^4.2.0",
     "json-diff": "^0.5.3",
     "mocha": "^5.2.0",
@@ -50,6 +49,7 @@
     "lodash": "^4.17.11",
     "minimist": "1.2.0",
     "mz": "2.7.0",
-    "stdin": "0.0.1"
+    "stdin": "0.0.1",
+    "bunyan": "1.8.12"
   }
 }

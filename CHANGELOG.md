@@ -1,5 +1,11 @@
 # Change log
 
+## 0.5.0 (2019-02-02)
+
+* Changed:
+  * Support `batch` to process JSON schema's defintions.
+  * Support user-defined title.
+  
 ## 0.4.1 (2019-02-02)
 
 * Fixed

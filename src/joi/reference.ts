@@ -1,9 +1,6 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
 import { Options } from './options';
-import { createLogger } from '../common/logger';
-
-const logger = createLogger('reference');
 
 // ref is like [uri]#/definitions/xxxx
 export function resolveReference(ref: string, options: Options): JSONSchema4 | undefined {
@@ -27,19 +24,11 @@ export function resolveReference(ref: string, options: Options): JSONSchema4 | u
 
   let fragment = refSchema;
 
-  logger.debug({
-    id, path, fragment,
-  });
-
   // tslint:disable-next-line: no-ignored-return
   path.split('/').find((p) => {
     if (p === '') {
       return false;
     }
-    logger.debug({
-      p,
-      fragment,
-    });
     // tslint:disable-next-line: no-unsafe-any
     fragment = fragment[p];
     return fragment === undefined;

@@ -4,10 +4,7 @@ import { JSONSchema4 } from 'json-schema';
 import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
 import { JoiStatement, openJoi, generateAnyJoi, closeJoi, JoiSpecialChar, generateJoi } from './generate';
-import { createLogger } from '../common/logger';
 import { Options } from './options';
-
-const logger = createLogger('array');
 
 function resolveAsArray(schema: JSONSchema4 | JSONSchema4[], options?: Options): JoiSchema[] {
   if (_.isArray(schema)) {
@@ -84,10 +81,6 @@ export function generateArrayJoi(schema: JoiArray): JoiStatement[] {
     ]);
 
     const items = schema.items;
-
-    logger.debug({
-      items,
-    });
 
     items.forEach((item, i) => {
       content.push(...generateJoi(item));

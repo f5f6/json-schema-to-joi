@@ -59,7 +59,11 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
   const content: JoiStatement[] = openJoi(['Joi.object()']);
 
   const keys = schema.keys;
+
   if (keys) {
+    const keyWithQuota = _.keys(keys).some((v) => {
+      return v.includes('-') || v.includes(' ');
+    });
     content.push(...[
       '.keys',
       JoiSpecialChar.OPEN_PAREN,
@@ -68,7 +72,7 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
     ]);
     _.keys(keys).forEach((key) => {
       let printKey = key;
-      if (key.includes(' ') || key.includes('-')) {
+      if (keyWithQuota) {
         printKey = '\'' + printKey + '\'';
       }
       content.push(...[
