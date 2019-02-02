@@ -89,11 +89,11 @@ export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
     content.push(`.default(${JSON.stringify(schema.default)})`);
   }
 
+  content = generateBooleanKeys(schema, content);
+
   if (schema.description) {
     content.push(`.description(${JSON.stringify(schema.description)})`);
   }
-
-  content = generateBooleanKeys(schema, content);
 
   return (schema.type === 'any') ? closeJoi(content) : content;
 }
