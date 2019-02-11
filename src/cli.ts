@@ -29,7 +29,7 @@ const banner =
   ' * and run `yarn gencode` to regenerate this file.\n' +
   ' */\n\n';
 
-const importJoi = 'import * as Joi from \'joi\'\n';
+const importJoi = 'import * as Joi from \'joi\';\n';
 
 async function main(argv: minimist.ParsedArgs): Promise<void> {
   if (argv.help) {
@@ -108,8 +108,11 @@ function printHelp(): void {
   process.stdout.write(
     `
     ${pkg.name} ${pkg.version}
-    Usage: json2joi [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
+    Usage: json2joi [--batch] [--title] [TITLE] [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
+    Option batch indicates that the programe will use the defiition section of the input. (Default: false)
+    Option title indicates that the programe will use it as the title of the interface
+    if there are no title in the JSON schema. (Meaningless when batch is true)
     With no IN_FILE, or when IN_FILE is -, read standard input.
     With no OUT_FILE and when IN_FILE is specified, create .d.ts file in the same directory.
     With no OUT_FILE nor IN_FILE, write to standard output.
