@@ -29,7 +29,7 @@ const banner =
   ' * and run `yarn gencode` to regenerate this file.\n' +
   ' */\n\n';
 
-const importJoi = 'import * as Joi from \'joi\';\n';
+const importJoi = 'import * as Joi from \'joi\';\n\n';
 
 async function main(argv: minimist.ParsedArgs): Promise<void> {
   if (argv.help) {
@@ -42,10 +42,10 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
   const argOut: string = argv._[1] || argv.output;
   const batch: boolean = argv.batch || false;
   const title: string | undefined = batch ? undefined : argv.title;
+  let all = banner + importJoi;
 
   try {
     const schema: JSONSchema4 = JSON.parse(await readInput(argIn));
-    await writeOutput(banner + importJoi, argOut);
     if (batch) {
       const defintions = schema.definitions;
       if (!defintions) {
@@ -62,7 +62,7 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
         const joiSchema = resolveJSONSchema(itemSchema, { rootSchema: schema });
         const joiStatements = generateJoi(joiSchema, true);
         const joiString = formatJoi(joiStatements);
-        await writeOutput('export ' + joiString + '\n\n', argOut);
+        all += 'export ' + joiString + '\n\n';
       }
     } else {
       if (!schema.title && title) {
@@ -71,8 +71,9 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
       const joiSchema = resolveJSONSchema(schema, { rootSchema: schema });
       const joiStatements = generateJoi(joiSchema, true);
       const joiString = formatJoi(joiStatements);
-      await writeOutput('export ' + joiString + '\n\n', argOut);
+      all += 'export ' + joiString + '\n\n';
     }
+    await writeOutput(all, argOut);
   } catch (e) {
     // tslint:disable-next-line: no-console
     console.error(whiteBright.bgRedBright('error'), e);
