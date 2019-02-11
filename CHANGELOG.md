@@ -1,5 +1,10 @@
 # Change log
 
+## 0.5.1 (2019-02-11)
+
+* Fixed:
+  * Missing semicolon when importing `Joi`.
+
 ## 0.5.0 (2019-02-02)
 
 * Changed:
