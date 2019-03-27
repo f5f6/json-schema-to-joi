@@ -1,5 +1,10 @@
 # Change log
 
+## 0.5.3 (2019-02-11)
+
+* Fixed:
+  * Update banner.
+
 ## 0.5.2 (2019-02-11)
 
 * Fixed:
