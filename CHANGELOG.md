@@ -1,5 +1,10 @@
 # Change log
 
+## 0.5.4 (2019-04-03)
+
+* Added:
+  * Add argument `banner`.
+
 ## 0.5.3 (2019-02-11)
 
 * Fixed:
