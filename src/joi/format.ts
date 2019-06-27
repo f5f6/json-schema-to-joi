@@ -20,7 +20,6 @@ function processLevelSpecialChar(statements: JoiStatement[], i: number): string 
   let ret = '';
   let head = '';
 
-  // tslint:disable-next-line: no-console
   logger.debug({
     char, nextChar, level,
   });

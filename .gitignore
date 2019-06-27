@@ -110,3 +110,7 @@ build/
 *.swp
 !scripts/build
 *.stackdump
+
+# local npm/yarn registry
+.npmrc
+.yarnrc

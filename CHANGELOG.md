@@ -1,5 +1,10 @@
 # Change log
 
+## 0.6.0 (2019-06-27)
+
+* Added:
+  * Add support for 'allOf'.
+
 ## 0.5.4 (2019-04-03)
 
 * Added:

@@ -129,6 +129,64 @@ const testItems: TestItem[] = [
       '  telephone: Joi.string(),\n' +
       '}).unknown()',
   },
+  {
+    title: 'properties, required some properties but properties empty',
+    schema: {
+      required: ['name', 'email'],
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        name: {
+          type: 'any',
+          required: true,
+        },
+        email: {
+          type: 'any',
+          required: true,
+        },
+      },
+      unknown: true,
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  name: Joi.any().required(),\n' +
+      '  email: Joi.any().required(),\n' +
+      '}).unknown()',
+  },
+  {
+    title: 'properties, required some properties but properties don\'t cover them',
+    schema: {
+      properties: {
+        a: { type: 'integer' },
+        b: { type: 'string' },
+      },
+      required: ['name', 'email'],
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        name: {
+          type: 'any',
+          required: true,
+        },
+        email: {
+          type: 'any',
+          required: true,
+        },
+        a: { type: 'number', integer: true },
+        b: { type: 'string' },
+      },
+      unknown: true,
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  a: Joi.number().integer(),\n' +
+      '  b: Joi.string(),\n' +
+      '  name: Joi.any().required(),\n' +
+      '  email: Joi.any().required(),\n' +
+      '}).unknown()',
+  },
 ];
 
 describe('joi object', () => {

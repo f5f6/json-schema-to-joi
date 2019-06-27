@@ -10,10 +10,19 @@ import { Options } from './options';
 function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string]: JoiSchema } | undefined {
   const properties = schema.properties;
   if (!properties) {
-    return undefined;
+    if (schema.required) {
+      const requiredPropertiesSchema: { [k: string]: JoiSchema } = {};
+      schema.required.forEach((key) => {
+        requiredPropertiesSchema[key] = createJoiItem('any');
+        requiredPropertiesSchema[key].required = true;
+      });
+      return requiredPropertiesSchema;
+    } else {
+      return undefined;
+    }
   }
 
-  return _.mapValues(properties, (property, key) => {
+  const propertiesSchema = _.mapValues(properties, (property, key) => {
     const joiSchema = resolveJSONSchema(property, options);
     // https://json-schema.org/understanding-json-schema/reference/object.html#required-properties
     const required = (schema.required && schema.required.includes(key));
@@ -22,6 +31,17 @@ function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string
     }
     return joiSchema;
   });
+
+  if (schema.required) {
+    schema.required.forEach((key) => {
+      if (!properties[key]) {
+        propertiesSchema[key] = createJoiItem('any');
+        propertiesSchema[key].required = true;
+      }
+    });
+  }
+
+  return propertiesSchema;
 }
 
 export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): JoiObject {
