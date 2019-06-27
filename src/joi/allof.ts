@@ -4,6 +4,7 @@ import { createJoiItem, JoiAllOf } from './types';
 import { resolveJSONSchema } from './resolve';
 import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoi } from './generate';
 import { Options } from './options';
+import * as _ from 'lodash';
 
 export function resolveJoiAllOfSchema(schema: JSONSchema4, options?: Options): JoiAllOf {
   const joiSchema = createJoiItem('allOf') as JoiAllOf;
@@ -15,6 +16,10 @@ export function resolveJoiAllOfSchema(schema: JSONSchema4, options?: Options): J
     return resolveJSONSchema(item, options);
   });
 
+  // tslint:disable:no-unused-expression-chai
+  (!!schema.description) && (joiSchema.description = schema.description);
+  (!!schema.title) && (joiSchema.label = _.camelCase(schema.title));
+  // tslint:enable:no-unused-expression-chai
   return joiSchema;
 }
 
