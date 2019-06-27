@@ -1,7 +1,9 @@
 export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
-  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives';
+  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf';
 
-export type JoiSchema = JoiAny | JoiArray | JoiDate | JoiNumber | JoiObject | JoiString | JoiAlternatives | JoiBinary;
+export type JoiSchema =
+  JoiAny | JoiArray | JoiDate | JoiNumber |
+  JoiObject | JoiString | JoiAlternatives | JoiBinary | JoiAllOf;
 
 export interface JoiAny {
   type: JoiType;
@@ -109,6 +111,10 @@ export interface JoiString extends JoiAny {
   uppercase?: boolean;
   trim?: boolean;
   isoDate?: boolean;
+}
+
+export interface JoiAllOf extends JoiAny {
+  items?: JoiSchema[];
 }
 
 export function createJoiItem(type: JoiType): JoiSchema {

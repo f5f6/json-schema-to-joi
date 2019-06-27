@@ -5,6 +5,7 @@ import { resolveType } from './resolveType';
 import { Options } from './options';
 import { resolveJoiAlternativesSchema } from './alternatives';
 import { resolveReference } from './reference';
+import { resolveJoiAllOfSchema } from './allof';
 
 // tslint:disable-next-line:naming-convention
 export function resolveJSONSchema(schema: JSONSchema4, options?: Options): JoiSchema {
@@ -16,6 +17,9 @@ export function resolveJSONSchema(schema: JSONSchema4, options?: Options): JoiSc
   }
 
   // TODO schema.allOf
+  if (schema.allOf) {
+    return resolveJoiAllOfSchema(schema, options);
+  }
 
   // TODO schema.oneof
 

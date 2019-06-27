@@ -16,6 +16,7 @@ export interface TestItem {
   schema: JSONSchema4;
   targetJoiSchema: JoiSchema;
   targetJoiString: string;
+  only?: boolean;
 }
 
 export function runTest(
@@ -26,7 +27,8 @@ export function runTest(
   logger: Logger,
   options?: Options): void {
   testItems.forEach((item) => {
-    it(item.title, () => {
+    const itFunc = item.only ? it.only : it;
+    itFunc(item.title, () => {
       const schema = _.assign({}, templateSchema, item.schema);
       const resultJoiSchema = resolveFunc(schema, options);
       const joiStatements = genJoiFunc(resultJoiSchema);

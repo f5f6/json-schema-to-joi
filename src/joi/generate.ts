@@ -1,10 +1,11 @@
-import { JoiSchema, JoiString, JoiAny, JoiNumber, JoiBinary, JoiObject, JoiBoolean, JoiArray } from './types';
+import { JoiSchema, JoiString, JoiAny, JoiNumber, JoiBinary, JoiObject, JoiBoolean, JoiArray, JoiAllOf } from './types';
 import * as _ from 'lodash';
 import { generateStringJoi, generateBinaryJoi } from './string';
 import { generateNumberJoi } from './number';
 import { generateObjectJoi } from './object';
 import { generateBooleanJoi } from './boolean';
 import { generateArrayJoi } from './array';
+import { generateAllOfJoi } from './allof';
 
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
@@ -63,6 +64,9 @@ export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiS
       break;
     case 'array':
       content.push(...generateArrayJoi(schema as JoiArray));
+      break;
+    case 'allOf':
+      content.push(...generateAllOfJoi(schema as JoiAllOf));
       break;
     case 'any':
     default:
