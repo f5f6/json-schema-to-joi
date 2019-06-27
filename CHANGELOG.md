@@ -1,5 +1,10 @@
 # Change log
 
+## 0.6.1 (2019-06-27)
+
+* Fixed:
+  * 'allOf' should have a title.
+
 ## 0.6.0 (2019-06-27)
 
 * Added:
