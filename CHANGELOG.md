@@ -1,5 +1,10 @@
 # Change log
 
+## 0.7.0 (2019-07-23)
+
+* Added:
+  * Add subschema option to cli
+
 ## 0.6.1 (2019-06-27)
 
 * Fixed:

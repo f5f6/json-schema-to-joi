@@ -5,10 +5,19 @@ import { resolveType } from './resolveType';
 import { Options } from './options';
 import { resolveJoiAlternativesSchema } from './alternatives';
 import { resolveReference } from './reference';
-import { resolveJoiAllOfSchema } from './allof';
+import { resolveJoiAllOfSchema } from './allOf';
+import { resolveJoiOneOfSchema } from './oneOf';
 
 // tslint:disable-next-line:naming-convention
 export function resolveJSONSchema(schema: JSONSchema4, options?: Options): JoiSchema {
+  // deal with $ref firstly
+  if (schema.$ref && options) {
+    const ref = resolveReference(schema.$ref, options);
+    if (ref) {
+      return resolveJSONSchema(ref, options);
+    }
+  }
+
   if (schema.type) {
     return resolveType(schema, options);
   }
@@ -16,18 +25,13 @@ export function resolveJSONSchema(schema: JSONSchema4, options?: Options): JoiSc
     return resolveJoiAlternativesSchema(schema, options);
   }
 
-  // TODO schema.allOf
   if (schema.allOf) {
     return resolveJoiAllOfSchema(schema, options);
   }
 
   // TODO schema.oneof
-
-  if (schema.$ref && options) {
-    const ref = resolveReference(schema.$ref, options);
-    if (ref) {
-      return resolveJSONSchema(ref, options);
-    }
+  if (schema.oneOf) {
+    return resolveJoiOneOfSchema(schema, options);
   }
 
   if (schema.enum) {

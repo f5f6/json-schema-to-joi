@@ -5,7 +5,7 @@ import { generateNumberJoi } from './number';
 import { generateObjectJoi } from './object';
 import { generateBooleanJoi } from './boolean';
 import { generateArrayJoi } from './array';
-import { generateAllOfJoi } from './allof';
+import { generateAllOfJoi } from './allOf';
 
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object

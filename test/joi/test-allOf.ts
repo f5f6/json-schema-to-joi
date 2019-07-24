@@ -1,6 +1,6 @@
 // tslint:disable-next-line:no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { resolveJoiAllOfSchema, generateAllOfJoi } from '../../src/joi/allof';
+import { resolveJoiAllOfSchema, generateAllOfJoi } from '../../src/joi/allOf';
 import { createLogger, TestItem, runTest } from './common';
 
 const logger = createLogger('test-array');
