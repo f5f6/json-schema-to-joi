@@ -5,12 +5,13 @@ import { JSONSchema4 } from 'json-schema';
 import * as minimist from 'minimist';
 // tslint:disable-next-line: no-submodule-imports
 import { readFile, writeFile } from 'mz/fs';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 // tslint:disable-next-line: no-require-imports
 const stdin = require('stdin');
 import { generateJoi, resolveJSONSchema, formatJoi } from './joi';
 import { whiteBright } from 'cli-color';
 import * as _ from 'lodash';
+import { traverseDir } from './utils';
 
 const banner =
   '/* tslint:disable */\n' +
@@ -28,7 +29,8 @@ main(minimist(process.argv.slice(2), {
     help: ['h'],
     input: ['i'],
     output: ['o'],
-    banner: ['b']
+    banner: ['b'],
+    cwd: ['c'],
   }
 }));
 
@@ -44,10 +46,27 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
   const argBanner: string = argv.banner || banner;
   const batch: boolean = argv.batch || false;
   const title: string | undefined = batch ? undefined : argv.title;
+  const cwd: string | undefined = argv.cwd;
   let all = argBanner + importJoi;
 
   try {
     const schema: JSONSchema4 = JSON.parse(await readInput(argIn));
+    const subSchemas: any = {};
+
+    if (cwd) {
+      await traverseDir(cwd, async (fileName: string, dir: string): Promise<void> => {
+        if (fileName.endsWith('.json')) {
+          const fullFileName = join(dir, fileName);
+          let fileId = fullFileName.substr(cwd.length);
+          if (fileId.startsWith('/')) {
+            fileId = fileId.substr(1);
+          }
+          subSchemas[fileId] = JSON.parse(await readInput(fullFileName));
+          return;
+        }
+      });
+    }
+
     if (batch) {
       const defintions = schema.definitions;
       if (!defintions) {
@@ -61,7 +80,7 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
         if (!itemSchema.title) {
           itemSchema.title = key;
         }
-        const joiSchema = resolveJSONSchema(itemSchema, { rootSchema: schema });
+        const joiSchema = resolveJSONSchema(itemSchema, { rootSchema: schema, subSchemas, });
         const joiStatements = generateJoi(joiSchema, true);
         const joiString = formatJoi(joiStatements);
         all += 'export ' + joiString + '\n\n';
@@ -70,7 +89,7 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
       if (!schema.title && title) {
         schema.title = title;
       }
-      const joiSchema = resolveJSONSchema(schema, { rootSchema: schema });
+      const joiSchema = resolveJSONSchema(schema, { rootSchema: schema, subSchemas });
       const joiStatements = generateJoi(joiSchema, true);
       const joiString = formatJoi(joiStatements);
       all += 'export ' + joiString + '\n\n';
@@ -110,11 +129,12 @@ function printHelp(): void {
   process.stdout.write(
     `
     ${pkg.name} ${pkg.version}
-    Usage: json2joi [--batch] [--title] [TITLE] [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
+    Usage: json2joi [--batch] [--title] [TITLE] [--cwd] [cwd] [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
     Option batch indicates that the programe will use the defiition section of the input. (Default: false)
     Option title indicates that the programe will use it as the title of the interface
     if there are no title in the JSON schema. (Meaningless when batch is true)
+    Option cwd indicates that the programe will use the directory and load all JSON files as the sub schemas.
     With no IN_FILE, or when IN_FILE is -, read standard input.
     With no OUT_FILE and when IN_FILE is specified, create .d.ts file in the same directory.
     With no OUT_FILE nor IN_FILE, write to standard output.

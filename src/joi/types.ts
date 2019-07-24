@@ -1,12 +1,16 @@
 export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
-  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf';
+  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf' | 'oneOf';
 
 export type JoiSchema =
   JoiAny | JoiArray | JoiDate | JoiNumber |
-  JoiObject | JoiString | JoiAlternatives | JoiBinary | JoiAllOf;
+  JoiObject | JoiString | JoiAlternatives | JoiBinary;
 
-export interface JoiAny {
+export interface JoiBase {
   type: JoiType;
+  description?: string;
+  label?: string;
+}
+export interface JoiAny extends JoiBase {
   allow?: any[];
   valid?: any[];
   invalid?: any[];
@@ -15,8 +19,6 @@ export interface JoiAny {
   forbidden?: boolean;
   strip?: boolean;
   default?: any;
-  description?: string;
-  label?: string;
   [k: string]: any;
 }
 
@@ -113,7 +115,11 @@ export interface JoiString extends JoiAny {
   isoDate?: boolean;
 }
 
-export interface JoiAllOf extends JoiAny {
+export interface JoiAllOf extends JoiBase {
+  items?: JoiSchema[];
+}
+
+export interface JoiOneOf extends JoiBase {
   items?: JoiSchema[];
 }
 
