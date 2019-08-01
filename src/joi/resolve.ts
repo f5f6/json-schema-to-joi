@@ -18,6 +18,11 @@ export function resolveJSONSchema(schema: JSONSchema4, options?: Options): JoiSc
     }
   }
 
+  // if schema.required or schema.propteries exists, it implies that it is an object
+  if ((schema.required || schema.properties) && !schema.type) {
+    schema.type = 'object';
+  }
+
   if (schema.type) {
     return resolveType(schema, options);
   }
@@ -29,7 +34,6 @@ export function resolveJSONSchema(schema: JSONSchema4, options?: Options): JoiSc
     return resolveJoiAllOfSchema(schema, options);
   }
 
-  // TODO schema.oneof
   if (schema.oneOf) {
     return resolveJoiOneOfSchema(schema, options);
   }
