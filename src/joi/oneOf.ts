@@ -23,11 +23,12 @@ export function resolveJoiOneOfSchema(schema: JSONSchema4, options?: Options): J
   return joiSchema;
 }
 
-export function generateAllOfJoi(schema: JoiOneOf): JoiStatement[] {
+export function generateOneOfJoi(schema: JoiOneOf): JoiStatement[] {
   const content: JoiStatement[] = openJoi(['Joi.oneOf()']);
   content.push(...[
     '.items',
     JoiSpecialChar.OPEN_PAREN,
+    JoiSpecialChar.OPEN_BRACKET,
   ]);
 
   if (schema.items) {
@@ -42,6 +43,7 @@ export function generateAllOfJoi(schema: JoiOneOf): JoiStatement[] {
 
   content.push(...[
     JoiSpecialChar.NEWLINE,
+    JoiSpecialChar.CLOSE_BRACKET,
     JoiSpecialChar.CLOSE_PAREN,
   ]);
 

@@ -1,5 +1,14 @@
 # Change log
 
+## 0.8.0 (2019-08-01)
+
+* Fixed:
+  * Generate Alternatives using genrateBooleanJoi function
+  * allOf and oneOf missed [] around items parameters.
+  * generateJoi missed call oneOf
+* Added:
+  * Add extendedJoi option to cli: support extended Joi lib instead of standard Joi
+
 ## 0.7.0 (2019-07-23)
 
 * Added:

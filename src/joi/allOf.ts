@@ -28,6 +28,7 @@ export function generateAllOfJoi(schema: JoiAllOf): JoiStatement[] {
   content.push(...[
     '.items',
     JoiSpecialChar.OPEN_PAREN,
+    JoiSpecialChar.OPEN_BRACKET,
   ]);
 
   if (schema.items) {
@@ -42,6 +43,7 @@ export function generateAllOfJoi(schema: JoiAllOf): JoiStatement[] {
 
   content.push(...[
     JoiSpecialChar.NEWLINE,
+    JoiSpecialChar.CLOSE_BRACKET,
     JoiSpecialChar.CLOSE_PAREN,
   ]);
 

@@ -31,6 +31,7 @@ main(minimist(process.argv.slice(2), {
     output: ['o'],
     banner: ['b'],
     cwd: ['c'],
+    extendedJoi: ['e'],
   }
 }));
 
@@ -47,7 +48,8 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
   const batch: boolean = argv.batch || false;
   const title: string | undefined = batch ? undefined : argv.title;
   const cwd: string | undefined = argv.cwd;
-  let all = argBanner + importJoi;
+  const extendedJoi: string = argv.extendedJoi || importJoi;
+  let all = argBanner + extendedJoi;
 
   try {
     const schema: JSONSchema4 = JSON.parse(await readInput(argIn));
@@ -129,12 +131,14 @@ function printHelp(): void {
   process.stdout.write(
     `
     ${pkg.name} ${pkg.version}
-    Usage: json2joi [--batch] [--title] [TITLE] [--cwd] [cwd] [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
+    Usage: json2joi [--batch] [--title] [TITLE] [--cwd] [cwd] [--extendedJoi] [extendedJoiImport]
+    [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
     Option batch indicates that the programe will use the defiition section of the input. (Default: false)
     Option title indicates that the programe will use it as the title of the interface
     if there are no title in the JSON schema. (Meaningless when batch is true)
     Option cwd indicates that the programe will use the directory and load all JSON files as the sub schemas.
+    Option extendedJoiImport will replace the import expression to introduce exteneded Joi lib.
     With no IN_FILE, or when IN_FILE is -, read standard input.
     With no OUT_FILE and when IN_FILE is specified, create .d.ts file in the same directory.
     With no OUT_FILE nor IN_FILE, write to standard output.

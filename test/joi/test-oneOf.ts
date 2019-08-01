@@ -1,6 +1,6 @@
 // tslint:disable-next-line:no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { resolveJoiAllOfSchema, generateAllOfJoi } from '../../src/joi/allOf';
+import { resolveJoiOneOfSchema, generateOneOfJoi } from '../../src/joi/oneOf';
 import { createLogger, TestItem, runTest } from './common';
 
 const logger = createLogger('test-array');
@@ -11,9 +11,9 @@ const allOfJSONSchemaTemplate: JSONSchema4 = {
 
 const testItems: TestItem[] = [
   {
-    title: 'allOf extend an object',
+    title: 'oneOf extend an object',
     schema: {
-      allOf: [
+      oneOf: [
         {
           type: 'object',
           required: [
@@ -91,7 +91,7 @@ const testItems: TestItem[] = [
       ]
     },
     targetJoiSchema: {
-      type: 'allOf',
+      type: 'oneOf',
       items: [{
         type: 'object',
         keys: {
@@ -175,7 +175,7 @@ const testItems: TestItem[] = [
       }],
     },
     targetJoiString: '' +
-      'Joi.allOf().items([\n' +
+      'Joi.oneOf().items([\n' +
       '  Joi.object().keys({\n' +
       '    deviceId: Joi.string().required(),\n' +
       '    service: Joi.string().required(),\n' +
@@ -205,6 +205,6 @@ const testItems: TestItem[] = [
   },
 ];
 
-describe('joi allOf', () => {
-  runTest(testItems, allOfJSONSchemaTemplate, resolveJoiAllOfSchema, generateAllOfJoi, logger);
+describe('joi oneOf', () => {
+  runTest(testItems, allOfJSONSchemaTemplate, resolveJoiOneOfSchema, generateOneOfJoi, logger);
 });
