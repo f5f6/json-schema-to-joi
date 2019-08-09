@@ -175,7 +175,7 @@ const testItems: TestItem[] = [
       }],
     },
     targetJoiString: '' +
-      'Joi.oneOf().items([\n' +
+      'Joi.extendedJoi.oneOf().items([\n' +
       '  Joi.object().keys({\n' +
       '    deviceId: Joi.string().required(),\n' +
       '    service: Joi.string().required(),\n' +

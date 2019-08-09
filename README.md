@@ -6,7 +6,7 @@ A utility to convert JSON schema (draft 4) to Joi validation schema.
 
 ```bash
 
-    json-schema-to-joi 0.8.0
+    json-schema-to-joi 1.0.0
     Usage: json2joi [--batch] [--title] [TITLE] [--cwd] [cwd] [--extendedJoi] [extendedJoiImport]
     [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
@@ -14,6 +14,7 @@ A utility to convert JSON schema (draft 4) to Joi validation schema.
     Option title indicates that the programe will use it as the title of the interface
     if there are no title in the JSON schema. (Meaningless when batch is true)
     Option cwd indicates that the programe will use the directory and load all JSON files as the sub schemas.
+    Option extendedJoiImport will replace the import expression to introduce exteneded Joi lib.
     With no IN_FILE, or when IN_FILE is -, read standard input.
     With no OUT_FILE and when IN_FILE is specified, create .d.ts file in the same directory.
     With no OUT_FILE nor IN_FILE, write to standard output.
