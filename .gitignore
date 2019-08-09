@@ -114,3 +114,7 @@ build/
 # local npm/yarn registry
 .npmrc
 .yarnrc
+yarn.lock
+
+# gitlab
+.gitlab

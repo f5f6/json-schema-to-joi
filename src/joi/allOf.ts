@@ -24,7 +24,7 @@ export function resolveJoiAllOfSchema(schema: JSONSchema4, options?: Options): J
 }
 
 export function generateAllOfJoi(schema: JoiAllOf): JoiStatement[] {
-  const content: JoiStatement[] = openJoi(['Joi.allOf()']);
+  const content: JoiStatement[] = openJoi(['Joi.extendedJoi.allOf()']);
   content.push(...[
     '.items',
     JoiSpecialChar.OPEN_PAREN,

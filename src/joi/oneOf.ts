@@ -24,7 +24,7 @@ export function resolveJoiOneOfSchema(schema: JSONSchema4, options?: Options): J
 }
 
 export function generateOneOfJoi(schema: JoiOneOf): JoiStatement[] {
-  const content: JoiStatement[] = openJoi(['Joi.oneOf()']);
+  const content: JoiStatement[] = openJoi(['Joi.extendedJoi.oneOf()']);
   content.push(...[
     '.items',
     JoiSpecialChar.OPEN_PAREN,
