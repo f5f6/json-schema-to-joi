@@ -1,5 +1,5 @@
 {
-  "name": "json-schema-to-joi",
+  "name": "@globefish/json-schema-to-joi",
   "version": "1.0.0",
   "description": "Converts JSON schema to Joi typescript code",
   "main": "dist/index.js",
@@ -12,13 +12,14 @@
   "scripts": {
     "format": "tsfmt -r",
     "clean": "rm -rf dist build",
-    "compile": "tsc",
-    "build": "yarn clean && yarn format && yarn compile && yarn lint && yarn test && yarn _copylib",
+    "compile": "yarn clean && yarn format && tsc && yarn lint",
+    "build": "yarn compile && yarn test && yarn _copylib",
     "test": "scripty",
     "lint": "scripty",
     "_copylib": "mkdir -p dist && cp -R build/src/* dist/",
     "npm_publish": "scripty",
-    "prepublish": "yarn build"
+    "prepare": "yarn build",
+    "doc": "typedoc && touch docs/.nojekyll"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.5",
@@ -41,6 +42,7 @@
     "tslint-no-unused-expression-chai": "^0.1.4",
     "tslint-sonarts": "^1.9.0",
     "tslint-strict-error-throw": "^1.0.1",
+    "typedoc": "0.15.0",
     "typescript": "^3.2.4",
     "typescript-formatter": "^7.2.2"
   },

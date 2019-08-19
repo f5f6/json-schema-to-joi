@@ -15,6 +15,16 @@
     "emitDecoratorMetadata": true,
     "target": "es2017"
   },
+  "typedocOptions": {
+    "mode": "modules",
+    "out": "docs",
+    "theme": "default",
+    "exclude": [ 
+      "test/**/*.ts",
+      "src/cli.ts",
+      "src/**/index.ts"
+    ]
+  },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"

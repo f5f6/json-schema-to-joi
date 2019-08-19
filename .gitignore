@@ -21,7 +21,6 @@ build/Release
 lib
 dist
 build
-docs
 *.tgz
 package/
 
