@@ -5,9 +5,9 @@ A utility to convert JSON schema (draft 4) to Joi validation schema.
 ## Usage
 
 ```bash
-
-@globefish/json-schema-to-joi 1.0.0
-Usage: json2joi [--banner, -b] [BANNER] [--batch] [--title] [TITLE] [--cwd] [CWD] [--extendedJoi] [EXTENDEDJOI]
+@globefish/json-schema-to-joi 1.1.0
+Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
+        [--title] [TITLE] [--cwd] [CWD] [--extendedJoi] [EXTENDEDJOI]
         [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
 optional parameters:
