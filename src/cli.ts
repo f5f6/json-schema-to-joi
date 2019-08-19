@@ -19,6 +19,7 @@ const importJoi = 'import * as Joi from \'joi\';\n\n';
 
 // tslint:disable-next-line: no-floating-promises
 main(minimist(process.argv.slice(2), {
+  string: [ 'banner', 'cwd', 'extendedJoi' ],
   alias: {
     help: ['h'],
     input: ['i'],
@@ -125,7 +126,8 @@ function printHelp(): void {
   process.stdout.write(
     `
 ${pkg.name} ${pkg.version}
-Usage: json2joi [--banner, -b] [BANNER] [--batch] [--title] [TITLE] [--cwd] [CWD] [--extendedJoi] [EXTENDEDJOI]
+Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
+        [--title] [TITLE] [--cwd] [CWD] [--extendedJoi] [EXTENDEDJOI]
         [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
 optional parameters:
