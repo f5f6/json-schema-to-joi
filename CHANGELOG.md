@@ -1,9 +1,9 @@
 # Change log
 
-## 1.0.1 (2019-08-19)
+## 1.1.0 (2019-08-19)
 
 * Added:
-  * (Breaking) allOf, oneOf are leading with 'Joi.extendedJoi.' instead of 'Joi.'.
+  * json2joi: --batch support user-defined 
 
 ## 1.0.0 (2019-08-09)
 
