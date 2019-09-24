@@ -46,7 +46,6 @@ function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string
 }
 
 export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): JoiObject {
-  // JoiObject is a customized object type used to describe the final string.
   const joiSchema = createJoiItem('object') as JoiObject;
   // https://json-schema.org/understanding-json-schema/reference/object.html#properties
   joiSchema.keys = resolveProperties(schema, options);
@@ -57,14 +56,11 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
   if (typeof additionalProperties === 'boolean') {
     joiSchema.unknown = additionalProperties;
   } else {
-    //  TODO : additionalProperties may not be object or string!
-    // TODO : the resolve of additionalProperties is not properly when the additionalProperties is not boolean type.
     joiSchema.pattern = [{
       pattern: '^',
       schema: resolveJSONSchema(additionalProperties, options),
     }];
   }
-
   // https://json-schema.org/understanding-json-schema/reference/object.html#size
   // tslint:disable:no-unused-expression-chai
   if(_.isNumber(schema.minProperties) && _.isNumber(schema.maxProperties) && schema.maxProperties == schema.minProperties) {
@@ -75,7 +71,7 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
   }
   // tslint:enable:no-unused-expression-chai
   // TODO: Dependencies
-  //   https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
+  // https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
   if(schema.dependencies !== undefined){
     // the properties which need dependencies
     let dependencies: string[] = _.keys(schema.dependencies);
@@ -84,12 +80,12 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
     const joiSchemaWith = joiSchema.with;
     dependencies.forEach((key)=>{
       // https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
-      // The value of the dependencies keyword is an object. Each entry in the object maps from the name of a property, p, to an array of strings listing properties that are required whenever p is present.
       if(_.isArray(schemaDepencies[key])){
         const properties:string[] = schemaDepencies[key] as string[];
         joiSchemaWith[key] = properties;
       }else{
-        //joiSchemaWith[key] = resolveJSONSchema(schemaDepencies[key],options)
+        // TODO Joi.with() can't not support object dependencies
+        // joiSchemaWith[key] = resolveJSONSchema(schemaDepencies[key],options)
       }
     })
   }
@@ -191,6 +187,7 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
         content.push(...stringifyOutputString(dependencies));
         content.push(JoiSpecialChar.CLOSE_BRACKET);
       }else{
+        // TODO Joi.with() can't not support object dependencies
         //content.push(...generateJoi(dependencies));
       }
       content.push(JoiSpecialChar.CLOSE_PAREN)
