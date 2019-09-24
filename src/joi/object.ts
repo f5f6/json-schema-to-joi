@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
 import { generateAnyJoi, generateJoi, JoiStatement, JoiSpecialChar, openJoi, closeJoi } from './generate';
 import { Options } from './options';
+import {stringifyOutputString} from '../utils';
 
 function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string]: JoiSchema } | undefined {
   const properties = schema.properties;
@@ -45,6 +46,7 @@ function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string
 }
 
 export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): JoiObject {
+  // JoiObject is a customized object type used to describe the final string.
   const joiSchema = createJoiItem('object') as JoiObject;
   // https://json-schema.org/understanding-json-schema/reference/object.html#properties
   joiSchema.keys = resolveProperties(schema, options);
@@ -55,23 +57,57 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
   if (typeof additionalProperties === 'boolean') {
     joiSchema.unknown = additionalProperties;
   } else {
-    joiSchema.pattern = {
+    //  TODO : additionalProperties may not be object or string!
+    // TODO : the resolve of additionalProperties is not properly when the additionalProperties is not boolean type.
+    joiSchema.pattern = [{
       pattern: '^',
       schema: resolveJSONSchema(additionalProperties, options),
-    };
+    }];
   }
 
   // https://json-schema.org/understanding-json-schema/reference/object.html#size
   // tslint:disable:no-unused-expression-chai
-  _.isNumber(schema.minProperties) && (joiSchema.min = schema.minProperties);
-  _.isNumber(schema.maxProperties) && (joiSchema.max = schema.maxProperties);
+  if(_.isNumber(schema.minProperties) && _.isNumber(schema.maxProperties) && schema.maxProperties == schema.minProperties) {
+    joiSchema.length = schema.maxProperties ;
+  }else{
+    _.isNumber(schema.minProperties) && (joiSchema.min = schema.minProperties);
+    _.isNumber(schema.maxProperties) && (joiSchema.max = schema.maxProperties);
+  }
   // tslint:enable:no-unused-expression-chai
-
   // TODO: Dependencies
   //   https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
-
+  if(schema.dependencies !== undefined){
+    // the properties which need dependencies
+    let dependencies: string[] = _.keys(schema.dependencies);
+    const schemaDepencies = schema.dependencies;
+    joiSchema.with = {};
+    const joiSchemaWith = joiSchema.with;
+    dependencies.forEach((key)=>{
+      // https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
+      // The value of the dependencies keyword is an object. Each entry in the object maps from the name of a property, p, to an array of strings listing properties that are required whenever p is present.
+      if(_.isArray(schemaDepencies[key])){
+        const properties:string[] = schemaDepencies[key] as string[];
+        joiSchemaWith[key] = properties;
+      }else{
+        //joiSchemaWith[key] = resolveJSONSchema(schemaDepencies[key],options)
+      }
+    })
+  }
   // TODO: Pattern Properties
-  //   https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties
+  // https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties
+  if(schema.patternProperties !== undefined){
+    let propertiesPattern: string[] = _.keys(schema.patternProperties);
+    if(joiSchema.pattern === undefined) joiSchema.pattern = [];
+    // Compiling will fail without the following two local variable declearations.
+    const joiSchemaPattern = joiSchema.pattern;
+    const schemaPatternProperties = schema.patternProperties;
+    propertiesPattern.forEach((keyPattern:string)=>{
+        joiSchemaPattern.push({
+          pattern: keyPattern,
+          schema: resolveJSONSchema(schemaPatternProperties[keyPattern],options),
+        })
+    })
+  }
   return joiSchema;
 }
 
@@ -115,26 +151,51 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
   if (schema.min !== undefined) {
     content.push(`.min(${schema.min})`);
   }
-
-  if (schema.pattern) {
-    const pattern = schema.pattern.pattern;
-    const subSchema = schema.pattern.schema;
-    content.push(...[
-      '.pattern',
-      JoiSpecialChar.OPEN_PAREN,
-    ]);
-    if (typeof pattern === 'string') {
-      content.push('/' + pattern + '/');
-    } else {
-      content.push(...generateJoi(pattern));
-    }
-    content.push(JoiSpecialChar.COMMA);
-
-    content.push(...generateAnyJoi(subSchema));
-
-    content.push(JoiSpecialChar.CLOSE_PAREN);
+  if (schema.length !== undefined ){
+    content.push(`.length(${schema.length})`);
   }
+  if (schema.pattern) {
+    schema.pattern.forEach((pattern)=>{
+      const patternKey = pattern.pattern;
+      const subSchema = pattern.schema; // JoiSchema
+      content.push(...[
+        '.pattern',
+        JoiSpecialChar.OPEN_PAREN
+      ]);
+      if (typeof patternKey == 'string') {
+        // patternKey is a regex
+        content.push('/'+ patternKey+'/');
+      } else {
+        content.push(...generateJoi(patternKey));
+      }
+      content.push(JoiSpecialChar.COMMA);
+      
+      content.push(...generateJoi(subSchema));
+      //content.push(...generateAnyJoi(subSchema));
 
+      content.push(JoiSpecialChar.CLOSE_PAREN);
+    });
+  }
+  if (schema.with){
+    const schemaWith = schema.with;
+    _.keys(schema.with).forEach((key)=>{
+      const dependencies = schemaWith[key];
+      content.push(...['.with',JoiSpecialChar.OPEN_PAREN]);
+      //content.push(JoiSpecialChar.)
+      content.push('\''+key+'\'');
+
+      content.push(JoiSpecialChar.COMMA);
+
+      if(_.isArray(dependencies)){
+        content.push(JoiSpecialChar.OPEN_BRACKET);
+        content.push(...stringifyOutputString(dependencies));
+        content.push(JoiSpecialChar.CLOSE_BRACKET);
+      }else{
+        //content.push(...generateJoi(dependencies));
+      }
+      content.push(JoiSpecialChar.CLOSE_PAREN)
+    })
+  }
   content.push(...generateAnyJoi(schema));
 
   return closeJoi(content);

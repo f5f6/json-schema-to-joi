@@ -86,7 +86,7 @@ export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiS
 
 export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
   let content: JoiStatement[]
-    = (schema.type === 'any') ? openJoi(['Joi.any()']) : [];
+    = (schema.type === 'any') ? openJoi(['Joi.any()']) : []; // TODO: Here have some problems with pattern 
   if (schema.allow) {
     content.push(`.allow(${JSON.stringify(schema.allow)})`);
   }
@@ -108,7 +108,6 @@ export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
   // if (schema.description) {
   //   content.push(`.description(${JSON.stringify(schema.description)})`);
   // }
-
   return (schema.type === 'any') ? closeJoi(content) : content;
 }
 

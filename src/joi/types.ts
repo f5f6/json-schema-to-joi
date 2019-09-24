@@ -71,13 +71,16 @@ export interface JoiObject extends JoiAny {
   pattern?: {
     pattern: JoiSchema | string;
     schema: JoiSchema;
-  };
+  }[];
   and?: string[];
   nand?: string[];
   or?: string[];
   xor?: string[];
   oxor?: string[];
-  with?: string[];
+  //with?: string[];
+  with?: { 
+    [k: string]: string[] | JoiSchema;
+  };
   without?: string[];
   unknown?: boolean;
 }
