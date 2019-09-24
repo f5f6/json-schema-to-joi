@@ -63,7 +63,9 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
   }
   // https://json-schema.org/understanding-json-schema/reference/object.html#size
   // tslint:disable:no-unused-expression-chai
-  if (_.isNumber(schema.minProperties) && _.isNumber(schema.maxProperties) && schema.maxProperties == schema.minProperties) {
+  if (_.isNumber(schema.minProperties)
+    && _.isNumber(schema.maxProperties)
+    && schema.maxProperties === schema.minProperties) {
     joiSchema.length = schema.maxProperties;
   } else {
     _.isNumber(schema.minProperties) && (joiSchema.min = schema.minProperties);
@@ -74,7 +76,7 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
   // https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
   if (schema.dependencies !== undefined) {
     // the properties which need dependencies
-    let dependencies: string[] = _.keys(schema.dependencies);
+    const dependencies: string[] = _.keys(schema.dependencies);
     const schemaDepencies = schema.dependencies;
     joiSchema.with = {};
     const joiSchemaWith = joiSchema.with;
@@ -87,13 +89,13 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
         // TODO Joi.with() can't not support object dependencies
         // joiSchemaWith[key] = resolveJSONSchema(schemaDepencies[key],options)
       }
-    })
+    });
   }
   // TODO: Pattern Properties
   // https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties
   if (schema.patternProperties !== undefined) {
-    let propertiesPattern: string[] = _.keys(schema.patternProperties);
-    if (joiSchema.pattern === undefined) joiSchema.pattern = [];
+    const propertiesPattern: string[] = _.keys(schema.patternProperties);
+    if (joiSchema.pattern === undefined) { joiSchema.pattern = []; }
     // Compiling will fail without the following two local variable declearations.
     const joiSchemaPattern = joiSchema.pattern;
     const schemaPatternProperties = schema.patternProperties;
@@ -101,8 +103,8 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
       joiSchemaPattern.push({
         pattern: keyPattern,
         schema: resolveJSONSchema(schemaPatternProperties[keyPattern], options),
-      })
-    })
+      });
+    });
   }
   return joiSchema;
 }
@@ -158,7 +160,7 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
         '.pattern',
         JoiSpecialChar.OPEN_PAREN
       ]);
-      if (typeof patternKey == 'string') {
+      if (typeof patternKey === 'string') {
         // patternKey is a regex
         content.push('/' + patternKey + '/');
       } else {
@@ -167,7 +169,6 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
       content.push(JoiSpecialChar.COMMA);
 
       content.push(...generateJoi(subSchema));
-      //content.push(...generateAnyJoi(subSchema));
 
       content.push(JoiSpecialChar.CLOSE_PAREN);
     });
@@ -177,7 +178,7 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
     _.keys(schema.with).forEach((key) => {
       const dependencies = schemaWith[key];
       content.push(...['.with', JoiSpecialChar.OPEN_PAREN]);
-      //content.push(JoiSpecialChar.)
+      // content.push(JoiSpecialChar.)
       content.push('\'' + key + '\'');
 
       content.push(JoiSpecialChar.COMMA);
@@ -188,10 +189,10 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
         content.push(JoiSpecialChar.CLOSE_BRACKET);
       } else {
         // TODO Joi.with() can't not support object dependencies
-        //content.push(...generateJoi(dependencies));
+        // content.push(...generateJoi(dependencies));
       }
-      content.push(JoiSpecialChar.CLOSE_PAREN)
-    })
+      content.push(JoiSpecialChar.CLOSE_PAREN);
+    });
   }
   content.push(...generateAnyJoi(schema));
 

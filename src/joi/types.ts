@@ -68,16 +68,16 @@ export interface JoiObject extends JoiAny {
   min?: number;
   max?: number;
   length?: number;
-  pattern?: {
+  pattern?: Array<{
     pattern: JoiSchema | string;
     schema: JoiSchema;
-  }[]; // modified to array type
+  }>; // modified to array type
   and?: string[];
   nand?: string[];
   or?: string[];
   xor?: string[];
   oxor?: string[];
-  //with?: string[];
+  // with?: string[];
   with?: {
     [k: string]: string[] | JoiSchema;
   };

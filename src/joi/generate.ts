@@ -86,7 +86,7 @@ export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiS
 
 export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
   let content: JoiStatement[]
-    = (schema.type === 'any') ? openJoi(['Joi.any()']) : [];  
+    = (schema.type === 'any') ? openJoi(['Joi.any()']) : [];
   if (schema.allow) {
     content.push(`.allow(${JSON.stringify(schema.allow)})`);
   }
