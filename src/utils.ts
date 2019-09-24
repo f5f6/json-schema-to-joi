@@ -17,10 +17,10 @@ export async function traverseDir(
   }
 }
 
-export function stringifyOutputString(inStr: string[]): string[]{
+export function stringifyOutputString(inStr: string[]): string[] {
   let result: string[] = [];
-  inStr.forEach((str)=>{
-    result.push('\''+str+'\'');
+  inStr.forEach((str) => {
+    result.push('\'' + str + '\'');
   })
   return result;
 }

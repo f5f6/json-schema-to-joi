@@ -78,7 +78,7 @@ export interface JoiObject extends JoiAny {
   xor?: string[];
   oxor?: string[];
   //with?: string[];
-  with?: { 
+  with?: {
     [k: string]: string[] | JoiSchema;
   };
   without?: string[];
