@@ -171,8 +171,12 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
       content.push(...generateJoi(subSchema));
 
       content.push(JoiSpecialChar.CLOSE_PAREN);
+
+      content.push('\n');
     });
+
   }
+
   if (schema.with) {
     const schemaWith = schema.with;
     _.keys(schema.with).forEach((key) => {
@@ -185,13 +189,14 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
 
       if (_.isArray(dependencies)) {
         content.push(JoiSpecialChar.OPEN_BRACKET);
-        content.push(...stringifyOutputString(dependencies));
+        content.push(stringifyOutputString(dependencies).join(','));
         content.push(JoiSpecialChar.CLOSE_BRACKET);
       } else {
         // TODO Joi.with() can't not support object dependencies
         // content.push(...generateJoi(dependencies));
       }
       content.push(JoiSpecialChar.CLOSE_PAREN);
+      content.push('\n');
     });
   }
   content.push(...generateAnyJoi(schema));
