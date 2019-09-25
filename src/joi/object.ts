@@ -86,8 +86,10 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
         const properties: string[] = schemaDepencies[key] as string[];
         joiSchemaWith[key] = properties;
       } else {
-        // TODO Joi.with() can't not support object dependencies
-        // joiSchemaWith[key] = resolveJSONSchema(schemaDepencies[key],options)
+        if (joiSchema.keys === undefined) { joiSchema.keys = {}; }
+        const newKey: string = key + '_dependency';
+        joiSchema.keys[newKey] = resolveJSONSchema(schemaDepencies[key], options);
+        joiSchemaWith[key] = [newKey];
       }
     });
   }
@@ -192,9 +194,6 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
         content.push(stringifyOutputString(dependencies).join(','));
         content.push(JoiSpecialChar.CLOSE_BRACKET);
         content.push(' ');
-      } else {
-        // TODO Joi.with() can't not support object dependencies
-        // content.push(...generateJoi(dependencies));
       }
       content.push(JoiSpecialChar.CLOSE_PAREN);
 
