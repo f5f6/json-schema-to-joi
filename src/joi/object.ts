@@ -172,7 +172,7 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
 
       content.push(JoiSpecialChar.CLOSE_PAREN);
 
-      content.push('\n');
+      content.push(JoiSpecialChar.NEWLINE);
     });
 
   }
@@ -191,12 +191,14 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
         content.push(JoiSpecialChar.OPEN_BRACKET);
         content.push(stringifyOutputString(dependencies).join(','));
         content.push(JoiSpecialChar.CLOSE_BRACKET);
+        content.push(' ');
       } else {
         // TODO Joi.with() can't not support object dependencies
         // content.push(...generateJoi(dependencies));
       }
       content.push(JoiSpecialChar.CLOSE_PAREN);
-      content.push('\n');
+
+      content.push(JoiSpecialChar.NEWLINE);
     });
   }
   content.push(...generateAnyJoi(schema));
