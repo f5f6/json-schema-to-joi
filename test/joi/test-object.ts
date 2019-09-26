@@ -11,6 +11,151 @@ const objectJSONSchemaTemplate: JSONSchema4 = {
 
 const testItems: TestItem[] = [
   {
+    title: 'complicated example',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        credit_card: { type: 'number' },
+        billing_address: { type: 'string' },
+        username: {
+          type: 'string',
+          maxLength: 100
+        }
+      },
+      required: ['name'],
+      patternProperties: {
+        '^S_': { type: 'string' },
+        '^I_': { type: 'integer' }
+      },
+      additionalProperties: false,
+      dependencies: {
+        username: ['credit_card', 'billing_address', 'name'],
+      }
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        name: { type: 'string', required: true },
+        credit_card: { type: 'number' },
+        billing_address: { type: 'string' },
+        username: { type: 'string', max: 100 },
+      },
+      with: {
+        username: ['credit_card', 'billing_address', 'name'],
+      },
+      pattern: [
+        {
+          pattern: '^S_',
+          schema: { type: 'string' }
+        },
+        {
+          pattern: '^I_',
+          schema: { type: 'number', integer: true }
+        }
+      ],
+      unknown: false
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  name: Joi.string().required(),\n' +
+      '  credit_card: Joi.number(),\n' +
+      '  billing_address: Joi.string(),\n' +
+      '  username: Joi.string().max(100),\n' +
+      '}).pattern(/^S_/,Joi.string())\n' +
+      '.pattern(/^I_/,Joi.number().integer())\n' +
+      '.with(\'username\', [\'credit_card\',\'billing_address\',\'name\'] )\n' +
+      '.unknown(false)'
+  },
+  {
+    title: 'with property dependencies',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        credit_card: { type: 'number' },
+        billing_address: { type: 'string' }
+      },
+      required: ['name'],
+      dependencies: {
+        credit_card: ['billing_address', 'name']
+      }
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        name: { type: 'string', required: true },
+        credit_card: { type: 'number' },
+        billing_address: { type: 'string' }
+      },
+      with: {
+        credit_card: ['billing_address', 'name']
+      },
+      unknown: true
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  name: Joi.string().required(),\n' +
+      '  credit_card: Joi.number(),\n' +
+      '  billing_address: Joi.string(),\n' +
+      '}).with(\'credit_card\', [\'billing_address\',\'name\'] )\n' +
+      '.unknown()'
+  },
+  {
+    title: 'pattern dependencies',
+    schema: {
+      type: 'object',
+      properties: {
+        builtin: { type: 'number' }
+      },
+      patternProperties: {
+        '^S_': { type: 'string' },
+        '^I_': { type: 'integer' }
+      },
+      additionalProperties: { type: 'string' }
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: { builtin: { type: 'number' } },
+      pattern: [
+        {
+          pattern: '^',
+          schema: { type: 'string' }
+        },
+        {
+          pattern: '^S_',
+          schema: { type: 'string' }
+        },
+        {
+          pattern: '^I_',
+          schema: { type: 'number', integer: true }
+        }
+      ]
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  builtin: Joi.number(),\n' +
+      '}).pattern(/^/,Joi.string())\n' +
+      '.pattern(/^S_/,Joi.string())\n' +
+      '.pattern(/^I_/,Joi.number().integer())'
+  },
+  {
+    title: 'length',
+    schema: {
+      type: 'object',
+      minProperties: 3,
+      maxProperties: 3
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: undefined,
+      unknown: true,
+      length: 3
+    },
+    targetJoiString:
+      'Joi.object().length(3).unknown()'
+  },
+  {
     title: 'properties',
     schema: {
       properties: {
