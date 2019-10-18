@@ -1,6 +1,12 @@
 #!/bin/bash
 
-mocha \
-  --exit --trace-warnings \
-  -r source-map-support/register \
-  -c "build/test/**/@(test-*$1*|$1).js"
+yarn compile
+
+if [[ $1 == '--watch' ]] ; then
+  tsc-watch --onSuccess "yarn test"
+else
+  mocha \
+    --exit --trace-warnings \
+    -r source-map-support/register \
+    -c "build/test/**/@(test-*$1*|$1).js"
+fi

@@ -5,11 +5,16 @@ import { resolveJSONSchema } from './resolve';
 import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoi } from './generate';
 import { Options } from './options';
 
-function resolveAnyOf(schemas: JSONSchema4[], options?: Options): JoiAlternatives {
+function resolveCombiningSchemas(
+  schemas: JSONSchema4[], mode: 'any' | 'all' | 'one' = 'any', options?: Options): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
-  joiSchema.anyOf = schemas.map((v) => {
-    return resolveJSONSchema(v, options);
-  });
+  if (mode === 'all') {
+    joiSchema.allOf = schemas.map((v) => resolveJSONSchema(v, options));
+  } else if (mode === 'one') {
+    joiSchema.oneOf = schemas.map((v) => resolveJSONSchema(v, options));
+  } else {
+    joiSchema.anyOf = schemas.map((v) => resolveJSONSchema(v, options));
+  }
   return joiSchema;
 }
 
@@ -25,7 +30,15 @@ export function resolveJoiAlternativesSchema(schema: JSONSchema4, options?: Opti
   }
 
   if (schema.anyOf) {
-    return resolveAnyOf(schema.anyOf, options);
+    return resolveCombiningSchemas(schema.anyOf, 'any', options);
+  }
+
+  if (schema.allOf) {
+    return resolveCombiningSchemas(schema.allOf, 'all', options);
+  }
+
+  if (schema.oneOf) {
+    return resolveCombiningSchemas(schema.oneOf, 'one', options);
   }
 
   return createJoiItem('alternatives') as JoiAlternatives;
@@ -55,14 +68,15 @@ function generateNot(not: JoiAny): JoiStatement[] {
   return closeJoi(content);
 }
 
-function generateAnyOf(anyOf: JoiAny[]): JoiStatement[] {
+function generateCombineSchema(schemas: JoiAny[], mode: 'all' | 'one' | 'any'): JoiStatement[] {
   const content: JoiStatement[] = openJoi(['Joi.alternatives()']);
   content.push(...[
+    `.mode('${mode}')`,
     '.try',
     JoiSpecialChar.OPEN_PAREN,
   ]);
 
-  anyOf.forEach((schema) => {
+  schemas.forEach((schema) => {
     content.push(...[
       JoiSpecialChar.NEWLINE,
       ...generateJoi(schema),
@@ -83,7 +97,15 @@ export function generateAlternativesJoi(schema: JoiAlternatives): JoiStatement[]
   }
 
   if (schema.anyOf) {
-    return generateAnyOf(schema.anyOf);
+    return generateCombineSchema(schema.anyOf, 'any');
+  }
+
+  if (schema.allOf) {
+    return generateCombineSchema(schema.allOf, 'all');
+  }
+
+  if (schema.oneOf) {
+    return generateCombineSchema(schema.oneOf, 'one');
   }
 
   const content: JoiStatement[] = openJoi(['Joi.alternatives()']);

@@ -55,23 +55,67 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
   if (typeof additionalProperties === 'boolean') {
     joiSchema.unknown = additionalProperties;
   } else {
-    joiSchema.pattern = {
-      pattern: '^',
+    joiSchema.patterns = [{
+      targetPattern: '^',
       schema: resolveJSONSchema(additionalProperties, options),
-    };
+    }];
   }
 
   // https://json-schema.org/understanding-json-schema/reference/object.html#size
-  // tslint:disable:no-unused-expression-chai
-  _.isNumber(schema.minProperties) && (joiSchema.min = schema.minProperties);
-  _.isNumber(schema.maxProperties) && (joiSchema.max = schema.maxProperties);
-  // tslint:enable:no-unused-expression-chai
+  const minProperties = schema.minProperties;
+  const maxProperties = schema.maxProperties;
 
-  // TODO: Dependencies
-  //   https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
+  if (minProperties !== undefined) {
+    if (minProperties === maxProperties) {
+      joiSchema.length = minProperties;
+    } else {
+      joiSchema.min = minProperties;
+    }
+  }
 
-  // TODO: Pattern Properties
+  if (maxProperties !== undefined) {
+    if (minProperties === maxProperties) {
+      joiSchema.length = maxProperties;
+    } else {
+      joiSchema.max = maxProperties;
+    }
+  }
+
+  // https://json-schema.org/understanding-json-schema/reference/object.html#dependencies
+  if (schema.dependencies) {
+    _.forIn(schema.dependencies, (dependency, key) => {
+      if (_.isArray(dependency)) {
+        if (!joiSchema.with) {
+          joiSchema.with = {};
+        }
+        joiSchema.with[key] = dependency;
+      } else {
+        if (dependency.required && _.isArray(dependency.required)) {
+          if (!joiSchema.with) {
+            joiSchema.with = {};
+          }
+          joiSchema.with[key] = dependency.required;
+        }
+        if (dependency.properties) {
+          dependency.required = undefined;
+          const extraProperties = resolveProperties(dependency, options);
+          joiSchema.keys = _.assign(joiSchema.keys, extraProperties);
+        }
+      }
+    });
+  }
+
   //   https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties
+  if (schema.patternProperties) {
+    joiSchema.patterns = [];
+    const pattern = joiSchema.patterns;
+    _.forIn(schema.patternProperties, (patternProperty, key) => {
+      pattern.push({
+        targetPattern: key,
+        schema: resolveJSONSchema(patternProperty),
+      });
+    });
+  }
   return joiSchema;
 }
 
@@ -109,30 +153,43 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
     ]);
   }
 
-  if (schema.max !== undefined) {
-    content.push(`.max(${schema.max})`);
-  }
   if (schema.min !== undefined) {
     content.push(`.min(${schema.min})`);
   }
 
-  if (schema.pattern) {
-    const pattern = schema.pattern.pattern;
-    const subSchema = schema.pattern.schema;
-    content.push(...[
-      '.pattern',
-      JoiSpecialChar.OPEN_PAREN,
-    ]);
-    if (typeof pattern === 'string') {
-      content.push('/' + pattern + '/');
-    } else {
-      content.push(...generateJoi(pattern));
-    }
-    content.push(JoiSpecialChar.COMMA);
+  if (schema.max !== undefined) {
+    content.push(`.max(${schema.max})`);
+  }
 
-    content.push(...generateAnyJoi(subSchema));
+  if (schema.length !== undefined) {
+    content.push(`.length(${schema.length})`);
+  }
 
-    content.push(JoiSpecialChar.CLOSE_PAREN);
+  if (schema.with) {
+    _.forIn(schema.with, (peers, key) => {
+      content.push(`.with('${key}', ['${peers.join(',')}'])`);
+    });
+  }
+
+  if (schema.patterns) {
+    schema.patterns.forEach((pattern) => {
+      const target = pattern.targetPattern;
+      const subSchema = pattern.schema;
+      content.push(...[
+        '.pattern',
+        JoiSpecialChar.OPEN_PAREN,
+      ]);
+      if (typeof target === 'string') {
+        content.push('/' + pattern + '/');
+      } else {
+        content.push(...generateJoi(target));
+      }
+      content.push(JoiSpecialChar.COMMA);
+
+      content.push(...generateAnyJoi(subSchema));
+
+      content.push(JoiSpecialChar.CLOSE_PAREN);
+    });
   }
 
   content.push(...generateAnyJoi(schema));

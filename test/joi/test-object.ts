@@ -19,7 +19,9 @@ const testItems: TestItem[] = [
         address: { type: 'string' },
         telephone: { type: 'any' }
       },
-      required: ['name', 'email']
+      required: ['name', 'email'],
+      minProperties: 2,
+      maxProperties: 3,
     },
     targetJoiSchema: {
       type: 'object',
@@ -39,6 +41,8 @@ const testItems: TestItem[] = [
           type: 'any',
         },
       },
+      min: 2,
+      max: 3,
       unknown: true,
     },
     targetJoiString:
@@ -47,7 +51,7 @@ const testItems: TestItem[] = [
       '  email: Joi.string().required(),\n' +
       '  address: Joi.string(),\n' +
       '  telephone: Joi.any(),\n' +
-      '}).unknown()',
+      '}).min(2).max(3).unknown()',
   },
   {
     title: 'properties, additionalProperties = false',
@@ -59,6 +63,8 @@ const testItems: TestItem[] = [
         telephone: { type: 'string' }
       },
       required: ['name', 'email'],
+      minProperties: 3,
+      maxProperties: 3,
       additionalProperties: false,
     },
     targetJoiSchema: {
@@ -79,6 +85,7 @@ const testItems: TestItem[] = [
           type: 'string',
         },
       },
+      length: 3,
       unknown: false,
     },
     targetJoiString:
@@ -87,7 +94,7 @@ const testItems: TestItem[] = [
       '  email: Joi.string().required(),\n' +
       '  address: Joi.string(),\n' +
       '  telephone: Joi.string(),\n' +
-      '}).unknown(false)',
+      '}).length(3).unknown(false)',
   },
   {
     title: 'properties, additionalProperties = true',
@@ -186,6 +193,126 @@ const testItems: TestItem[] = [
       '  name: Joi.any().required(),\n' +
       '  email: Joi.any().required(),\n' +
       '}).unknown()',
+  },
+  {
+    title: 'property dependencies',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        credit_card: { type: 'number' },
+        billing_address: { type: 'string' }
+      },
+      required: ['name'],
+      dependencies: {
+        credit_card: ['billing_address']
+      }
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        name: {
+          type: 'string',
+          required: true,
+        },
+        credit_card: {
+          type: 'number',
+        },
+        billing_address: { type: 'string' },
+      },
+      with: {
+        credit_card: ['billing_address'],
+      },
+      unknown: true,
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  name: Joi.string().required(),\n' +
+      '  credit_card: Joi.number(),\n' +
+      '  billing_address: Joi.string(),\n' +
+      '}).with(\'credit_card\', [\'billing_address\']).unknown()',
+  },
+  {
+    title: 'schema dependencies',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        credit_card: { type: 'number' },
+      },
+      required: ['name'],
+      dependencies: {
+        credit_card: {
+          properties: {
+            billing_address: { type: 'string' }
+          },
+          required: ['billing_address']
+        }
+      }
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        name: {
+          type: 'string',
+          required: true,
+        },
+        credit_card: {
+          type: 'number',
+        },
+        billing_address: { type: 'string' },
+      },
+      with: {
+        credit_card: ['billing_address'],
+      },
+      unknown: true,
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  name: Joi.string().required(),\n' +
+      '  credit_card: Joi.number(),\n' +
+      '  billing_address: Joi.string(),\n' +
+      '}).with(\'credit_card\', [\'billing_address\']).unknown()',
+  },
+  {
+    title: 'schema dependencies',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        credit_card: { type: 'number' },
+        billing_address: { type: 'string' },
+      },
+      required: ['name'],
+      dependencies: {
+        credit_card: {
+          required: ['billing_address']
+        }
+      }
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        name: {
+          type: 'string',
+          required: true,
+        },
+        credit_card: {
+          type: 'number',
+        },
+        billing_address: { type: 'string' },
+      },
+      with: {
+        credit_card: ['billing_address'],
+      },
+      unknown: true,
+    },
+    targetJoiString:
+      'Joi.object().keys({\n' +
+      '  name: Joi.string().required(),\n' +
+      '  credit_card: Joi.number(),\n' +
+      '  billing_address: Joi.string(),\n' +
+      '}).with(\'credit_card\', [\'billing_address\']).unknown()',
   },
 ];
 

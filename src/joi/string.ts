@@ -35,11 +35,7 @@ export function generateBinaryJoi(schema: JoiBinary): JoiStatement[] {
 
 export function resolveJoiStringSchema(schema: JSONSchema4): JoiString | JoiAny {
   const joiSchema = createJoiItem('string') as JoiString;
-  if (schema.enum) {
-    joiSchema.valid = schema.enum;
-    joiSchema.type = 'any';
-    return joiSchema;
-  }
+
   // https://json-schema.org/understanding-json-schema/reference/string.html#format
   switch (schema.format) {
     case 'date':

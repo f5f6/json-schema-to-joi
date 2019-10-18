@@ -12,8 +12,8 @@
   "scripts": {
     "format": "tsfmt -r",
     "clean": "rm -rf dist build",
-    "compile": "yarn clean && yarn format && tsc && yarn lint",
-    "build": "yarn compile && yarn test && yarn _copylib",
+    "compile": "yarn clean && yarn format && yarn lint --short && tsc",
+    "build": "yarn test && yarn _copylib",
     "test": "scripty",
     "lint": "scripty",
     "_copylib": "mkdir -p dist && cp -R build/src/* dist/",
@@ -25,6 +25,7 @@
     "@types/bunyan": "^1.8.5",
     "@types/chai": "^4.1.7",
     "@types/cli-color": "0.3.29",
+    "@types/hapi__joi": "16.0.1",
     "@types/json-schema": "^7.0.1",
     "@types/lodash": "^4.14.120",
     "@types/minimist": "1.2.0",
@@ -36,6 +37,7 @@
     "mocha": "^5.2.0",
     "scripty": "^1.9.0",
     "source-map-support": "^0.5.10",
+    "tsc-watch": "4.0.0",
     "tslint": "^5.12.1",
     "tslint-consistent-codestyle": "^1.15.0",
     "tslint-eslint-rules": "^5.4.0",
@@ -47,11 +49,12 @@
     "typescript-formatter": "^7.2.2"
   },
   "dependencies": {
+    "@hapi/joi": "16.1.7",
+    "bunyan": "1.8.12",
     "cli-color": "1.4.0",
     "lodash": "^4.17.11",
     "minimist": "1.2.0",
     "mz": "2.7.0",
-    "stdin": "0.0.1",
-    "bunyan": "1.8.12"
+    "stdin": "0.0.1"
   }
 }

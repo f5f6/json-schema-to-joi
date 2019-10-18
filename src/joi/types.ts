@@ -68,16 +68,18 @@ export interface JoiObject extends JoiAny {
   min?: number;
   max?: number;
   length?: number;
-  pattern?: {
-    pattern: JoiSchema | string;
+  patterns?: Array<{
+    targetPattern: JoiSchema | string;
     schema: JoiSchema;
-  };
+  }>;
   and?: string[];
   nand?: string[];
   or?: string[];
   xor?: string[];
   oxor?: string[];
-  with?: string[];
+  with?: {
+    [key: string]: string[];
+  };
   without?: string[];
   unknown?: boolean;
 }
@@ -86,6 +88,8 @@ export interface JoiAlternatives extends JoiAny {
   alternatives?: JoiSchema[];
   anyOf?: JoiSchema[];
   not?: JoiSchema;
+  oneOf?: JoiSchema[];
+  allOf?: JoiSchema[];
 }
 
 export interface JoiBinary extends JoiAny {

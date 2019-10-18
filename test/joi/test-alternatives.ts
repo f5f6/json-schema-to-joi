@@ -48,7 +48,53 @@ const testItems: TestItem[] = [
       }],
     },
     targetJoiString: '' +
-      'Joi.alternatives().try(\n' +
+      'Joi.alternatives().mode(\'any\').try(\n' +
+      '  Joi.string(),\n' +
+      '  Joi.number(),\n' +
+      ')',
+  },
+  {
+    title: 'oneOf',
+    schema: {
+      oneOf: [{
+        type: 'string',
+      }, {
+        type: 'number',
+      }]
+    },
+    targetJoiSchema: {
+      type: 'alternatives',
+      oneOf: [{
+        type: 'string',
+      }, {
+        type: 'number',
+      }],
+    },
+    targetJoiString: '' +
+      'Joi.alternatives().mode(\'one\').try(\n' +
+      '  Joi.string(),\n' +
+      '  Joi.number(),\n' +
+      ')',
+  },
+  {
+    title: 'allOf',
+    schema: {
+      allOf: [{
+        type: 'string',
+      }, {
+        type: 'number',
+      }]
+    },
+    targetJoiSchema: {
+      type: 'alternatives',
+      allOf: [{
+        type: 'string',
+      }, {
+        type: 'number',
+      }],
+    },
+    targetJoiString: '' +
+      'Joi.alternatives().mode(\'all\').try(\n' +
       '  Joi.string(),\n' +
       '  Joi.number(),\n' +
       ')',

@@ -12,10 +12,6 @@ export function resolveJoiNumberSchema(schema: JSONSchema4): JoiNumber {
     joiSchema.integer = true;
   }
 
-  if (schema.enum) {
-    joiSchema.valid = schema.enum;
-  }
-
   // https://json-schema.org/understanding-json-schema/reference/numeric.html#range
   // tslint:disable:no-unused-expression-chai
   _.isNumber(schema.minimum) && (joiSchema.min = schema.minimum);
@@ -40,6 +36,10 @@ export function generateNumberJoi(schema: JoiNumber): JoiStatement[] {
     content.push(`.less(${schema.max})`);
   } else if (schema.max !== undefined) {
     content.push(`.max(${schema.max})`);
+  }
+
+  if (schema.multiple !== undefined) {
+    content.push(`.multiple(${schema.multiple})`);
   }
 
   content.push(...generateAnyJoi(schema));
