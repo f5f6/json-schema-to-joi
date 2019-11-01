@@ -74,9 +74,10 @@
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_joi_alternatives_.html#generatealternativesjoi" class="tsd-kind-icon">generate<wbr>Alternatives<wbr>Joi</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_alternatives_.html#generateanyof" class="tsd-kind-icon">generate<wbr>Any<wbr>Of</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_alternatives_.html#generatecombineschema" class="tsd-kind-icon">generate<wbr>Combine<wbr>Schema</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_alternatives_.html#generatenot" class="tsd-kind-icon">generate<wbr>Not</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_alternatives_.html#resolveanyof" class="tsd-kind-icon">resolve<wbr>Any<wbr>Of</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_alternatives_.html#resolvecombiningschemas" class="tsd-kind-icon">resolve<wbr>Combining<wbr>Schemas</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_joi_alternatives_.html#resolvejoialternativesschema" class="tsd-kind-icon">resolve<wbr>Joi<wbr>Alternatives<wbr>Schema</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_alternatives_.html#resolvenot" class="tsd-kind-icon">resolve<wbr>Not</a></li>
 							</ul>
@@ -96,7 +97,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/97288b1/src/joi/alternatives.ts#L80">joi/alternatives.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/5004457/src/joi/alternatives.ts#L125">joi/alternatives.ts:125</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -110,22 +111,25 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="generateanyof" class="tsd-anchor"></a>
-					<h3>generate<wbr>Any<wbr>Of</h3>
+					<a name="generatecombineschema" class="tsd-anchor"></a>
+					<h3>generate<wbr>Combine<wbr>Schema</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">generate<wbr>Any<wbr>Of<span class="tsd-signature-symbol">(</span>anyOf<span class="tsd-signature-symbol">: </span><a href="../interfaces/_joi_types_.joiany.html" class="tsd-signature-type">JoiAny</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_joi_generate_.html#joistatement" class="tsd-signature-type">JoiStatement</a><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>Combine<wbr>Schema<span class="tsd-signature-symbol">(</span>schemas<span class="tsd-signature-symbol">: </span><a href="../interfaces/_joi_types_.joiany.html" class="tsd-signature-type">JoiAny</a><span class="tsd-signature-symbol">[]</span>, mode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"all"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"one"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"any"</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_joi_generate_.html#joistatement" class="tsd-signature-type">JoiStatement</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/97288b1/src/joi/alternatives.ts#L58">joi/alternatives.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/5004457/src/joi/alternatives.ts#L93">joi/alternatives.ts:93</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>anyOf: <a href="../interfaces/_joi_types_.joiany.html" class="tsd-signature-type">JoiAny</a><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>schemas: <a href="../interfaces/_joi_types_.joiany.html" class="tsd-signature-type">JoiAny</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>mode: <span class="tsd-signature-type">"all"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"one"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"any"</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_joi_generate_.html#joistatement" class="tsd-signature-type">JoiStatement</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -142,7 +146,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/97288b1/src/joi/alternatives.ts#L34">joi/alternatives.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/5004457/src/joi/alternatives.ts#L61">joi/alternatives.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -165,13 +169,42 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/97288b1/src/joi/alternatives.ts#L8">joi/alternatives.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/5004457/src/joi/alternatives.ts#L27">joi/alternatives.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>schemas: <span class="tsd-signature-type">JSONSchema4</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/_joi_options_.options.html" class="tsd-signature-type">Options</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_joi_types_.joialternatives.html" class="tsd-signature-type">JoiAlternatives</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="resolvecombiningschemas" class="tsd-anchor"></a>
+					<h3>resolve<wbr>Combining<wbr>Schemas</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Combining<wbr>Schemas<span class="tsd-signature-symbol">(</span>schemas<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchema4</span><span class="tsd-signature-symbol">[]</span>, mode<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">"any"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"all"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"one"</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_joi_options_.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_joi_types_.joialternatives.html" class="tsd-signature-type">JoiAlternatives</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/5004457/src/joi/alternatives.ts#L8">joi/alternatives.ts:8</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>schemas: <span class="tsd-signature-type">JSONSchema4</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> mode: <span class="tsd-signature-type">"any"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"all"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"one"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;any&quot;</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/_joi_options_.options.html" class="tsd-signature-type">Options</a></h5>
@@ -191,7 +224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/97288b1/src/joi/alternatives.ts#L22">joi/alternatives.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/5004457/src/joi/alternatives.ts#L35">joi/alternatives.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -217,7 +250,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/97288b1/src/joi/alternatives.ts#L16">joi/alternatives.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/5004457/src/joi/alternatives.ts#L21">joi/alternatives.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -243,6 +276,12 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_common_logger_.html">"common/logger"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_extendedjoi_allof_.html">"extended<wbr>Joi/all<wbr>Of"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_extendedjoi_oneof_.html">"extended<wbr>Joi/one<wbr>Of"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_joi_allof_.html">"joi/all<wbr>Of"</a>
@@ -300,13 +339,16 @@
 						<a href="_joi_alternatives_.html#generatealternativesjoi" class="tsd-kind-icon">generate<wbr>Alternatives<wbr>Joi</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_joi_alternatives_.html#generateanyof" class="tsd-kind-icon">generate<wbr>Any<wbr>Of</a>
+						<a href="_joi_alternatives_.html#generatecombineschema" class="tsd-kind-icon">generate<wbr>Combine<wbr>Schema</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_joi_alternatives_.html#generatenot" class="tsd-kind-icon">generate<wbr>Not</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_joi_alternatives_.html#resolveanyof" class="tsd-kind-icon">resolve<wbr>Any<wbr>Of</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_joi_alternatives_.html#resolvecombiningschemas" class="tsd-kind-icon">resolve<wbr>Combining<wbr>Schemas</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_joi_alternatives_.html#resolvejoialternativesschema" class="tsd-kind-icon">resolve<wbr>Joi<wbr>Alternatives<wbr>Schema</a>
