@@ -1,7 +1,7 @@
 import { JoiNumber, createJoiItem } from './types';
 // tslint:disable-next-line:no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { generateAnyJoi, JoiStatement, openJoi, closeJoi } from './generate';
+import { generateAnyJoi, JoiStatement, openJoi, closeJoi, JoiSpecialChar } from './generate';
 import * as _ from 'lodash';
 
 export function resolveJoiNumberSchema(schema: JSONSchema4): JoiNumber {
@@ -25,7 +25,10 @@ export function resolveJoiNumberSchema(schema: JSONSchema4): JoiNumber {
 }
 
 export function generateNumberJoi(schema: JoiNumber): JoiStatement[] {
-  const content = openJoi(['Joi.number()']);
+  const content = openJoi([
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'number()'
+  ]);
   if (schema.greater !== undefined) {
     content.push(`.greater(${schema.min})`);
   } else if (schema.min !== undefined) {

@@ -1,14 +1,8 @@
 // tslint:disable-next-line:no-implicit-dependencies
-import { JSONSchema4 } from 'json-schema';
 import { resolveJoiNumberSchema, generateNumberJoi } from '../../src/joi/number';
 import { createLogger, TestItem, runTest } from './common';
 
 const logger = createLogger('test-number');
-
-// tslint:disable-next-line:naming-convention
-const numberJSONSchemaTemplate: JSONSchema4 = {
-  type: 'number',
-};
 
 const testItems: TestItem[] = [{
   title: 'integer',
@@ -52,7 +46,6 @@ const testItems: TestItem[] = [{
 }, {
   title: 'multiple',
   schema: {
-    type: 'number',
     multipleOf: 10,
   },
   targetJoiSchema: {
@@ -98,11 +91,9 @@ const testItems: TestItem[] = [{
   }, {
     target: 101, valid: false,
   }]
-},
-{
-  title: 'greater max',
+}, {
+  title: 'range: greater max',
   schema: {
-    type: 'number',
     minimum: 0,
     maximum: 100,
     exclusiveMinimum: true,
@@ -131,5 +122,5 @@ const testItems: TestItem[] = [{
 ];
 
 describe('joi number', () => {
-  runTest(testItems, numberJSONSchemaTemplate, resolveJoiNumberSchema, generateNumberJoi, logger);
+  runTest(testItems, resolveJoiNumberSchema, generateNumberJoi, logger);
 });

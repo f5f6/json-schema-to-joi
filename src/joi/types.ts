@@ -3,7 +3,7 @@ export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
 
 export type JoiSchema =
   JoiAny | JoiArray | JoiDate | JoiNumber |
-  JoiObject | JoiString | JoiAlternatives | JoiBinary;
+  JoiObject | JoiString | JoiAlternatives;
 
 export interface JoiBase {
   type: JoiType;
@@ -90,11 +90,6 @@ export interface JoiAlternatives extends JoiAny {
   not?: JoiSchema;
   oneOf?: JoiSchema[];
   allOf?: JoiSchema[];
-}
-
-export interface JoiBinary extends JoiAny {
-  min?: number;
-  max?: number;
 }
 
 export interface JoiString extends JoiAny {

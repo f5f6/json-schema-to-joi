@@ -54,11 +54,6 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
   }
   if (typeof additionalProperties === 'boolean') {
     joiSchema.unknown = additionalProperties;
-  } else {
-    joiSchema.patterns = [{
-      targetPattern: '^',
-      schema: resolveJSONSchema(additionalProperties, options),
-    }];
   }
 
   // https://json-schema.org/understanding-json-schema/reference/object.html#size
@@ -97,8 +92,9 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
           joiSchema.with[key] = dependency.required;
         }
         if (dependency.properties) {
-          dependency.required = undefined;
-          const extraProperties = resolveProperties(dependency, options);
+          const extraDependency = _.clone(dependency);
+          extraDependency.required = undefined;
+          const extraProperties = resolveProperties(extraDependency, options);
           joiSchema.keys = _.assign(joiSchema.keys, extraProperties);
         }
       }
@@ -107,7 +103,9 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
 
   //   https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties
   if (schema.patternProperties) {
-    joiSchema.patterns = [];
+    if (!joiSchema.patterns) {
+      joiSchema.patterns = [];
+    }
     const pattern = joiSchema.patterns;
     _.forIn(schema.patternProperties, (patternProperty, key) => {
       pattern.push({
@@ -116,16 +114,30 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): 
       });
     });
   }
+
+  if (typeof schema.additionalProperties !== 'boolean' && schema.additionalProperties) {
+    if (!joiSchema.patterns) {
+      joiSchema.patterns = [];
+    }
+    joiSchema.patterns.push({
+      targetPattern: '^',
+      schema: resolveJSONSchema(schema.additionalProperties, options),
+    });
+  }
+
   return joiSchema;
 }
 
 export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
-  const content: JoiStatement[] = openJoi(['Joi.object()']);
+  const content: JoiStatement[] = openJoi([
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'object()'
+  ]);
 
   const keys = schema.keys;
 
   if (keys) {
-    const keyWithQuota = _.keys(keys).some((v) => {
+    const keyWithQuota = _.keys(keys).some((v: string) => {
       return v.includes('-') || v.includes(' ');
     });
     content.push(...[
@@ -180,13 +192,13 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
         JoiSpecialChar.OPEN_PAREN,
       ]);
       if (typeof target === 'string') {
-        content.push('/' + pattern + '/');
+        content.push('/' + target + '/');
       } else {
         content.push(...generateJoi(target));
       }
       content.push(JoiSpecialChar.COMMA);
 
-      content.push(...generateAnyJoi(subSchema));
+      content.push(...generateJoi(subSchema));
 
       content.push(JoiSpecialChar.CLOSE_PAREN);
     });

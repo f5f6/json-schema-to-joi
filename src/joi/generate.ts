@@ -1,13 +1,15 @@
 import {
-  JoiSchema, JoiString, JoiAny, JoiNumber, JoiBinary, JoiObject, JoiBoolean, JoiArray,
+  JoiSchema, JoiString, JoiAny, JoiNumber, JoiObject, JoiBoolean, JoiArray, JoiOneOf, JoiAllOf,
 } from './types';
 import * as _ from 'lodash';
-import { generateStringJoi, generateBinaryJoi } from './string';
+import { generateStringJoi } from './string';
 import { generateNumberJoi } from './number';
 import { generateObjectJoi } from './object';
 import { generateBooleanJoi } from './boolean';
 import { generateArrayJoi } from './array';
 import { generateAlternativesJoi } from './alternatives';
+import { generateOneOfJoi } from './oneOf';
+import { generateAllOfJoi } from './allOf';
 
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
@@ -23,6 +25,8 @@ export const enum JoiSpecialChar {
   COMMA = 88,
   COLON = 99,
   NEWLINE = 100,
+  IMPORTED_JOI_NAME = 200,
+  IMPORTED_EXTENDED_JOI_NAME,
 }
 
 export const OPEN = [JoiSpecialChar.OPEN_BRACE, JoiSpecialChar.OPEN_BRACKET, JoiSpecialChar.OPEN_PAREN];
@@ -55,9 +59,6 @@ export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiS
     case 'number':
       content.push(...generateNumberJoi(schema as JoiNumber));
       break;
-    case 'binary':
-      content.push(...generateBinaryJoi(schema as JoiBinary));
-      break;
     case 'boolean':
       content.push(...generateBooleanJoi(schema as JoiBoolean));
       break;
@@ -66,6 +67,12 @@ export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiS
       break;
     case 'array':
       content.push(...generateArrayJoi(schema as JoiArray));
+      break;
+    case 'oneOf':
+      content.push(...generateOneOfJoi(schema as JoiOneOf));
+      break;
+    case 'allOf':
+      content.push(...generateAllOfJoi(schema as JoiAllOf));
       break;
     case 'any':
     default:
@@ -77,19 +84,19 @@ export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiS
 
 export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
   let content: JoiStatement[]
-    = (schema.type === 'any') ? openJoi(['Joi.any()']) : [];
+    = (schema.type === 'any') ? openJoi([JoiSpecialChar.IMPORTED_JOI_NAME, 'any()']) : [];
   if (schema.allow) {
-    content.push(`.allow(${JSON.stringify(schema.allow)})`);
+    content.push(`.allow(...${JSON.stringify(schema.allow)})`);
   }
   if (schema.valid) {
-    content.push(`.valid(${JSON.stringify(schema.valid)})`);
+    content.push(`.valid(...${JSON.stringify(schema.valid)})`);
   }
   if (schema.invalid) {
-    content.push(`.invalid(${JSON.stringify(schema.invalid)})`);
+    content.push(`.invalid(...${JSON.stringify(schema.invalid)})`);
   }
 
   if (schema.default) {
-    content.push(`.default(${JSON.stringify(schema.default)})`);
+    content.push(`.default(...${JSON.stringify(schema.default)})`);
   }
 
   content = generateBooleanKeys(schema, content);

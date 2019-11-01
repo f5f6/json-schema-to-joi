@@ -24,43 +24,65 @@ function resolveNot(schema: JSONSchema4, options?: Options): JoiAlternatives {
   return joiSchema;
 }
 
+function resolveAnyOf(schemas: JSONSchema4[], options?: Options): JoiAlternatives {
+  const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
+  joiSchema.anyOf = schemas.map((v) => {
+    return resolveJSONSchema(v, options);
+  });
+  return joiSchema;
+}
+
 export function resolveJoiAlternativesSchema(schema: JSONSchema4, options?: Options): JoiAlternatives {
   if (schema.not) {
     return resolveNot(schema.not, options);
   }
 
-  if (schema.anyOf) {
-    return resolveCombiningSchemas(schema.anyOf, 'any', options);
-  }
+  if (options && options.useDeprecatedJoi && options.useExtendedJoi) {
+    if (schema.anyOf) {
+      return resolveAnyOf(schema.anyOf, options);
+    }
+  } else {
+    if (schema.anyOf) {
+      return resolveCombiningSchemas(schema.anyOf, 'any', options);
+    }
 
-  if (schema.allOf) {
-    return resolveCombiningSchemas(schema.allOf, 'all', options);
-  }
+    if (schema.allOf) {
+      return resolveCombiningSchemas(schema.allOf, 'all', options);
+    }
 
-  if (schema.oneOf) {
-    return resolveCombiningSchemas(schema.oneOf, 'one', options);
+    if (schema.oneOf) {
+      return resolveCombiningSchemas(schema.oneOf, 'one', options);
+    }
   }
 
   return createJoiItem('alternatives') as JoiAlternatives;
 }
 
 function generateNot(not: JoiAny): JoiStatement[] {
-  const content: JoiStatement[] = openJoi(['Joi.alternatives()']);
+  const content: JoiStatement[] = openJoi([
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'any()',
+  ]);
   content.push(...[
     '.when',
     JoiSpecialChar.OPEN_PAREN,
     JoiSpecialChar.NEWLINE,
-    'Joi.alternatives().try',
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'alternatives().try',
     JoiSpecialChar.OPEN_PAREN,
     ...generateJoi(not),
     JoiSpecialChar.CLOSE_PAREN,
     JoiSpecialChar.COMMA,
     JoiSpecialChar.OPEN_BRACE,
     JoiSpecialChar.NEWLINE,
-    'then: Joi.any().forbidden()',
+    'then: ',
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'any().forbidden()',
     JoiSpecialChar.COMMA,
     JoiSpecialChar.NEWLINE,
-    'otherwise: Joi.any(),',
+    'otherwise: ',
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'any(),',
     JoiSpecialChar.NEWLINE,
     JoiSpecialChar.CLOSE_BRACE,
     JoiSpecialChar.CLOSE_PAREN,
@@ -69,9 +91,18 @@ function generateNot(not: JoiAny): JoiStatement[] {
 }
 
 function generateCombineSchema(schemas: JoiAny[], mode: 'all' | 'one' | 'any'): JoiStatement[] {
-  const content: JoiStatement[] = openJoi(['Joi.alternatives()']);
+  const content: JoiStatement[] = openJoi([
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'alternatives()'
+  ]);
+
+  if (mode !== 'any') {
+    content.push(...[
+      `.match('${mode}')`,
+    ]);
+  }
+
   content.push(...[
-    `.mode('${mode}')`,
     '.try',
     JoiSpecialChar.OPEN_PAREN,
   ]);
@@ -108,6 +139,9 @@ export function generateAlternativesJoi(schema: JoiAlternatives): JoiStatement[]
     return generateCombineSchema(schema.oneOf, 'one');
   }
 
-  const content: JoiStatement[] = openJoi(['Joi.alternatives()']);
+  const content: JoiStatement[] = openJoi([
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'alternatives()'
+  ]);
   return closeJoi(content);
 }

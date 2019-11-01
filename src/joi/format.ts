@@ -5,6 +5,11 @@ const logger = createLogger('format');
 
 let level = 0;
 
+export interface Options {
+  importedJoiName?: string;
+  importedExtendedJoiName?: string;
+}
+
 function processLevelSpecialChar(statements: JoiStatement[], i: number): string {
   const char = statements[i];
   const nextChar = statements[i + 1];
@@ -63,11 +68,14 @@ function processLevelSpecialChar(statements: JoiStatement[], i: number): string 
   return head + ret;
 }
 
-export function formatJoi(statements: JoiStatement[]): string {
+export function formatJoi(statements: JoiStatement[], options?: Options): string {
   let title;
   let result = '';
   let titleSector = false;
   level = 0;
+
+  const importedJoiName = (options ? options.importedJoiName : 'Joi') || 'Joi';
+  const importedExtendedJoiName = (options ? options.importedExtendedJoiName : 'extendedJoi') || 'extendedJoi';
 
   statements.forEach((statement, i, all) => {
     if (typeof statement === 'string') {
@@ -114,9 +122,17 @@ export function formatJoi(statements: JoiStatement[]): string {
         case JoiSpecialChar.NEWLINE:
           result += '\n';
           if (level > 0 &&
-            (typeof (nextChar) === 'string' || nextChar === JoiSpecialChar.OPEN_JOI)) {
+            (typeof (nextChar) === 'string'
+              || nextChar === JoiSpecialChar.OPEN_JOI
+              || nextChar === JoiSpecialChar.IMPORTED_JOI_NAME)) {
             result += '  '.repeat(level);
           }
+          break;
+        case JoiSpecialChar.IMPORTED_JOI_NAME:
+          result += importedJoiName + '.';
+          break;
+        case JoiSpecialChar.IMPORTED_EXTENDED_JOI_NAME:
+          result += importedExtendedJoiName + '.';
           break;
       }
     }

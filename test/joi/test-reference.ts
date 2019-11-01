@@ -28,6 +28,11 @@ const testItems: TestItem[] = [
   {
     title: 'ref',
     schema: {
+      type: 'object',
+      properties: {
+        billing_address: { $ref: 'root#/definitions/address' },
+        shipping_address: { $ref: 'root#/definitions/address' }
+      }
     },
     targetJoiSchema: {
       type: 'object',
@@ -37,14 +42,20 @@ const testItems: TestItem[] = [
           keys: {
             street_address: {
               type: 'string',
+              min: 0,
+              allow: [''],
               required: true
             },
             city: {
               type: 'string',
+              min: 0,
+              allow: [''],
               required: true
             },
             state: {
               type: 'string',
+              min: 0,
+              allow: [''],
               required: true
             }
           },
@@ -55,14 +66,20 @@ const testItems: TestItem[] = [
           keys: {
             street_address: {
               type: 'string',
+              min: 0,
+              allow: [''],
               required: true
             },
             city: {
               type: 'string',
+              min: 0,
+              allow: [''],
               required: true
             },
             state: {
               type: 'string',
+              min: 0,
+              allow: [''],
               required: true
             }
           },
@@ -74,29 +91,22 @@ const testItems: TestItem[] = [
     targetJoiString: '' +
       'Joi.object().keys({\n' +
       '  billing_address: Joi.object().keys({\n' +
-      '    street_address: Joi.string().required(),\n' +
-      '    city: Joi.string().required(),\n' +
-      '    state: Joi.string().required(),\n' +
+      '    street_address: Joi.string().min(0).allow(...[\'\']).required(),\n' +
+      '    city: Joi.string().min(0).allow(...[\'\']).required(),\n' +
+      '    state: Joi.string().min(0).allow(...[\'\']).required(),\n' +
       '  }).unknown(),\n' +
       '  shipping_address: Joi.object().keys({\n' +
-      '    street_address: Joi.string().required(),\n' +
-      '    city: Joi.string().required(),\n' +
-      '    state: Joi.string().required(),\n' +
+      '    street_address: Joi.string().min(0).allow(...[\'\']).required(),\n' +
+      '    city: Joi.string().min(0).allow(...[\'\']).required(),\n' +
+      '    state: Joi.string().min(0).allow(...[\'\']).required(),\n' +
       '  }).unknown(),\n' +
       '}).unknown()',
   },
 ];
 
-// tslint:disable-next-line: naming-convention
-const referenceJSONSchemaTemplate: JSONSchema4 = {
-  type: 'object',
-  properties: {
-    billing_address: { $ref: 'root#/definitions/address' },
-    shipping_address: { $ref: 'root#/definitions/address' }
-  }
-};
-
 describe('test reference', () => {
-  runTest(testItems, referenceJSONSchemaTemplate, resolveJSONSchema, generateJoi, logger, { rootSchema, });
-  runTest(testItems, referenceJSONSchemaTemplate, resolveJSONSchema, generateJoi, logger, { subSchemas, });
+  runTest(testItems, resolveJSONSchema, generateJoi, logger, { rootSchema, });
+  runTest(testItems, resolveJSONSchema, generateJoi, logger, { subSchemas, });
+  runTest(testItems, resolveJSONSchema, generateJoi, logger, { rootSchema, useDeprecatedJoi: true, });
+  runTest(testItems, resolveJSONSchema, generateJoi, logger, { subSchemas, useDeprecatedJoi: true, });
 });

@@ -17,22 +17,20 @@ function resolveAsArray(schema: JSONSchema4 | JSONSchema4[], options?: Options):
 
 export function resolveJoiArraySchema(schema: JSONSchema4, options?: Options): JoiArray {
   const joiSchema = createJoiItem('array') as JoiArray;
+
   if (schema.items) {
     let itemsIsArray = false;
-    let itemsCount = 0;
     if (_.isArray(schema.items)) {
       itemsIsArray = true;
-      itemsCount = schema.items.length;
     }
     // https://json-schema.org/understanding-json-schema/reference/array.html#items
     const items = resolveAsArray(schema.items, options);
     if (itemsIsArray) {
       // https://json-schema.org/understanding-json-schema/reference/array.html#tuple-validation
       joiSchema.ordered = items;
-      if (schema.additionalItems === false) {
-        joiSchema.max = itemsCount;
-      } else if (schema.additionalItems !== true
-        && schema.additionalItems !== undefined) {
+      if (schema.additionalItems === true || schema.additionalItems === undefined) {
+        joiSchema.items = [{ type: 'any' }];
+      } else if (schema.additionalItems !== false) {
         joiSchema.items = [resolveJSONSchema(schema.additionalItems, options)];
       }
     } else {
@@ -51,7 +49,10 @@ export function resolveJoiArraySchema(schema: JSONSchema4, options?: Options): J
 }
 
 export function generateArrayJoi(schema: JoiArray): JoiStatement[] {
-  const content: JoiStatement[] = openJoi(['Joi.array()']);
+  const content: JoiStatement[] = openJoi([
+    JoiSpecialChar.IMPORTED_JOI_NAME,
+    'array()'
+  ]);
   if (schema.ordered) {
     content.push(...[
       '.ordered',

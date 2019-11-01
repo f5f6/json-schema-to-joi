@@ -45,6 +45,7 @@ export function resolveType(schema: JSONSchema4, options?: Options): JoiSchema {
 
   if (_.isArray(schema.type)) {
     const schemas = schema.type.map(getJoiType);
+    joiSchema.type = 'alternatives';
     (joiSchema as JoiAlternatives).alternatives = schemas;
   } else if (schema.type) {
     joiSchema = getJoiType(schema.type);
@@ -55,5 +56,10 @@ export function resolveType(schema: JSONSchema4, options?: Options): JoiSchema {
   (!!schema.description) && (joiSchema.description = schema.description);
   (!!schema.title) && (joiSchema.label = _.camelCase(schema.title));
   // tslint:enable:no-unused-expression-chai
+
+  if (schema.enum) {
+    joiSchema.valid = schema.enum;
+  }
+
   return joiSchema;
 }
