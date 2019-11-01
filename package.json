@@ -12,7 +12,7 @@
   "scripts": {
     "format": "tsfmt -r",
     "clean": "rm -rf dist build",
-    "compile": "yarn clean && yarn format && yarn lint --short && tsc",
+    "compile": "scripty",
     "build": "yarn test && yarn _copylib",
     "test": "scripty",
     "lint": "scripty",
@@ -25,7 +25,8 @@
     "@types/bunyan": "^1.8.5",
     "@types/chai": "^4.1.7",
     "@types/cli-color": "0.3.29",
-    "@types/hapi__joi": "16.0.1",
+    "@types/hapi__joi": "^16.0.1",
+    "@types/joi": "14.3.3",
     "@types/json-schema": "^7.0.1",
     "@types/lodash": "^4.14.120",
     "@types/minimist": "1.2.0",
@@ -49,9 +50,10 @@
     "typescript-formatter": "^7.2.2"
   },
   "dependencies": {
-    "@hapi/joi": "16.1.7",
+    "@hapi/joi": "^16.1.7",
     "bunyan": "1.8.12",
     "cli-color": "1.4.0",
+    "joi": "^14.3.1",
     "lodash": "^4.17.11",
     "minimist": "1.2.0",
     "mz": "2.7.0",
