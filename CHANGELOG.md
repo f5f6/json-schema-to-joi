@@ -1,14 +1,29 @@
 # Change log
 
+## 2.0.0 (2019-11-04)
+
+* Changed:
+  * Breaking change: `js2joi` uses different options.
+
+* Added:
+  * `joi`: Support `@hapi/joi` as default joi library.
+  * `joi`: Support `patternProperties` & `dependencies` of 'object' JSON Schema.
+  * `extendedJoi`:Extend `joi` to support `allOf` & `oneOf`.
+  * `joi`: Use `prettier` to generate final source code.
+  * `joi`: Support to customize `joi` library name and `extendedJoi` library name.
+
+* Fixed:
+  * `joi`: Support `string` using `min(0)` and `allow['']` by default.
+
 ## 1.1.0 (2019-08-19)
 
 * Added:
-  * json2joi: --batch support user-defined 
+  * `json2joi`: --batch support user-defined
 
 ## 1.0.0 (2019-08-09)
 
 * Changed:
-  * (Breaking) allOf, oneOf are leading with 'Joi.extendedJoi.' instead of 'Joi.'.
+  * (Breaking Change)Change: `joi`: allOf, oneOf are leading with 'Joi.extendedJoi.' instead of 'Joi.'.
 
 ## 0.8.0 (2019-08-01)
 

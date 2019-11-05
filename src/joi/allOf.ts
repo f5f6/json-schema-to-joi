@@ -2,7 +2,7 @@
 import { JSONSchema4 } from 'json-schema';
 import { createJoiItem, JoiAllOf } from './types';
 import { resolveJSONSchema } from './resolve';
-import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoi } from './generate';
+import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
 import { Options } from './options';
 import * as _ from 'lodash';
 
@@ -38,15 +38,13 @@ export function generateAllOfJoi(schema: JoiAllOf): JoiStatement[] {
   if (schema.items) {
     schema.items.forEach((item) => {
       content.push(...[
-        JoiSpecialChar.NEWLINE,
-        ...generateJoi(item),
+        ...generateJoiStatement(item),
         JoiSpecialChar.COMMA,
       ]);
     });
   }
 
   content.push(...[
-    JoiSpecialChar.NEWLINE,
     JoiSpecialChar.CLOSE_BRACKET,
     JoiSpecialChar.CLOSE_PAREN,
   ]);

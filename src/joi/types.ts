@@ -97,7 +97,7 @@ export interface JoiString extends JoiAny {
   min?: number;
   max?: number;
   length?: number;
-  regex?: string[];
+  regex?: RegExp;
   alphanum?: boolean;
   token?: boolean;
   email?: boolean;

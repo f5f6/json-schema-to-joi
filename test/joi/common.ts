@@ -1,13 +1,13 @@
 import * as _ from 'lodash';
 import * as chai from 'chai';
 import * as Joi from '@hapi/joi';
-import * as LegacyJoi from 'joi';
-import * as extendedJoi from '../../src/extendedJoi';
+import * as LJoi from 'joi';
+import * as EJoi from '../../src/extendedJoi';
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
 import { JoiSchema, JoiAny } from '../../src/joi/types';
 import { formatJoi, resolveJSONSchema } from '../../src/joi';
-import { JoiStatement, generateJoi } from '../../src/joi/generate';
+import { JoiStatement, generateJoiStatement } from '../../src/joi/generate';
 import { Logger } from '../../src/common/logger';
 import { Options } from '../../src/joi/options';
 export { Logger, createLogger } from '../../src/common/logger';
@@ -45,14 +45,14 @@ export function runTest(
       const resultJoiSchema = resolveFunc(schema, options);
       const resultJoiSchemaGlobal = resolveJSONSchema(schema, options);
       const joiStatements = genJoiFunc(resultJoiSchema);
-      const joiStatementsGlobal = generateJoi(resultJoiSchemaGlobal);
+      const joiStatementsGlobal = generateJoiStatement(resultJoiSchemaGlobal);
       let targetJoiString = item.targetJoiString;
       let importedJoiName = 'Joi';
 
       if (options && options.useDeprecatedJoi) {
-        const realJoi = options.useExtendedJoi ? 'extendedJoi.' : 'LegacyJoi.';
-        importedJoiName = realJoi.substr(0, realJoi.length - 1);
-        targetJoiString = targetJoiString.replace(/(?<![A-Za-z])Joi./g, realJoi);
+        const realJoi = options.useExtendedJoi ? 'EJoi' : 'LJoi';
+        importedJoiName = realJoi;
+        targetJoiString = targetJoiString.replace(/(?<![A-Za-z])Joi/g, realJoi);
       }
 
       const formatOption = {
@@ -73,18 +73,19 @@ export function runTest(
 
       expect(_.isEqual(item.targetJoiSchema, resultJoiSchema), 'Joi schema equal').to.be.equal(true);
       expect(_.isEqual(targetJoiString, resultJoiString), 'Joi string equal').to.be.equal(true);
-      expect(_.isEqual(resultJoiSchemaGlobal, resultJoiSchema), 'Global Joi schema equal').to.be.equal(true);
+      expect(_.isEqual(resultJoiSchemaGlobal, resultJoiSchema),
+        'Global Joi schema equal').to.be.equal(true);
       expect(_.isEqual(resultJoiStringGlobal, resultJoiString), 'Global Joi string equal').to.be.equal(true);
       if (item.joiUnitTests) {
         // tslint:disable-next-line: no-eval
-        const joiSchema: Joi.AnySchema = <Joi.AnySchema>eval(resultJoiString.replace(/\\/g, '\\\\'));
+        const joiSchema: Joi.AnySchema = <Joi.AnySchema>eval(resultJoiString);
         item.joiUnitTests.forEach((ut) => {
           const joiRet = joiSchema.validate(ut.target, { convert: false });
           logger.debug({
             joiVersion: Joi.version, // Just a trick to make sure `Joi` is in the compiled js file
             joiRet,
-            legacyJoiVersion: LegacyJoi.version,
-            extendedJoiVersion: extendedJoi.version,
+            legacyJoiVersion: LJoi.version,
+            extendedJoiVersion: EJoi.version,
           });
           if (ut.valid) {
             expect(!!joiRet.error).to.be.false;

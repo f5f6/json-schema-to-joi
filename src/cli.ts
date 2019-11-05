@@ -1,54 +1,103 @@
-#!/usr/bin/env node
-
+import * as minimist from 'minimist';
+import * as minimistOptions from 'minimist-options';
+import { packageJson } from 'mrm-core';
+import { whiteBright } from 'cli-color';
+import { fs } from 'mz';
+import { resolve, join } from 'path';
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import * as minimist from 'minimist';
-// tslint:disable-next-line: no-submodule-imports
-import { readFile, writeFile } from 'mz/fs';
-import { resolve, join } from 'path';
+import { traverseDir } from './utils';
+import { resolveJSONSchema, generateJoiStatement, formatJoi } from './joi';
 // tslint:disable-next-line: no-require-imports
 const stdin = require('stdin');
-import { generateJoi, resolveJSONSchema, formatJoi } from './joi';
-import { whiteBright } from 'cli-color';
 import * as _ from 'lodash';
-import { traverseDir } from './utils';
+import * as prettier from 'prettier';
 
-const banner = '';
+// tslint:disable: no-console
 
-const importJoi = 'import * as Joi from \'joi\';\n\n';
+// tslint:disable-next-line: naming-convention
+interface JSONSchema4Definitions {
+  [k: string]: JSONSchema4;
+}
 
-// tslint:disable-next-line: no-floating-promises
-main(minimist(process.argv.slice(2), {
-  string: ['banner', 'cwd', 'extendedJoi'],
-  alias: {
-    help: ['h'],
-    input: ['i'],
-    output: ['o'],
-    banner: ['b'],
-    cwd: ['c'],
-    extendedJoi: ['e'],
+const defaultImportStatement = 'import * as Joi from \'@hapi/joi\'';
+
+const argOptions = minimistOptions.default({
+  input: {
+    type: 'string',
+    alias: 'i',
+    default: '',
+  },
+  output: {
+    type: 'string',
+    alias: 'o',
+    default: '',
+  },
+  help: {
+    type: 'boolean',
+    default: false,
+    alias: 'h',
+  },
+  version: {
+    type: 'boolean',
+    default: false,
+    alias: 'v',
+  },
+  cwd: {
+    type: 'string',
+  },
+  importStatement: {
+    type: 'string',
+    default: defaultImportStatement,
+  },
+  useExtendedJoi: {
+    type: 'boolean',
+    default: false,
+  },
+  useDeprecatedJoi: {
+    type: 'boolean',
+    default: false,
+  },
+  title: {
+    type: 'string',
+    alias: 't',
+  },
+  batch: {
+    type: 'string',
+    alias: 'b'
+  },
+  banner: {
+    type: 'string',
   }
-}));
+});
 
-async function main(argv: minimist.ParsedArgs): Promise<void> {
-  if (argv.help) {
+async function main(): Promise<void> {
+  const args = minimist(process.argv.slice(2), argOptions);
+
+  if (args.help) {
     printHelp();
     process.exit(0);
   }
 
-  // tslint:disable: no-unsafe-any
-  const argIn: string = argv._[0] || argv.input;
-  const argOut: string = argv._[1] || argv.output;
-  const argBanner: string = argv.banner || banner;
-  const batch: string = argv.batch || 'definitions';
-  const title: string | undefined = batch ? undefined : argv.title;
-  const cwd: string | undefined = argv.cwd;
-  const extendedJoi: string = argv.extendedJoi || importJoi;
-  let all = argBanner + extendedJoi;
+  if (args.version) {
+    printVersion();
+    process.exit(0);
+  }
 
+  const banner = <string | undefined>args.banner || '';
+  const batch = <string | undefined>args.batch;
+  const title = !batch ? (<string | undefined>args.title || '') : '';
+  const cwd = <string>args.cwd;
+  const useExtendedJoi = <boolean>args.useExtendedJoi;
+  const useDeprecatedJoi = <boolean>args.useDeprecatedJoi;
+  const importStatement = <string>args.importStatement;
+  const input = <string>args.input;
+  const output = <string>args.output;
+
+  let allOutput = banner + '\n\n' + importStatement + '\n\n';
   try {
-    const schema: JSONSchema4 = JSON.parse(await readInput(argIn));
-    const subSchemas: any = {};
+    const schemas: JSONSchema4 = <JSONSchema4>JSON.parse(await readInput(input));
+    const subSchemas: JSONSchema4Definitions = {};
 
     if (cwd) {
       await traverseDir(cwd, async (fileName: string, dir: string): Promise<void> => {
@@ -58,48 +107,69 @@ async function main(argv: minimist.ParsedArgs): Promise<void> {
           if (fileId.startsWith('/')) {
             fileId = fileId.substr(1);
           }
-          subSchemas[fileId] = JSON.parse(await readInput(fullFileName));
+          subSchemas[fileId] = <JSONSchema4>JSON.parse(await readInput(fullFileName));
           return;
         }
       });
     }
-
     if (batch) {
-      const definitions = _.get(schema, batch);
+      const definitions = <JSONSchema4Definitions>_.get(schemas, batch);
       if (!definitions) {
-        throw new Error('batch but no definitions in the root of the JSON schema');
+        throw new Error(`batch mode: no ${batch} SECTION in the root of the JSON schema`);
       }
 
-      const keys = _.keys(definitions);
-
-      for (const key of keys) {
-        const itemSchema: JSONSchema4 = definitions[key];
-        if (!itemSchema.title) {
-          itemSchema.title = key;
+      _.keys(definitions).forEach((key) => {
+        const schema = definitions[key];
+        if (!schema.title) {
+          schema.title = key;
         }
-        const joiSchema = resolveJSONSchema(itemSchema, { rootSchema: schema, subSchemas, });
-        const joiStatements = generateJoi(joiSchema, true);
-        const joiString = formatJoi(joiStatements);
-        all += 'export ' + joiString + '\n\n';
-      }
+        const joiSchema = resolveJSONSchema(schema, {
+          rootSchema: schema,
+          subSchemas,
+          useExtendedJoi,
+          useDeprecatedJoi,
+        });
+        const joiStatement = generateJoiStatement(joiSchema, true);
+        const joiTypeScriptCode = formatJoi(joiStatement, {
+          importedJoiName: 'Joi', importedExtendedJoiName: 'extendedJoi'
+        });
+        allOutput += 'export ' + joiTypeScriptCode + ';\n\n';
+      });
     } else {
-      if (!schema.title && title) {
-        schema.title = title;
+      if (!schemas.title && title) {
+        schemas.title = title;
       }
-      const joiSchema = resolveJSONSchema(schema, { rootSchema: schema, subSchemas });
-      const joiStatements = generateJoi(joiSchema, true);
-      const joiString = formatJoi(joiStatements);
-      all += 'export ' + joiString + '\n\n';
+      const joiSchema = resolveJSONSchema(schemas, {
+        rootSchema: schemas,
+        subSchemas,
+        useExtendedJoi,
+        useDeprecatedJoi,
+      });
+      const joiStatement = generateJoiStatement(joiSchema, true);
+      const joiTypeScriptCode = formatJoi(joiStatement, {
+        importedJoiName: 'Joi', importedExtendedJoiName: 'extendedJoi'
+      });
+      allOutput += 'export ' + joiTypeScriptCode + '\n\n';
     }
-    await writeOutput(all, argOut);
+
+    allOutput = prettier.format(allOutput, {
+      tabWidth: 2,
+      useTabs: false,
+      singleQuote: true,
+      trailingComma: 'all',
+      semi: true,
+      parser: 'typescript',
+    });
+
+    await writeOutput(allOutput, output);
+
   } catch (e) {
-    // tslint:disable-next-line: no-console
     console.error(whiteBright.bgRedBright('error'), e);
     process.exit(1);
   }
 }
 
-function writeOutput(ts: string, argOut: string): Promise<void> {
+function writeOutput(ts: string, argOut?: string): Promise<void> {
   if (!argOut) {
     try {
       process.stdout.write(ts);
@@ -108,42 +178,59 @@ function writeOutput(ts: string, argOut: string): Promise<void> {
       return Promise.reject(err);
     }
   }
-  return writeFile(argOut, ts);
+  return fs.writeFile(argOut, ts);
 }
 
-function readInput(argIn?: string): any {
+function readInput(argIn?: string): Promise<string> {
   if (!argIn) {
+    // tslint:disable-next-line: no-unsafe-any
     return new Promise(stdin);
   }
-  return readFile(resolve(process.cwd(), argIn), 'utf-8');
+  return fs.readFile(resolve(process.cwd(), argIn), 'utf-8');
+}
+
+function printVersion(): void {
+  const pkgVersion = <string>packageJson().get('version');
+  const pkgName = <string>packageJson().get('name');
+  process.stdout.write(`${pkgName} ${pkgVersion}\n`);
 }
 
 function printHelp(): void {
-  // tslint:disable: no-require-imports
-  // tslint:disable-next-line: no-implicit-dependencies
-  const pkg = require('../package.json');
+  const pkgVersion = <string>packageJson().get('version');
+  const pkgName = <string>packageJson().get('name');
+  const helpMsg =
+    `${pkgName} ${pkgVersion}
+  Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
+          [--title] [TITLE] [--cwd] [CWD] [--joiLib] [JOILIBNAME]
+          [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
-  process.stdout.write(
-    `${pkg.name} ${pkg.version}
-Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
-        [--title] [TITLE] [--cwd] [CWD] [--extendedJoi] [EXTENDEDJOI]
-        [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
-
-optional parameters:
-
-  -h, --help                  show this help message and exit
-  --title TITLE               use TITLE as the title of the JSON schema if there is no title
-                              meaningless when batch is set
-  --cwd CWD                   use CWD as the JSON sub schema directory
-  --extendedJoi EXTENDEDJOI   use EXTENDEDJOI as the Joi import expression, "import { Joi } from 'your-extened-joi';"
-                              default: "import * as Joi from 'joi';"
-  --batch SECTION             use the SECTION of the input and generate a batch of Joi schema objects
-                              default: "definitions"
-  -b, --banner BANNER         add BANNER in the beginning
-  -i, --input IN_FILE         the input source of JSON schema
-                              if IN_FILE is absent or -, read standard input.
-  -o, --output OUT_FILE       the output source file of Joi schema
-                              if OUT_FILE is absent, write to standard output.
-`
-  );
+  optional parameters:
+    -h, --help                  Show this help message and exit.
+    --title TITLE               The title used as the Joi schema variable name
+                                if the JSON schema doesn't have a title itself.
+                                TITLE is meaningless when "--batch" option is present.
+    --cwd CWD                   CWD is used as the root directory of JSON sub schemas.
+    --importStatement IMPORT    IMPORT is the statement to import joi library.
+                                  Default: "import * as Joi from '@hapi/joi'"
+    --useExtendedJoi            If the option is true, the prog will use extended legacy joi library
+                                to support "oneOf" and "allOf" schemas.
+                                  Default: false.
+    --batch SECTION             Use the SECTION of the INPUT to generate a batch of JSON schemas.
+                                  Example:
+                                    "definitions" for standard JSON schema files.
+                                    "components.schemas" for OpenAPI 3.x files.
+    -b, --banner BANNER         Add BANNER in the beginning of the output.
+    -i, --input  INPUT          The input JSON schema file.
+    -o, --output OUTPUT         The output source file including generated Joi schema(s).
+                                If OUTPUT is absent, the prog will write to the standard output
+`;
+  process.stdout.write(helpMsg);
 }
+
+main()
+  // tslint:disable-next-line: no-empty
+  .then(() => {
+  })
+  .catch((err) => {
+    console.error(whiteBright.bgRedBright('error'), err);
+  });

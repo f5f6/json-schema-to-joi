@@ -16,16 +16,16 @@ export function resolveJoiStringSchema(schema: JSONSchema4): JoiString | JoiAny 
   // https://json-schema.org/understanding-json-schema/reference/string.html#format
   switch (schema.format) {
     case 'date':
-      joiSchema.regex = ['^' + dateRegex + '$', 'i'];
+      joiSchema.regex = new RegExp('^' + dateRegex + '$', 'i');
       break;
     case 'time':
-      joiSchema.regex = ['^' + timeRegex + '$', 'i'];
+      joiSchema.regex = new RegExp('^' + timeRegex + '$', 'i');
       break;
     case 'date-time':
-      joiSchema.regex = ['^' + dateTimeRegex + '$', 'i'];
+      joiSchema.regex = new RegExp('^' + dateTimeRegex + '$', 'i');
       break;
     case 'binary':
-      joiSchema.regex = ['^' + octetRegex + '$'];
+      joiSchema.regex = new RegExp('^' + octetRegex + '$', 'i');
       break;
     case 'email':
       joiSchema.email = true;
@@ -60,11 +60,11 @@ export function resolveJoiStringSchema(schema: JSONSchema4): JoiString | JoiAny 
 
   // https://json-schema.org/understanding-json-schema/reference/string.html#regular-expressions
   if (schema.pattern) {
-    joiSchema.regex = [schema.pattern];
+    joiSchema.regex = new RegExp(schema.pattern);
   }
 
-  if (joiSchema.regex && joiSchema.regex.length > 0) {
-    const regex = new RegExp(joiSchema.regex[0], joiSchema.regex[1]);
+  if (joiSchema.regex) {
+    const regex = joiSchema.regex;
     if (!regex.test('')) {
       withZeroMinLength = false;
     }
@@ -116,7 +116,7 @@ export function generateStringJoi(schema: JoiString): JoiStatement[] {
   }
 
   if (schema.regex) {
-    content.push(`.regex(new RegExp(\'${schema.regex.slice(0, 2).join('\',\'')}\'))`);
+    content.push('.regex(' + schema.regex.toString() + ')');
   }
 
   if (schema.ip) {

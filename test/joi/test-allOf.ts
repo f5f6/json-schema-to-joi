@@ -26,8 +26,13 @@ const testItems: TestItem[] = [{
   },
   targetJoiString: '' +
     'Joi.extendedJoi.allOf().items([\n' +
-    '  Joi.string().min(0).allow(...[\'\']),\n' +
-    '  Joi.string().min(0).max(5).allow(...[\'\']),\n' +
+    '  Joi.string()\n' +
+    '    .min(0)\n' +
+    '    .allow(...[\'\']),\n' +
+    '  Joi.string()\n' +
+    '    .min(0)\n' +
+    '    .max(5)\n' +
+    '    .allow(...[\'\']),\n' +
     '])',
   joiUnitTests: [{
     target: 'short', valid: true,

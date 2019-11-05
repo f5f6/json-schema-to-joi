@@ -22,10 +22,9 @@ const testItems: TestItem[] = [{
     }],
   },
   targetJoiString: '' +
-    'Joi.extendedJoi.oneOf().items([\n' +
-    '  Joi.number().multiple(5),\n' +
-    '  Joi.number().multiple(3),\n' +
-    '])',
+    'Joi.extendedJoi\n' +
+    '  .oneOf()\n' +
+    '  .items([Joi.number().multiple(5), Joi.number().multiple(3)])',
   joiUnitTests: [{
     target: 10, valid: true,
   }, {

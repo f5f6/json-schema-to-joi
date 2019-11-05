@@ -75,10 +75,16 @@ const testItems: TestItem[] = [{
     }]
   },
   targetJoiString:
-    'Joi.array().ordered(Joi.number(),\n' +
-    '  Joi.string().min(0).allow(...[\'\']),\n' +
-    '  Joi.string().valid(...[\'Street\',\'Avenue\',\'Boulevard\']),\n' +
-    '  Joi.string().valid(...[\'NW\',\'NE\',\'SW\',\'SE\'])).items(Joi.any())',
+    'Joi.array()\n' +
+    '  .ordered(\n' +
+    '    Joi.number(),\n' +
+    '    Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '    Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
+    '    Joi.string().valid(...[\'NW\', \'NE\', \'SW\', \'SE\']),\n' +
+    '  )\n' +
+    '  .items(Joi.any())',
   joiUnitTests: [{
     target: [1600, 'Pennsylvania', 'Avenue', 'NW'], valid: true,
   }, {
@@ -89,7 +95,7 @@ const testItems: TestItem[] = [{
     target: [10, 'Downing', 'Street'], valid: true,
   }, {
     target: [1600, 'Pennsylvania', 'Avenue', 'NW', 'Washington'], valid: true,
-  }]
+  }],
 }, {
   title: 'tuple validation with additionalItems = false',
   schema: {
@@ -124,10 +130,14 @@ const testItems: TestItem[] = [{
     }],
   },
   targetJoiString:
-    'Joi.array().ordered(Joi.number(),\n' +
-    '  Joi.string().min(0).allow(...[\'\']),\n' +
-    '  Joi.string().valid(...[\'Street\',\'Avenue\',\'Boulevard\']),\n' +
-    '  Joi.string().valid(...[\'NW\',\'NE\',\'SW\',\'SE\']))',
+    'Joi.array().ordered(\n' +
+    '  Joi.number(),\n' +
+    '  Joi.string()\n' +
+    '    .min(0)\n' +
+    '    .allow(...[\'\']),\n' +
+    '  Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
+    '  Joi.string().valid(...[\'NW\', \'NE\', \'SW\', \'SE\']),\n' +
+    ')',
   joiUnitTests: [{
     target: [1600, 'Pennsylvania', 'Avenue', 'NW'], valid: true,
   }, {
@@ -150,7 +160,7 @@ const testItems: TestItem[] = [{
     min: 2,
     max: 3,
   },
-  targetJoiString: 'Joi.array().min(2).max(3)',
+  targetJoiString: 'Joi.array()\n  .min(2)\n  .max(3)',
   joiUnitTests: [{
     target: [], valid: false,
   }, {

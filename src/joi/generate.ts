@@ -14,17 +14,14 @@ import { generateAllOfJoi } from './allOf';
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
   OPEN_TITLE, CLOSE_TITLE, //
-  OPEN_BRACE,     // {
-  OPEN_BRACKET,   // [
-  OPEN_PAREN,     // (
-  CLOSE_BRACE,    // }
-  CLOSE_BRACKET,  // ]
-  CLOSE_PAREN,    // )
-  LEVEL_S = OPEN_BRACE,
-  LEVEL_E = CLOSE_PAREN,
-  COMMA = 88,
-  COLON = 99,
-  NEWLINE = 100,
+  OPEN_BRACE = '{',     // {
+  OPEN_BRACKET = '[',   // [
+  OPEN_PAREN = '(',     // (
+  CLOSE_BRACE = '}',    // }
+  CLOSE_BRACKET = ']',  // ]
+  CLOSE_PAREN = ')',    // )
+  COMMA = ',',
+  COLON = ':',
   IMPORTED_JOI_NAME = 200,
   IMPORTED_EXTENDED_JOI_NAME,
 }
@@ -44,7 +41,7 @@ export function closeJoi(statement: JoiStatement[]): JoiStatement[] {
   return statement;
 }
 
-export function generateJoi(schema: JoiSchema, withTitle: boolean = false): JoiStatement[] {
+export function generateJoiStatement(schema: JoiSchema, withTitle: boolean = false): JoiStatement[] {
   const content: JoiStatement[] = withTitle ?
     openJoi([
       JoiSpecialChar.OPEN_TITLE, schema.label!, JoiSpecialChar.CLOSE_TITLE

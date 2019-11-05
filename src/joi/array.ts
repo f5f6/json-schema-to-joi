@@ -3,7 +3,7 @@ import { createJoiItem, JoiArray, JoiSchema } from './types';
 import { JSONSchema4 } from 'json-schema';
 import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
-import { JoiStatement, openJoi, generateAnyJoi, closeJoi, JoiSpecialChar, generateJoi } from './generate';
+import { JoiStatement, openJoi, generateAnyJoi, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
 import { Options } from './options';
 
 function resolveAsArray(schema: JSONSchema4 | JSONSchema4[], options?: Options): JoiSchema[] {
@@ -62,11 +62,10 @@ export function generateArrayJoi(schema: JoiArray): JoiStatement[] {
     const items = schema.ordered;
 
     items.forEach((item, i) => {
-      content.push(...generateJoi(item));
+      content.push(...generateJoiStatement(item));
       if (i !== items.length - 1) {
         content.push(...[
           JoiSpecialChar.COMMA,
-          JoiSpecialChar.NEWLINE,
         ]);
       }
     });
@@ -84,7 +83,7 @@ export function generateArrayJoi(schema: JoiArray): JoiStatement[] {
     const items = schema.items;
 
     items.forEach((item, i) => {
-      content.push(...generateJoi(item));
+      content.push(...generateJoiStatement(item));
       if (i !== items.length - 1) {
         content.push(JoiSpecialChar.COMMA);
       }

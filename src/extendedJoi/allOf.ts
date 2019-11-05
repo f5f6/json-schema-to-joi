@@ -43,9 +43,9 @@ const allOfExtension: Joi.Extension = {
         index: JSON.stringify(index),
         errorMsg: JSON.stringify(errorMsg),
       }, {
-          key: JSON.stringify(value),
-          path: '',
-        }, options);
+        key: JSON.stringify(value),
+        path: '',
+      }, options);
     }
   }]
 };

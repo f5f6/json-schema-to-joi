@@ -1,6 +1,6 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { resolveJSONSchema, generateJoi, SubSchemas } from '../../src/joi';
+import { resolveJSONSchema, generateJoiStatement, SubSchemas } from '../../src/joi';
 import { createLogger } from '../../src/common/logger';
 import { runTest, TestItem } from './common';
 
@@ -88,25 +88,49 @@ const testItems: TestItem[] = [
       },
       unknown: true
     },
-    targetJoiString: '' +
-      'Joi.object().keys({\n' +
-      '  billing_address: Joi.object().keys({\n' +
-      '    street_address: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-      '    city: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-      '    state: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-      '  }).unknown(),\n' +
-      '  shipping_address: Joi.object().keys({\n' +
-      '    street_address: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-      '    city: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-      '    state: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-      '  }).unknown(),\n' +
-      '}).unknown()',
+    targetJoiString:
+      'Joi.object()\n' +
+      '  .keys({\n' +
+      '    billing_address: Joi.object()\n' +
+      '      .keys({\n' +
+      '        street_address: Joi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\'])\n' +
+      '          .required(),\n' +
+      '        city: Joi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\'])\n' +
+      '          .required(),\n' +
+      '        state: Joi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\'])\n' +
+      '          .required(),\n' +
+      '      })\n' +
+      '      .unknown(),\n' +
+      '    shipping_address: Joi.object()\n' +
+      '      .keys({\n' +
+      '        street_address: Joi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\'])\n' +
+      '          .required(),\n' +
+      '        city: Joi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\'])\n' +
+      '          .required(),\n' +
+      '        state: Joi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\'])\n' +
+      '          .required(),\n' +
+      '      })\n' +
+      '      .unknown(),\n' +
+      '  })\n' +
+      '  .unknown()',
   },
 ];
 
 describe('test reference', () => {
-  runTest(testItems, resolveJSONSchema, generateJoi, logger, { rootSchema, });
-  runTest(testItems, resolveJSONSchema, generateJoi, logger, { subSchemas, });
-  runTest(testItems, resolveJSONSchema, generateJoi, logger, { rootSchema, useDeprecatedJoi: true, });
-  runTest(testItems, resolveJSONSchema, generateJoi, logger, { subSchemas, useDeprecatedJoi: true, });
+  runTest(testItems, resolveJSONSchema, generateJoiStatement, logger, { rootSchema, });
+  runTest(testItems, resolveJSONSchema, generateJoiStatement, logger, { subSchemas, });
+  runTest(testItems, resolveJSONSchema, generateJoiStatement, logger, { rootSchema, useDeprecatedJoi: true, });
+  runTest(testItems, resolveJSONSchema, generateJoiStatement, logger, { subSchemas, useDeprecatedJoi: true, });
 });

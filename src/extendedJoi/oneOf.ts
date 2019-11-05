@@ -39,9 +39,9 @@ const oneOfExtension: Joi.Extension = {
       return this.createError('oneOf.items', {
         index: JSON.stringify(index),
       }, {
-          key: JSON.stringify(value),
-          path: '',
-        }, options);
+        key: JSON.stringify(value),
+        path: '',
+      }, options);
     }
   }]
 };

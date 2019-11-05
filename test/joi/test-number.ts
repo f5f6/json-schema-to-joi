@@ -77,7 +77,7 @@ const testItems: TestItem[] = [{
     max: 100,
     less: 100,
   },
-  targetJoiString: 'Joi.number().min(0).less(100)',
+  targetJoiString: 'Joi.number()\n  .min(0)\n  .less(100)',
   joiUnitTests: [{
     target: -1, valid: false,
   }, {
@@ -104,7 +104,7 @@ const testItems: TestItem[] = [{
     max: 100,
     greater: 0,
   },
-  targetJoiString: 'Joi.number().greater(0).max(100)',
+  targetJoiString: 'Joi.number()\n  .greater(0)\n  .max(100)',
   joiUnitTests: [{
     target: -1, valid: false,
   }, {

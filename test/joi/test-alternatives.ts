@@ -20,10 +20,13 @@ const testItems: TestItem[] = [{
   },
   targetJoiString: '' +
     'Joi.any().when(\n' +
-    '  Joi.alternatives().try(Joi.string().min(0).allow(...[\'\'])), {\n' +
-    '    then: Joi.any().forbidden(),\n' +
-    '    otherwise: Joi.any(),\n' +
-    '  })',
+    '  Joi.alternatives().try(\n' +
+    '    Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  ),\n' +
+    '  { then: Joi.any().forbidden(), otherwise: Joi.any() },\n' +
+    ')',
   joiUnitTests: [{
     target: 42, valid: true,
   }, {
@@ -53,7 +56,10 @@ const testItems: TestItem[] = [{
   },
   targetJoiString: '' +
     'Joi.alternatives().try(\n' +
-    '  Joi.string().min(0).max(5).allow(...[\'\']),\n' +
+    '  Joi.string()\n' +
+    '    .min(0)\n' +
+    '    .max(5)\n' +
+    '    .allow(...[\'\']),\n' +
     '  Joi.number().min(0),\n' +
     ')',
   joiUnitTests: [{
@@ -85,10 +91,9 @@ const testItems: TestItem[] = [{
     }],
   },
   targetJoiString: '' +
-    'Joi.alternatives().match(\'one\').try(\n' +
-    '  Joi.number().multiple(5),\n' +
-    '  Joi.number().multiple(3),\n' +
-    ')',
+    'Joi.alternatives()\n' +
+    '  .match(\'one\')\n' +
+    '  .try(Joi.number().multiple(5), Joi.number().multiple(3))',
   joiUnitTests: [{
     target: 10, valid: true,
   }, {
@@ -119,10 +124,17 @@ const testItems: TestItem[] = [{
     }],
   },
   targetJoiString: '' +
-    'Joi.alternatives().match(\'all\').try(\n' +
-    '  Joi.string().min(0).allow(...[\'\']),\n' +
-    '  Joi.string().min(0).max(5).allow(...[\'\']),\n' +
-    ')',
+    'Joi.alternatives()\n' +
+    '  .match(\'all\')\n' +
+    '  .try(\n' +
+    '    Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '    Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .max(5)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  )',
   joiUnitTests: [{
     target: 'short', valid: true,
   }, {

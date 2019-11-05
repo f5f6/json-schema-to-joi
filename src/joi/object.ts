@@ -4,7 +4,7 @@ import { createJoiItem, JoiObject, JoiSchema } from './types';
 import { JSONSchema4 } from 'json-schema';
 import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
-import { generateAnyJoi, generateJoi, JoiStatement, JoiSpecialChar, openJoi, closeJoi } from './generate';
+import { generateAnyJoi, generateJoiStatement, JoiStatement, JoiSpecialChar, openJoi, closeJoi } from './generate';
 import { Options } from './options';
 
 function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string]: JoiSchema } | undefined {
@@ -144,7 +144,6 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
       '.keys',
       JoiSpecialChar.OPEN_PAREN,
       JoiSpecialChar.OPEN_BRACE,
-      JoiSpecialChar.NEWLINE,
     ]);
     _.keys(keys).forEach((key) => {
       let printKey = key;
@@ -154,9 +153,8 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
       content.push(...[
         printKey,
         JoiSpecialChar.COLON,
-        ...generateJoi(keys[key]),
+        ...generateJoiStatement(keys[key]),
         JoiSpecialChar.COMMA,
-        JoiSpecialChar.NEWLINE
       ]);
     });
     content.push(...[
@@ -194,11 +192,11 @@ export function generateObjectJoi(schema: JoiObject): JoiStatement[] {
       if (typeof target === 'string') {
         content.push('/' + target + '/');
       } else {
-        content.push(...generateJoi(target));
+        content.push(...generateJoiStatement(target));
       }
       content.push(JoiSpecialChar.COMMA);
 
-      content.push(...generateJoi(subSchema));
+      content.push(...generateJoiStatement(subSchema));
 
       content.push(JoiSpecialChar.CLOSE_PAREN);
     });

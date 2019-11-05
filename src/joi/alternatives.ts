@@ -2,11 +2,13 @@
 import { JSONSchema4 } from 'json-schema';
 import { createJoiItem, JoiAlternatives, JoiAny } from './types';
 import { resolveJSONSchema } from './resolve';
-import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoi } from './generate';
+import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
 import { Options } from './options';
+import * as _ from 'lodash';
 
 function resolveCombiningSchemas(
-  schemas: JSONSchema4[], mode: 'any' | 'all' | 'one' = 'any', options?: Options): JoiAlternatives {
+  schemas: JSONSchema4[], parentSchema: JSONSchema4,
+  mode: 'any' | 'all' | 'one' = 'any', options?: Options): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
   if (mode === 'all') {
     joiSchema.allOf = schemas.map((v) => resolveJSONSchema(v, options));
@@ -15,43 +17,56 @@ function resolveCombiningSchemas(
   } else {
     joiSchema.anyOf = schemas.map((v) => resolveJSONSchema(v, options));
   }
+  // tslint:disable: no-unused-expression-chai
+  (!!parentSchema.description) && (joiSchema.description = parentSchema.description);
+  (!!parentSchema.title) && (joiSchema.label = _.camelCase(parentSchema.title));
+  // tslint:enable: no-unused-expression-chai
   return joiSchema;
 }
 
-function resolveNot(schema: JSONSchema4, options?: Options): JoiAlternatives {
+function resolveNot(schema: JSONSchema4, parentSchema: JSONSchema4, options?: Options): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
   joiSchema.not = resolveJSONSchema(schema, options);
+  // tslint:disable: no-unused-expression-chai
+  (!!parentSchema.description) && (joiSchema.description = parentSchema.description);
+  (!!parentSchema.title) && (joiSchema.label = _.camelCase(parentSchema.title));
+  // tslint:enable: no-unused-expression-chai
   return joiSchema;
 }
 
-function resolveAnyOf(schemas: JSONSchema4[], options?: Options): JoiAlternatives {
+function resolveAnyOf(schemas: JSONSchema4[], parentSchema: JSONSchema4, options?: Options): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
   joiSchema.anyOf = schemas.map((v) => {
     return resolveJSONSchema(v, options);
   });
+  // tslint:disable: no-unused-expression-chai
+  (!!parentSchema.description) && (joiSchema.description = parentSchema.description);
+  (!!parentSchema.title) && (joiSchema.label = _.camelCase(parentSchema.title));
+  // tslint:enable: no-unused-expression-chai
   return joiSchema;
 }
 
 export function resolveJoiAlternativesSchema(schema: JSONSchema4, options?: Options): JoiAlternatives {
+
   if (schema.not) {
-    return resolveNot(schema.not, options);
+    return resolveNot(schema.not, schema, options);
   }
 
   if (options && options.useDeprecatedJoi && options.useExtendedJoi) {
     if (schema.anyOf) {
-      return resolveAnyOf(schema.anyOf, options);
+      return resolveAnyOf(schema.anyOf, schema, options);
     }
   } else {
     if (schema.anyOf) {
-      return resolveCombiningSchemas(schema.anyOf, 'any', options);
+      return resolveCombiningSchemas(schema.anyOf, schema, 'any', options);
     }
 
     if (schema.allOf) {
-      return resolveCombiningSchemas(schema.allOf, 'all', options);
+      return resolveCombiningSchemas(schema.allOf, schema, 'all', options);
     }
 
     if (schema.oneOf) {
-      return resolveCombiningSchemas(schema.oneOf, 'one', options);
+      return resolveCombiningSchemas(schema.oneOf, schema, 'one', options);
     }
   }
 
@@ -66,24 +81,20 @@ function generateNot(not: JoiAny): JoiStatement[] {
   content.push(...[
     '.when',
     JoiSpecialChar.OPEN_PAREN,
-    JoiSpecialChar.NEWLINE,
     JoiSpecialChar.IMPORTED_JOI_NAME,
     'alternatives().try',
     JoiSpecialChar.OPEN_PAREN,
-    ...generateJoi(not),
+    ...generateJoiStatement(not),
     JoiSpecialChar.CLOSE_PAREN,
     JoiSpecialChar.COMMA,
     JoiSpecialChar.OPEN_BRACE,
-    JoiSpecialChar.NEWLINE,
     'then: ',
     JoiSpecialChar.IMPORTED_JOI_NAME,
     'any().forbidden()',
     JoiSpecialChar.COMMA,
-    JoiSpecialChar.NEWLINE,
     'otherwise: ',
     JoiSpecialChar.IMPORTED_JOI_NAME,
     'any(),',
-    JoiSpecialChar.NEWLINE,
     JoiSpecialChar.CLOSE_BRACE,
     JoiSpecialChar.CLOSE_PAREN,
   ]);
@@ -109,14 +120,12 @@ function generateCombineSchema(schemas: JoiAny[], mode: 'all' | 'one' | 'any'): 
 
   schemas.forEach((schema) => {
     content.push(...[
-      JoiSpecialChar.NEWLINE,
-      ...generateJoi(schema),
+      ...generateJoiStatement(schema),
       JoiSpecialChar.COMMA,
     ]);
   });
 
   content.push(...[
-    JoiSpecialChar.NEWLINE,
     JoiSpecialChar.CLOSE_PAREN,
   ]);
   return closeJoi(content);

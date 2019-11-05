@@ -53,11 +53,15 @@ const testItems: TestItem[] = [{
     }
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  number: Joi.number(),\n' +
-    '  street_name: Joi.string().min(0).allow(...[\'\']),\n' +
-    '  street_type: Joi.string().valid(...[\'Street\',\'Avenue\',\'Boulevard\']),\n' +
-    '}).unknown()',
+    'Joi.object()\n' +
+    '  .keys({\n' +
+    '    number: Joi.number(),\n' +
+    '    street_name: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '    street_type: Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
+    '  })\n' +
+    '  .unknown()',
   joiUnitTests: [{
     target: { number: 1600, street_name: 'Pennsylvania', street_type: 'Avenue' },
     valid: true,
@@ -97,11 +101,15 @@ const testItems: TestItem[] = [{
     },
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  number: Joi.number(),\n' +
-    '  street_name: Joi.string().min(0).allow(...[\'\']),\n' +
-    '  street_type: Joi.string().valid(...[\'Street\',\'Avenue\',\'Boulevard\']),\n' +
-    '}).unknown(false)',
+    'Joi.object()\n' +
+    '  .keys({\n' +
+    '    number: Joi.number(),\n' +
+    '    street_name: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '    street_type: Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
+    '  })\n' +
+    '  .unknown(false)',
   joiUnitTests: [{
     target: { number: 1600, street_name: 'Pennsylvania', street_type: 'Avenue' },
     valid: true,
@@ -143,12 +151,24 @@ const testItems: TestItem[] = [{
     unknown: true,
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  name: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-    '  email: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-    '  address: Joi.string().min(0).allow(...[\'\']),\n' +
-    '  telephone: Joi.string().min(0).allow(...[\'\']),\n' +
-    '}).unknown()',
+    'Joi.object()\n' +
+    '  .keys({\n' +
+    '    name: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\'])\n' +
+    '      .required(),\n' +
+    '    email: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\'])\n' +
+    '      .required(),\n' +
+    '    address: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '    telephone: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  })\n' +
+    '  .unknown()',
   joiUnitTests: [{
     target: { name: 'William Shakespeare', email: 'bill@stratford-upon-avon.co.uk' }, valid: true,
   }, {
@@ -167,55 +187,6 @@ const testItems: TestItem[] = [{
     valid: false,
   }]
 }, {
-  title: 'properties',
-  schema: {
-    properties: {
-      name: { type: 'string' },
-      email: { type: 'string' },
-      address: { type: 'string' },
-      telephone: { type: 'any' }
-    },
-    required: ['name', 'email'],
-    minProperties: 2,
-    maxProperties: 3,
-  },
-  targetJoiSchema: {
-    type: 'object',
-    keys: {
-      name: {
-        type: 'string',
-        min: 0,
-        allow: [''],
-        required: true,
-      },
-      email: {
-        type: 'string',
-        min: 0,
-        allow: [''],
-        required: true,
-      },
-      address: {
-        min: 0,
-        allow: [''],
-        type: 'string',
-      },
-      telephone: {
-        type: 'any',
-      },
-    },
-    min: 2,
-    max: 3,
-    unknown: true,
-  },
-  targetJoiString:
-    'Joi.object().keys({\n' +
-    '  name: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-    '  email: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-    '  address: Joi.string().min(0).allow(...[\'\']),\n' +
-    '  telephone: Joi.any(),\n' +
-    '}).min(2).max(3).unknown()',
-  joiUnitTests: []
-}, {
   title: 'Size',
   schema: {
     type: 'object', minProperties: 2, maxProperties: 3,
@@ -228,7 +199,7 @@ const testItems: TestItem[] = [{
     unknown: true,
   },
   targetJoiString:
-    'Joi.object().min(2).max(3).unknown()',
+    'Joi.object()\n  .min(2)\n  .max(3)\n  .unknown()',
   joiUnitTests: [{
     target: {}, valid: false,
   }, {
@@ -258,10 +229,9 @@ const testItems: TestItem[] = [{
     unknown: true,
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  name: Joi.any().required(),\n' +
-    '  email: Joi.any().required(),\n' +
-    '}).unknown()',
+    'Joi.object()\n' +
+    '  .keys({ name: Joi.any().required(), email: Joi.any().required() })\n' +
+    '  .unknown()',
 }, {
   title: 'properties, required some properties but properties don\'t cover them',
   schema: {
@@ -286,12 +256,16 @@ const testItems: TestItem[] = [{
     unknown: true,
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  a: Joi.number().integer(),\n' +
-    '  b: Joi.string().min(0).allow(...[\'\']),\n' +
-    '  name: Joi.any().required(),\n' +
-    '  email: Joi.any().required(),\n' +
-    '}).unknown()',
+    'Joi.object()\n' +
+    '  .keys({\n' +
+    '    a: Joi.number().integer(),\n' +
+    '    b: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '    name: Joi.any().required(),\n' +
+    '    email: Joi.any().required(),\n' +
+    '  })\n' +
+    '  .unknown()',
 }, {
   title: 'property dependencies',
   schema: {
@@ -326,11 +300,19 @@ const testItems: TestItem[] = [{
     unknown: true,
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  name: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-    '  credit_card: Joi.number(),\n' +
-    '  billing_address: Joi.string().min(0).allow(...[\'\']),\n' +
-    '}).with(\'credit_card\', [\'billing_address\']).unknown()',
+    'Joi.object()\n' +
+    '  .keys({\n' +
+    '    name: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\'])\n' +
+    '      .required(),\n' +
+    '    credit_card: Joi.number(),\n' +
+    '    billing_address: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  })\n' +
+    '  .with(\'credit_card\', [\'billing_address\'])\n' +
+    '  .unknown()',
   joiUnitTests: [{
     target: { name: '1600', street_name: 'Pennsylvania', street_type: 'Avenue' },
     valid: true,
@@ -373,11 +355,19 @@ const testItems: TestItem[] = [{
     unknown: true,
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  name: Joi.string().min(0).allow(...[\'\']).required(),\n' +
-    '  credit_card: Joi.number(),\n' +
-    '  billing_address: Joi.string().min(0).allow(...[\'\']),\n' +
-    '}).with(\'credit_card\', [\'billing_address\']).unknown()',
+    'Joi.object()\n' +
+    '  .keys({\n' +
+    '    name: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\'])\n' +
+    '      .required(),\n' +
+    '    credit_card: Joi.number(),\n' +
+    '    billing_address: Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  })\n' +
+    '  .with(\'credit_card\', [\'billing_address\'])\n' +
+    '  .unknown()',
   joiUnitTests: [{
     target: {
       name: 'John Doe',
@@ -435,12 +425,16 @@ const testItems: TestItem[] = [{
     unknown: false,
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  builtin: Joi.number(),\n' +
-    '})' +
-    '.pattern(/^S_/,Joi.string().min(0).allow(...[\'\']))' +
-    '.pattern(/^I_/,Joi.number().integer())' +
-    '.unknown(false)',
+    'Joi.object()\n' +
+    '  .keys({ builtin: Joi.number() })\n' +
+    '  .pattern(\n' +
+    '    /^S_/,\n' +
+    '    Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  )\n' +
+    '  .pattern(/^I_/, Joi.number().integer())\n' +
+    '  .unknown(false)',
   joiUnitTests: [{
     target: { S_0: 42 }, valid: false,
   }, {
@@ -496,12 +490,21 @@ const testItems: TestItem[] = [{
     }]
   },
   targetJoiString:
-    'Joi.object().keys({\n' +
-    '  builtin: Joi.number(),\n' +
-    '})' +
-    '.pattern(/^S_/,Joi.string().min(0).allow(...[\'\']))' +
-    '.pattern(/^I_/,Joi.number().integer())' +
-    '.pattern(/^/,Joi.string().min(0).allow(...[\'\']))',
+    'Joi.object()\n' +
+    '  .keys({ builtin: Joi.number() })\n' +
+    '  .pattern(\n' +
+    '    /^S_/,\n' +
+    '    Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  )\n' +
+    '  .pattern(/^I_/, Joi.number().integer())\n' +
+    '  .pattern(\n' +
+    '    /^/,\n' +
+    '    Joi.string()\n' +
+    '      .min(0)\n' +
+    '      .allow(...[\'\']),\n' +
+    '  )',
   joiUnitTests: [{
     target: { builtin: 42 }, valid: true,
   }, {

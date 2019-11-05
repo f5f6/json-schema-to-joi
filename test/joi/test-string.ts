@@ -17,7 +17,7 @@ const testItems: TestItem[] = [{
     min: 0,
     allow: [''],
   },
-  targetJoiString: 'Joi.string().min(0).allow(...[\'\'])',
+  targetJoiString: 'Joi.string()\n  .min(0)\n  .allow(...[\'\'])',
   joiUnitTests: [{
     target: 'This is a string', valid: true,
   }, {
@@ -40,7 +40,7 @@ const testItems: TestItem[] = [{
     min: 2,
     max: 3,
   },
-  targetJoiString: 'Joi.string().min(2).max(3)',
+  targetJoiString: 'Joi.string()\n  .min(2)\n  .max(3)',
   joiUnitTests: [{
     target: 'A', valid: false,
   }, {
@@ -77,9 +77,9 @@ const testItems: TestItem[] = [{
   },
   targetJoiSchema: {
     type: 'string',
-    regex: ['^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$'],
+    regex: /^(\([0-9]{3}\))?[0-9]{3}-[0-9]{4}$/,
   },
-  targetJoiString: 'Joi.string().regex(new RegExp(\'^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$\'))',
+  targetJoiString: 'Joi.string().regex(/^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$/)',
   joiUnitTests: [{
     target: '555-1212', valid: true,
   }, {
@@ -96,9 +96,9 @@ const testItems: TestItem[] = [{
   },
   targetJoiSchema: {
     type: 'string',
-    regex: ['^' + dateTimeRegex + '$', 'i'],
+    regex: new RegExp('^' + dateTimeRegex + '$', 'i'),
   },
-  targetJoiString: `Joi.string().regex(new RegExp('^${dateTimeRegex}$','i'))`,
+  targetJoiString: `Joi.string().regex(\n  /^${dateTimeRegex}$/i,\n)`,
   joiUnitTests: [{
     target: '2018-11-13T20:20:39+00:00', valid: true,
   }, {
@@ -113,9 +113,9 @@ const testItems: TestItem[] = [{
   },
   targetJoiSchema: {
     type: 'string',
-    regex: ['^' + dateRegex + '$', 'i'],
+    regex: new RegExp('^' + dateRegex + '$', 'i'),
   },
-  targetJoiString: `Joi.string().regex(new RegExp('^${dateRegex}$','i'))`,
+  targetJoiString: `Joi.string().regex(/^${dateRegex}$/i)`,
   joiUnitTests: [{
     target: '2018-11-13', valid: true,
   }, {
@@ -128,9 +128,9 @@ const testItems: TestItem[] = [{
   },
   targetJoiSchema: {
     type: 'string',
-    regex: ['^' + timeRegex + '$', 'i'],
+    regex: new RegExp('^' + timeRegex + '$', 'i'),
   },
-  targetJoiString: `Joi.string().regex(new RegExp('^${timeRegex}$','i'))`,
+  targetJoiString: `Joi.string().regex(\n  /^${timeRegex}$/i,\n)`,
   joiUnitTests: [{
     target: '20:20:39+00:00', valid: true,
   }, {
@@ -283,12 +283,12 @@ const testItems: TestItem[] = [{
   },
   targetJoiSchema: {
     type: 'string',
-    regex: ['^' + octetRegex + '$'],
+    regex: new RegExp('^' + octetRegex + '$', 'i'),
     min: 0,
     max: 300,
     allow: [''],
   },
-  targetJoiString: `Joi.string().min(0).max(300).regex(new RegExp(\'${'^' + octetRegex + '$'}\')).allow(...[''])`,
+  targetJoiString: `Joi.string()\n  .min(0)\n  .max(300)\n  .regex(/^${octetRegex}$/i)\n  .allow(...[''])`,
   joiUnitTests: [{
     target: '0xABCD', valid: true,
   }, {
