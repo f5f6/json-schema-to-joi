@@ -1,5 +1,10 @@
 # Change log
 
+## 2.0.1 (2019-11-05)
+
+* Fixed
+  * `js2joi`: fix help message.
+
 ## 2.0.0 (2019-11-04)
 
 * Changed:
