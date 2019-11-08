@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Options | json-schema-to-joi</title>
+	<title>FormatOptions | json-schema-to-joi</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_joi_options_.html">&quot;joi/options&quot;</a>
 				</li>
 				<li>
-					<a href="_joi_options_.options.html">Options</a>
+					<a href="_joi_options_.formatoptions.html">FormatOptions</a>
 				</li>
 			</ul>
-			<h1>Interface Options</h1>
+			<h1>Interface FormatOptions</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Options</span>
+						<span class="target">FormatOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -84,10 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_joi_options_.options.html#rootschema" class="tsd-kind-icon">root<wbr>Schema</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_joi_options_.options.html#subschemas" class="tsd-kind-icon">sub<wbr>Schemas</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_joi_options_.options.html#usedeprecatedjoi" class="tsd-kind-icon">use<wbr>Deprecated<wbr>Joi</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_joi_options_.options.html#useextendedjoi" class="tsd-kind-icon">use<wbr>Extended<wbr>Joi</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_joi_options_.formatoptions.html#extendedjoiname" class="tsd-kind-icon">extended<wbr>Joi<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_joi_options_.formatoptions.html#joiname" class="tsd-kind-icon">joi<wbr>Name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -96,42 +94,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="rootschema" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> root<wbr>Schema</h3>
-					<div class="tsd-signature tsd-kind-icon">root<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JSONSchema4</span></div>
+					<a name="extendedjoiname" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> extended<wbr>Joi<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">extended<wbr>Joi<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/eb5b110/src/joi/options.ts#L10">joi/options.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/bcd97b8/src/joi/options.ts#L18">joi/options.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="subschemas" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> sub<wbr>Schemas</h3>
-					<div class="tsd-signature tsd-kind-icon">sub<wbr>Schemas<span class="tsd-signature-symbol">:</span> <a href="_joi_options_.subschemas.html" class="tsd-signature-type">SubSchemas</a></div>
+					<a name="joiname" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> joi<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">joi<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/eb5b110/src/joi/options.ts#L9">joi/options.ts:9</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="usedeprecatedjoi" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> use<wbr>Deprecated<wbr>Joi</h3>
-					<div class="tsd-signature tsd-kind-icon">use<wbr>Deprecated<wbr>Joi<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/eb5b110/src/joi/options.ts#L11">joi/options.ts:11</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="useextendedjoi" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> use<wbr>Extended<wbr>Joi</h3>
-					<div class="tsd-signature tsd-kind-icon">use<wbr>Extended<wbr>Joi<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/eb5b110/src/joi/options.ts#L12">joi/options.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/bcd97b8/src/joi/options.ts#L17">joi/options.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -207,24 +185,21 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_joi_options_.options.html" class="tsd-kind-icon">Options</a>
+						<a href="_joi_options_.formatoptions.html" class="tsd-kind-icon">Format<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_joi_options_.options.html#rootschema" class="tsd-kind-icon">root<wbr>Schema</a>
+								<a href="_joi_options_.formatoptions.html#extendedjoiname" class="tsd-kind-icon">extended<wbr>Joi<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_joi_options_.options.html#subschemas" class="tsd-kind-icon">sub<wbr>Schemas</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_joi_options_.options.html#usedeprecatedjoi" class="tsd-kind-icon">use<wbr>Deprecated<wbr>Joi</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_joi_options_.options.html#useextendedjoi" class="tsd-kind-icon">use<wbr>Extended<wbr>Joi</a>
+								<a href="_joi_options_.formatoptions.html#joiname" class="tsd-kind-icon">joi<wbr>Name</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_joi_options_.resolveoptions.html" class="tsd-kind-icon">Resolve<wbr>Options</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_joi_options_.subschemas.html" class="tsd-kind-icon">Sub<wbr>Schemas</a>
 					</li>
