@@ -7,21 +7,31 @@ A utility to convert JSON schema (draft 4) to Joi validation schema.
 ### Client
 
 ```bash
-json-schema-to-joi 2.0.1
+json-schema-to-joi 3.0.0
   Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
-          [--title] [TITLE] [--cwd] [CWD] [--importStatement] [IMPORT]
-          [--useExtendedJoi] [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
+          [--title] [TITLE] [--cwd] [CWD] [--useDeprecatedJoi] [--useExtendedJoi]
+          [--importStatement] [IMPORT]
+          [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
   optional parameters:
     -h, --help                  Show this help message and exit.
+    -v, --version               Show the program version.
     --title TITLE               The title used as the Joi schema variable name
                                 if the JSON schema doesn't have a title itself.
                                 TITLE is meaningless when "--batch" option is present.
     --cwd CWD                   CWD is used as the root directory of JSON sub schemas.
-    --importStatement IMPORT    IMPORT is the statement to import joi library.
-                                  Default: "import * as Joi from '@hapi/joi'"
-    --useExtendedJoi            If the option is true, the prog will use extended legacy joi library
-                                to support "oneOf" and "allOf" schemas.
+    --joiName JOINAME           JOINAME is the module name of joi library.
+                                  Default: "Joi".
+    --extendedJoiName EJOINAME  EJOINAME is the module name of extended joi library.
+                                If you don't want to use deprecated joi extension to support
+                                "allOf" and "oneOf", please leave it empty.
+    --importStatement IMPORT    IMPORT is the statement(s) to import joi library and extended joi library.
+                                It can be multiple statements.
+                                  Default: "import * as Joi from '@hapi/joi';"
+                                  If "useDeprecatedJoi" is true ,IMPORT will be "import * as Joi from 'joi';".
+                                  If "extendedJoiName" is set, another IMPORT statement must be added.
+    --useDeprecatedJoi          If the option is true, the prog will use deprecated library 'joi'
+                                instead of '@hapi/joi'
                                   Default: false.
     --batch SECTION             Use the SECTION of the INPUT to generate a batch of JSON schemas.
                                   Example:
