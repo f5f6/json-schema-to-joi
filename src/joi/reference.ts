@@ -1,9 +1,9 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { Options } from './options';
+import { ResolveOptions } from './options';
 
 // ref is like [uri]#/definitions/xxxx
-export function resolveReference(ref: string, options: Options): JSONSchema4 | undefined {
+export function resolveReference(ref: string, options: ResolveOptions): JSONSchema4 | undefined {
   const id = ref.substr(0, ref.indexOf('#') + 1);
   const path = ref.substr(ref.indexOf('#') + 1);
 

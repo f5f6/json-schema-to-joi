@@ -1,18 +1,14 @@
 import * as prettier from 'prettier';
 import { JoiStatement, JoiSpecialChar } from './generate';
-
-export interface FormatOptions {
-  importedJoiName?: string;
-  importedExtendedJoiName?: string;
-}
+import { FormatOptions } from './options';
 
 export function formatJoi(statements: JoiStatement[], options?: FormatOptions): string {
   let title;
   let result = '';
   let titleSector = false;
 
-  const importedJoiName = (options ? options.importedJoiName : 'Joi') || 'Joi';
-  const importedExtendedJoiName = (options ? options.importedExtendedJoiName : 'extendedJoi') || 'extendedJoi';
+  const importedJoiName = (options ? options.joiName : 'Joi') || 'Joi';
+  const importedExtendedJoiName = (options ? options.extendedJoiName : 'extendedJoi') || 'extendedJoi';
 
   statements.forEach((statement, i, all) => {
     if (typeof statement === 'string') {

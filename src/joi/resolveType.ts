@@ -7,9 +7,9 @@ import { resolveJoiNumberSchema } from './number';
 import { resolveJoiObjectSchema } from './object';
 import { resolveJoiStringSchema } from './string';
 import { resolveJoiBooleanSchema } from './boolean';
-import { Options } from './options';
+import { ResolveOptions } from './options';
 
-export function resolveType(schema: JSONSchema4, options?: Options): JoiSchema {
+export function resolveType(schema: JSONSchema4, options?: ResolveOptions): JoiSchema {
   const getJoiType = (type: JSONSchema4TypeName): JoiSchema => {
     switch (type) {
       case 'array':

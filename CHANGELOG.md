@@ -1,5 +1,14 @@
 # Change log
 
+## 3.0.0 (2019-11-05)
+
+* Changed:
+  * `js2joi`: (Breaking change) refine the parameters and usage.
+  * `extendedJoi`: (Breaking change) change the export style
+* Fixed:
+  * `joi`: `boolean` doesn't extend `any` properties.
+  * `js2joi`: get version from `package.json` directly.
+ 
 ## 2.0.1 (2019-11-05)
 
 * Fixed
@@ -125,4 +134,3 @@
 
 * Added
   * joi: `resolve` generate `JoiSchema` from JSON schema file (version 4)
-

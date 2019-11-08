@@ -2,14 +2,14 @@ import * as _ from 'lodash';
 import * as chai from 'chai';
 import * as Joi from '@hapi/joi';
 import * as LJoi from 'joi';
-import * as EJoi from '../../src/extendedJoi';
+import { Joi as extendedJoi } from '../../src';
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
 import { JoiSchema, JoiAny } from '../../src/joi/types';
 import { formatJoi, resolveJSONSchema } from '../../src/joi';
 import { JoiStatement, generateJoiStatement } from '../../src/joi/generate';
 import { Logger } from '../../src/common/logger';
-import { Options } from '../../src/joi/options';
+import { ResolveOptions } from '../../src/joi/options';
 export { Logger, createLogger } from '../../src/common/logger';
 
 export const expect = chai.expect;
@@ -31,10 +31,10 @@ export interface TestItem {
 
 export function runTest(
   testItems: TestItem[],
-  resolveFunc: (schema: JSONSchema4, options?: Options) => JoiSchema,
+  resolveFunc: (schema: JSONSchema4, options?: ResolveOptions) => JoiSchema,
   genJoiFunc: (schema: JoiAny) => JoiStatement[],
   logger: Logger,
-  options?: Options): void {
+  options?: ResolveOptions): void {
   testItems.forEach((item) => {
     let itFunc = item.only ? it.only : it;
     if (item.skipLegacy && options && options.useDeprecatedJoi) {
@@ -47,17 +47,16 @@ export function runTest(
       const joiStatements = genJoiFunc(resultJoiSchema);
       const joiStatementsGlobal = generateJoiStatement(resultJoiSchemaGlobal);
       let targetJoiString = item.targetJoiString;
-      let importedJoiName = 'Joi';
+      let joiName = 'Joi';
 
       if (options && options.useDeprecatedJoi) {
-        const realJoi = options.useExtendedJoi ? 'EJoi' : 'LJoi';
-        importedJoiName = realJoi;
-        targetJoiString = targetJoiString.replace(/(?<![A-Za-z])Joi/g, realJoi);
+        joiName = 'LJoi';
+        targetJoiString = targetJoiString.replace(/(?<![A-Za-z])Joi/g, joiName);
       }
 
       const formatOption = {
-        importedJoiName,
-        importedExtendedJoiName: 'extendedJoi',
+        joiName,
+        extendedJoiName: 'extendedJoi',
       };
       const resultJoiString = formatJoi(joiStatements, formatOption);
       const resultJoiStringGlobal = formatJoi(joiStatementsGlobal, formatOption);
@@ -78,14 +77,14 @@ export function runTest(
       expect(_.isEqual(resultJoiStringGlobal, resultJoiString), 'Global Joi string equal').to.be.equal(true);
       if (item.joiUnitTests) {
         // tslint:disable-next-line: no-eval
-        const joiSchema: Joi.AnySchema = <Joi.AnySchema>eval(resultJoiString);
+        const joiSchema: Joi.AnySchema = <Joi.AnySchema>eval(resultJoiString.replace('extendedJoi', 'src_1.Joi'));
         item.joiUnitTests.forEach((ut) => {
           const joiRet = joiSchema.validate(ut.target, { convert: false });
           logger.debug({
             joiVersion: Joi.version, // Just a trick to make sure `Joi` is in the compiled js file
             joiRet,
             legacyJoiVersion: LJoi.version,
-            extendedJoiVersion: EJoi.version,
+            extendedJoiVersion: extendedJoi.version,
           });
           if (ut.valid) {
             expect(!!joiRet.error).to.be.false;
@@ -95,7 +94,6 @@ export function runTest(
         });
       }
       // tslint:disable-next-line: no-eval
-
     });
   });
 }

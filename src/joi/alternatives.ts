@@ -3,12 +3,12 @@ import { JSONSchema4 } from 'json-schema';
 import { createJoiItem, JoiAlternatives, JoiAny } from './types';
 import { resolveJSONSchema } from './resolve';
 import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
-import { Options } from './options';
+import { ResolveOptions } from './options';
 import * as _ from 'lodash';
 
 function resolveCombiningSchemas(
   schemas: JSONSchema4[], parentSchema: JSONSchema4,
-  mode: 'any' | 'all' | 'one' = 'any', options?: Options): JoiAlternatives {
+  mode: 'any' | 'all' | 'one' = 'any', options?: ResolveOptions): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
   if (mode === 'all') {
     joiSchema.allOf = schemas.map((v) => resolveJSONSchema(v, options));
@@ -24,7 +24,7 @@ function resolveCombiningSchemas(
   return joiSchema;
 }
 
-function resolveNot(schema: JSONSchema4, parentSchema: JSONSchema4, options?: Options): JoiAlternatives {
+function resolveNot(schema: JSONSchema4, parentSchema: JSONSchema4, options?: ResolveOptions): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
   joiSchema.not = resolveJSONSchema(schema, options);
   // tslint:disable: no-unused-expression-chai
@@ -34,7 +34,7 @@ function resolveNot(schema: JSONSchema4, parentSchema: JSONSchema4, options?: Op
   return joiSchema;
 }
 
-function resolveAnyOf(schemas: JSONSchema4[], parentSchema: JSONSchema4, options?: Options): JoiAlternatives {
+function resolveAnyOf(schemas: JSONSchema4[], parentSchema: JSONSchema4, options?: ResolveOptions): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
   joiSchema.anyOf = schemas.map((v) => {
     return resolveJSONSchema(v, options);
@@ -46,7 +46,7 @@ function resolveAnyOf(schemas: JSONSchema4[], parentSchema: JSONSchema4, options
   return joiSchema;
 }
 
-export function resolveJoiAlternativesSchema(schema: JSONSchema4, options?: Options): JoiAlternatives {
+export function resolveJoiAlternativesSchema(schema: JSONSchema4, options?: ResolveOptions): JoiAlternatives {
 
   if (schema.not) {
     return resolveNot(schema.not, schema, options);

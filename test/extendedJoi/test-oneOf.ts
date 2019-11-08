@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { Joi } from '../../src';
+import { Joi as extendedJoi } from '../../src';
+import * as Joi from 'joi';
 
 const subSchemas: Joi.SchemaLike[] = [
   Joi.number().multiple(3),
@@ -8,9 +9,9 @@ const subSchemas: Joi.SchemaLike[] = [
 
 const emptySchemas: Joi.SchemaLike[] = [];
 
-const oneOfSchema = Joi.extendedJoi.oneOf().items(subSchemas);
+const oneOfSchema = extendedJoi.oneOf().items(subSchemas);
 
-const emptySchema = Joi.extendedJoi.oneOf().items(emptySchemas);
+const emptySchema = extendedJoi.oneOf().items(emptySchemas);
 
 describe('oneOf Joi extension', () => {
   it('passed', () => {

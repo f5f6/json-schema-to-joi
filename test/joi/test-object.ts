@@ -516,7 +516,8 @@ const testItems: TestItem[] = [{
   }, {
     target: { I_0: 42 }, valid: true,
   }]
-}];
+},
+];
 
 describe('joi object', () => {
   runTest(testItems, resolveJoiObjectSchema, generateObjectJoi, logger);

@@ -3,10 +3,10 @@ import { JSONSchema4 } from 'json-schema';
 import { createJoiItem, JoiAllOf } from './types';
 import { resolveJSONSchema } from './resolve';
 import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
-import { Options } from './options';
+import { ResolveOptions } from './options';
 import * as _ from 'lodash';
 
-export function resolveJoiAllOfSchema(schema: JSONSchema4, options?: Options): JoiAllOf {
+export function resolveJoiAllOfSchema(schema: JSONSchema4, options?: ResolveOptions): JoiAllOf {
   const joiSchema = createJoiItem('allOf') as JoiAllOf;
 
   joiSchema.items = schema.allOf!.map((item) => {
@@ -25,7 +25,6 @@ export function resolveJoiAllOfSchema(schema: JSONSchema4, options?: Options): J
 
 export function generateAllOfJoi(schema: JoiAllOf): JoiStatement[] {
   const content: JoiStatement[] = openJoi([
-    JoiSpecialChar.IMPORTED_JOI_NAME,
     JoiSpecialChar.IMPORTED_EXTENDED_JOI_NAME,
     'allOf()'
   ]);

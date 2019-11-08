@@ -2,7 +2,7 @@
 import { JSONSchema4 } from 'json-schema';
 import { JoiSchema } from './types';
 import { resolveType } from './resolveType';
-import { Options } from './options';
+import { ResolveOptions } from './options';
 import { resolveJoiAlternativesSchema } from './alternatives';
 import { resolveReference } from './reference';
 import * as _ from 'lodash';
@@ -10,8 +10,8 @@ import { resolveJoiOneOfSchema } from './oneOf';
 import { resolveJoiAllOfSchema } from './allOf';
 
 // tslint:disable-next-line:naming-convention
-export function resolveJSONSchema(schema: JSONSchema4, options?: Options): JoiSchema {
-  const realOptions: Options = _.defaults(options, {
+export function resolveJSONSchema(schema: JSONSchema4, options?: ResolveOptions): JoiSchema {
+  const realOptions: ResolveOptions = _.defaults(options, {
     useDeprecatedJoi: false,
   });
   // deal with $ref firstly

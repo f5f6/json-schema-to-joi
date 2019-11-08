@@ -4,9 +4,9 @@ import { JSONSchema4 } from 'json-schema';
 import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
 import { JoiStatement, openJoi, generateAnyJoi, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
-import { Options } from './options';
+import { ResolveOptions } from './options';
 
-function resolveAsArray(schema: JSONSchema4 | JSONSchema4[], options?: Options): JoiSchema[] {
+function resolveAsArray(schema: JSONSchema4 | JSONSchema4[], options?: ResolveOptions): JoiSchema[] {
   if (_.isArray(schema)) {
     return schema.map((v) => {
       return resolveJSONSchema(v, options);
@@ -15,7 +15,7 @@ function resolveAsArray(schema: JSONSchema4 | JSONSchema4[], options?: Options):
   return [resolveJSONSchema(schema, options)];
 }
 
-export function resolveJoiArraySchema(schema: JSONSchema4, options?: Options): JoiArray {
+export function resolveJoiArraySchema(schema: JSONSchema4, options?: ResolveOptions): JoiArray {
   const joiSchema = createJoiItem('array') as JoiArray;
 
   if (schema.items) {

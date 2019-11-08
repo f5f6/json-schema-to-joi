@@ -5,9 +5,9 @@ import { JSONSchema4 } from 'json-schema';
 import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
 import { generateAnyJoi, generateJoiStatement, JoiStatement, JoiSpecialChar, openJoi, closeJoi } from './generate';
-import { Options } from './options';
+import { ResolveOptions } from './options';
 
-function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string]: JoiSchema } | undefined {
+function resolveProperties(schema: JSONSchema4, options?: ResolveOptions): { [k: string]: JoiSchema } | undefined {
   const properties = schema.properties;
   if (!properties) {
     if (schema.required) {
@@ -44,7 +44,7 @@ function resolveProperties(schema: JSONSchema4, options?: Options): { [k: string
   return propertiesSchema;
 }
 
-export function resolveJoiObjectSchema(schema: JSONSchema4, options?: Options): JoiObject {
+export function resolveJoiObjectSchema(schema: JSONSchema4, options?: ResolveOptions): JoiObject {
   const joiSchema = createJoiItem('object') as JoiObject;
   // https://json-schema.org/understanding-json-schema/reference/object.html#properties
   joiSchema.keys = resolveProperties(schema, options);

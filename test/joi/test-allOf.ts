@@ -25,7 +25,7 @@ const testItems: TestItem[] = [{
     }],
   },
   targetJoiString: '' +
-    'Joi.extendedJoi.allOf().items([\n' +
+    'extendedJoi.allOf().items([\n' +
     '  Joi.string()\n' +
     '    .min(0)\n' +
     '    .allow(...[\'\']),\n' +

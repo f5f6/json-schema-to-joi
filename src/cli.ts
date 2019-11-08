@@ -1,6 +1,7 @@
+#!/usr/bin/env node
+
 import * as minimist from 'minimist';
 import * as minimistOptions from 'minimist-options';
-import { packageJson } from 'mrm-core';
 import { whiteBright } from 'cli-color';
 import { fs } from 'mz';
 import { resolve, join } from 'path';
@@ -20,7 +21,8 @@ interface JSONSchema4Definitions {
   [k: string]: JSONSchema4;
 }
 
-const defaultImportStatement = 'import * as Joi from \'@hapi/joi\'';
+const defaultImportStatement = 'import * as Joi from \'@hapi/joi\';';
+const legacyImportStatement = 'import * as Joi from \'joi\';';
 
 const argOptions = minimistOptions.default({
   input: {
@@ -47,12 +49,16 @@ const argOptions = minimistOptions.default({
     type: 'string',
   },
   importStatement: {
-    type: 'string',
-    default: defaultImportStatement,
+    type: 'array',
+    default: [defaultImportStatement],
   },
-  useExtendedJoi: {
-    type: 'boolean',
-    default: false,
+  joiName: {
+    type: 'string',
+    default: 'Joi',
+  },
+  extendedJoiName: {
+    type: 'string',
+    default: '',
   },
   useDeprecatedJoi: {
     type: 'boolean',
@@ -88,13 +94,18 @@ async function main(): Promise<void> {
   const batch = <string | undefined>args.batch;
   const title = !batch ? (<string | undefined>args.title || '') : '';
   const cwd = <string>args.cwd;
-  const useExtendedJoi = <boolean>args.useExtendedJoi;
+  const joiName = <string>args.joiName;
+  const extendedJoiName = <string>args.extendedJoiName;
   const useDeprecatedJoi = <boolean>args.useDeprecatedJoi;
-  const importStatement = <string>args.importStatement;
+  let importStatement = <string[]>args.importStatement;
   const input = <string>args.input;
   const output = <string>args.output;
 
-  let allOutput = banner + '\n\n' + importStatement + '\n\n';
+  if (useDeprecatedJoi && !importStatement) {
+    importStatement = [legacyImportStatement];
+  }
+
+  let allOutput = banner + '\n\n' + importStatement.join('\n') + '\n\n';
   try {
     const schemas: JSONSchema4 = <JSONSchema4>JSON.parse(await readInput(input));
     const subSchemas: JSONSchema4Definitions = {};
@@ -119,19 +130,19 @@ async function main(): Promise<void> {
       }
 
       _.keys(definitions).forEach((key) => {
-        const schema = definitions[key];
+        const schema: JSONSchema4 = definitions[key];
         if (!schema.title) {
           schema.title = key;
         }
         const joiSchema = resolveJSONSchema(schema, {
           rootSchema: schema,
           subSchemas,
-          useExtendedJoi,
+          useExtendedJoi: !!extendedJoiName,
           useDeprecatedJoi,
         });
         const joiStatement = generateJoiStatement(joiSchema, true);
         const joiTypeScriptCode = formatJoi(joiStatement, {
-          importedJoiName: 'Joi', importedExtendedJoiName: 'extendedJoi'
+          joiName, extendedJoiName,
         });
         allOutput += 'export ' + joiTypeScriptCode + ';\n\n';
       });
@@ -142,12 +153,12 @@ async function main(): Promise<void> {
       const joiSchema = resolveJSONSchema(schemas, {
         rootSchema: schemas,
         subSchemas,
-        useExtendedJoi,
+        useExtendedJoi: !!extendedJoiName,
         useDeprecatedJoi,
       });
       const joiStatement = generateJoiStatement(joiSchema, true);
       const joiTypeScriptCode = formatJoi(joiStatement, {
-        importedJoiName: 'Joi', importedExtendedJoiName: 'extendedJoi'
+        joiName, extendedJoiName,
       });
       allOutput += 'export ' + joiTypeScriptCode + '\n\n';
     }
@@ -189,31 +200,50 @@ function readInput(argIn?: string): Promise<string> {
   return fs.readFile(resolve(process.cwd(), argIn), 'utf-8');
 }
 
+function getPkgInfo(): { name: string, version: string } {
+  // tslint:disable-next-line: no-require-imports
+  const pkg = require('../package.json');
+  return {
+    // tslint:disable-next-line: no-unsafe-any
+    name: pkg.name,
+    // tslint:disable-next-line: no-unsafe-any
+    version: pkg.version,
+  };
+}
+
 function printVersion(): void {
-  const pkgVersion = <string>packageJson().get('version');
-  const pkgName = <string>packageJson().get('name');
-  process.stdout.write(`${pkgName} ${pkgVersion}\n`);
+  const { name, version } = getPkgInfo();
+  process.stdout.write(`${name} ${version}\n`);
 }
 
 function printHelp(): void {
-  const pkgVersion = <string>packageJson().get('version');
-  const pkgName = <string>packageJson().get('name');
+  const { name, version } = getPkgInfo();
   const helpMsg =
-    `${pkgName} ${pkgVersion}
+    `${name} ${version}
   Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
-          [--title] [TITLE] [--cwd] [CWD] [--joiLib] [JOILIBNAME]
+          [--title] [TITLE] [--cwd] [CWD] [--useDeprecatedJoi] [--useExtendedJoi]
+          [--importStatement] [IMPORT]
           [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
   optional parameters:
     -h, --help                  Show this help message and exit.
+    -v, --version               Show the program version.
     --title TITLE               The title used as the Joi schema variable name
                                 if the JSON schema doesn't have a title itself.
                                 TITLE is meaningless when "--batch" option is present.
     --cwd CWD                   CWD is used as the root directory of JSON sub schemas.
-    --importStatement IMPORT    IMPORT is the statement to import joi library.
-                                  Default: "import * as Joi from '@hapi/joi'"
-    --useExtendedJoi            If the option is true, the prog will use extended legacy joi library
-                                to support "oneOf" and "allOf" schemas.
+    --joiName JOINAME           JOINAME is the module name of joi library.
+                                  Default: "Joi".
+    --extendedJoiName EJOINAME  EJOINAME is the module name of extended joi library.
+                                If you don't want to use deprecated joi extension to support
+                                "allOf" and "oneOf", please leave it empty.
+    --importStatement IMPORT    IMPORT is the statement(s) to import joi library and extended joi library.
+                                It can be multiple statements.
+                                  Default: "${defaultImportStatement}"
+                                  If "useDeprecatedJoi" is true ,IMPORT will be "${legacyImportStatement}".
+                                  If "extendedJoiName" is set, another IMPORT statement must be added.
+    --useDeprecatedJoi          If the option is true, the prog will use deprecated library 'joi'
+                                instead of '@hapi/joi'
                                   Default: false.
     --batch SECTION             Use the SECTION of the INPUT to generate a batch of JSON schemas.
                                   Example:
