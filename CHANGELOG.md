@@ -1,5 +1,10 @@
 # Change log
 
+## 3.0.1 (2019-12-24)
+
+* Fixed:
+  * `joi`: fix default statement
+
 ## 3.0.0 (2019-11-05)
 
 * Changed:
