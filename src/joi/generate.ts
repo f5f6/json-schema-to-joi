@@ -93,7 +93,7 @@ export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
   }
 
   if (schema.default) {
-    content.push(`.default(...${JSON.stringify(schema.default)})`);
+    content.push(`.default(${JSON.stringify(schema.default)})`);
   }
 
   content = generateBooleanKeys(schema, content);
@@ -109,10 +109,12 @@ export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
 
 export function generateBooleanKeys(schema: JoiAny, content: JoiStatement[]): JoiStatement[] {
   _.keys(schema).forEach((key) => {
-    if (schema[key] === true) {
-      content.push(`.${key}()`);
-    } else if (schema[key] === false) {
-      content.push(`.${key}(false)`);
+    if (key !== 'default') {
+      if (schema[key] === true) {
+        content.push(`.${key}()`);
+      } else if (schema[key] === false) {
+        content.push(`.${key}(false)`);
+      }
     }
   });
 
