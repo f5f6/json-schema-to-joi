@@ -10,15 +10,35 @@ import { resolveJoiOneOfSchema } from './oneOf';
 import { resolveJoiAllOfSchema } from './allOf';
 
 // tslint:disable-next-line:naming-convention
+export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveOptions): JoiSchema[] {
+  const ret: JoiSchema[] = [];
+  if (schema.definitions) {
+    _.forIn(schema.definitions, (subSchema, key) => {
+      const joiSchema = resolveJSONSchema(subSchema, _.assign({}, options, { deRefer: false }));
+      joiSchema.label = key;
+      ret.push(joiSchema);
+    });
+  }
+  return ret;
+}
+
+// tslint:disable-next-line:naming-convention
 export function resolveJSONSchema(schema: JSONSchema4, options?: ResolveOptions): JoiSchema {
   const realOptions: ResolveOptions = _.defaults(options, {
     useDeprecatedJoi: false,
   });
   // deal with $ref firstly
-  if (schema.$ref && realOptions) {
-    const ref = resolveReference(schema.$ref, realOptions);
-    if (ref) {
-      return resolveJSONSchema(ref, realOptions);
+  if (schema.$ref) {
+    if (realOptions.deRefer) {
+      const ref = resolveReference(schema.$ref, realOptions);
+      if (ref) {
+        return resolveJSONSchema(ref, realOptions);
+      }
+    } else {
+      return {
+        type: 'reference',
+        $ref: schema.$ref,
+      };
     }
   }
 

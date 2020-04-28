@@ -74,30 +74,40 @@
 				<a href="#client" id="client" style="color: inherit; text-decoration: none;">
 					<h3>Client</h3>
 				</a>
-				<pre><code class="language-bash">json-schema-to-joi 2.0.1
+				<pre><code class="language-bash">json-schema-to-joi 3.0.0
   Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
-          [--title] [TITLE] [--cwd] [CWD] [--importStatement] [IMPORT]
-          [--useExtendedJoi] [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
+          [--title] [TITLE] [--cwd] [CWD] [--useDeprecatedJoi] [--useExtendedJoi]
+          [--importStatement] [IMPORT]
+          [--input, -i] [IN_FILE] [--output, -o] [OUT_FILE]
 
   optional parameters:
     -h, --<span class="hljs-built_in">help</span>                  Show this <span class="hljs-built_in">help</span> message and <span class="hljs-built_in">exit</span>.
+    -v, --version               Show the program version.
     --title TITLE               The title used as the Joi schema variable name
                                 <span class="hljs-keyword">if</span> the JSON schema doesn<span class="hljs-string">'t have a title itself.
                                 TITLE is meaningless when "--batch" option is present.
     --cwd CWD                   CWD is used as the root directory of JSON sub schemas.
-    --importStatement IMPORT    IMPORT is the statement to import joi library.
-                                  Default: "import * as Joi from '</span>@hapi/joi<span class="hljs-string">'"
-    --useExtendedJoi            If the option is true, the prog will use extended legacy joi library
-                                to support "oneOf" and "allOf" schemas.
-                                  Default: false.
+    --joiName JOINAME           JOINAME is the module name of joi library.
+                                  Default: "Joi".
+    --extendedJoiName EJOINAME  EJOINAME is the module name of extended joi library.
+                                If you don'</span>t want to use deprecated joi extension to support
+                                <span class="hljs-string">"allOf"</span> and <span class="hljs-string">"oneOf"</span>, please leave it empty.
+    --importStatement IMPORT    IMPORT is the statement(s) to import joi library and extended joi library.
+                                It can be multiple statements.
+                                  Default: <span class="hljs-string">"import * as Joi from '@hapi/joi';"</span>
+                                  If <span class="hljs-string">"useDeprecatedJoi"</span> is <span class="hljs-literal">true</span> ,IMPORT will be <span class="hljs-string">"import * as Joi from 'joi';"</span>.
+                                  If <span class="hljs-string">"extendedJoiName"</span> is <span class="hljs-built_in">set</span>, another IMPORT statement must be added.
+    --useDeprecatedJoi          If the option is <span class="hljs-literal">true</span>, the prog will use deprecated library <span class="hljs-string">'joi'</span>
+                                instead of <span class="hljs-string">'@hapi/joi'</span>
+                                  Default: <span class="hljs-literal">false</span>.
     --batch SECTION             Use the SECTION of the INPUT to generate a batch of JSON schemas.
                                   Example:
-                                    "definitions" for standard JSON schema files.
-                                    "components.schemas" for OpenAPI 3.x files.
-    -b, --banner BANNER         Add BANNER in the beginning of the output.
+                                    <span class="hljs-string">"definitions"</span> <span class="hljs-keyword">for</span> standard JSON schema files.
+                                    <span class="hljs-string">"components.schemas"</span> <span class="hljs-keyword">for</span> OpenAPI 3.x files.
+    -b, --banner BANNER         Add BANNER <span class="hljs-keyword">in</span> the beginning of the output.
     -i, --input  INPUT          The input JSON schema file.
-    -o, --output OUTPUT         The output source file including generated Joi schema(s).
-                                If OUTPUT is absent, the prog will write to the standard output</span></code></pre>
+    -o, --output OUTPUT         The output <span class="hljs-built_in">source</span> file including generated Joi schema(s).
+                                If OUTPUT is absent, the prog will write to the standard output</code></pre>
 				<a href="#library" id="library" style="color: inherit; text-decoration: none;">
 					<h3>Library</h3>
 				</a>

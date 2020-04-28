@@ -1,5 +1,5 @@
 import {
-  JoiSchema, JoiString, JoiAny, JoiNumber, JoiObject, JoiBoolean, JoiArray, JoiOneOf, JoiAllOf,
+  JoiSchema, JoiString, JoiAny, JoiNumber, JoiObject, JoiBoolean, JoiArray, JoiOneOf, JoiAllOf, JoiReference,
 } from './types';
 import * as _ from 'lodash';
 import { generateStringJoi } from './string';
@@ -10,10 +10,12 @@ import { generateArrayJoi } from './array';
 import { generateAlternativesJoi } from './alternatives';
 import { generateOneOfJoi } from './oneOf';
 import { generateAllOfJoi } from './allOf';
+import { generateReferenceJoi } from './reference';
 
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
   OPEN_TITLE, CLOSE_TITLE, //
+  REFERENCE,
   OPEN_BRACE = '{',     // {
   OPEN_BRACKET = '[',   // [
   OPEN_PAREN = '(',     // (
@@ -22,6 +24,7 @@ export const enum JoiSpecialChar {
   CLOSE_PAREN = ')',    // )
   COMMA = ',',
   COLON = ':',
+  SEMI = ';',
   IMPORTED_JOI_NAME = 200,
   IMPORTED_EXTENDED_JOI_NAME,
 }
@@ -71,12 +74,19 @@ export function generateJoiStatement(schema: JoiSchema, withTitle: boolean = fal
     case 'allOf':
       content.push(...generateAllOfJoi(schema as JoiAllOf));
       break;
+    case 'reference':
+      content.push(...generateReferenceJoi(schema as JoiReference));
+      break;
     case 'any':
     default:
       content.push(...generateAnyJoi(schema));
       break;
   }
-  return withTitle ? closeJoi(content) : content;
+  if (withTitle) {
+    content.push(JoiSpecialChar.SEMI);
+    return closeJoi(content);
+  }
+  return content;
 }
 
 export function generateAnyJoi(schema: JoiAny): JoiStatement[] {

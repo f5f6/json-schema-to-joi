@@ -1,18 +1,24 @@
 import * as prettier from 'prettier';
 import { JoiStatement, JoiSpecialChar } from './generate';
 import { FormatOptions } from './options';
+import * as _ from 'lodash';
 
 export function formatJoi(statements: JoiStatement[], options?: FormatOptions): string {
-  let title;
+  let title: string = '';
+  let referKey;
   let result = '';
-  let titleSector = false;
+  let skipStringForTitleOrRefer = false;
+  const semi = false;
 
   const importedJoiName = (options ? options.joiName : 'Joi') || 'Joi';
   const importedExtendedJoiName = (options ? options.extendedJoiName : 'extendedJoi') || 'extendedJoi';
+  const withExport = options ? options.withExport : false;
 
   statements.forEach((statement, i, all) => {
     if (typeof statement === 'string') {
-      if (titleSector) {
+      if (skipStringForTitleOrRefer) {
+        skipStringForTitleOrRefer = false; // Reset as it is possible to have multiple references
+        // or one tile plus reference
         return;
       }
       result += statement;
@@ -23,16 +29,16 @@ export function formatJoi(statements: JoiStatement[], options?: FormatOptions): 
         case JoiSpecialChar.CLOSE_JOI:
           break;
         case JoiSpecialChar.OPEN_TITLE:
-          titleSector = true;
-          title = all[i + 1];
+          skipStringForTitleOrRefer = true;
+          title = <string>all[i + 1];
           const close = all[i + 2];
           if (typeof title !== 'string' || close !== JoiSpecialChar.CLOSE_TITLE) {
             throw new Error('title not exist');
           }
-          result += `const ${title}JoiSchema = `;
+          result += `${withExport ? 'export' : ''} const ${title}JoiSchema = `;
           break;
         case JoiSpecialChar.CLOSE_TITLE:
-          titleSector = false;
+          skipStringForTitleOrRefer = false;
           break;
         case JoiSpecialChar.IMPORTED_JOI_NAME:
           result += importedJoiName + '.';
@@ -40,19 +46,28 @@ export function formatJoi(statements: JoiStatement[], options?: FormatOptions): 
         case JoiSpecialChar.IMPORTED_EXTENDED_JOI_NAME:
           result += importedExtendedJoiName + '.';
           break;
+        case JoiSpecialChar.REFERENCE:
+          referKey = all[i + 1];
+          skipStringForTitleOrRefer = true;
+          if (typeof referKey !== 'string') {
+            throw new Error('reference has no key');
+          }
+          result += referKey.substr(14) + 'JoiSchema'; // 14 is the length of '#/definitions/'
+          break;
       }
     }
   });
 
-  if (title) {
-    result += ';';
-  }
-  return prettier.format(result, {
+  const prettierOptions: prettier.Options = _.defaults(
+    {},
+    options ? options.prettierOptions : {}, {
     tabWidth: 2,
     useTabs: false,
     singleQuote: true,
     trailingComma: 'all',
-    semi: false,
-    parser: 'typescript'
-  }).trim();
+    semi,
+    parser: 'typescript',
+  });
+
+  return prettier.format(result, prettierOptions).trim();
 }
