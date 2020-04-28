@@ -1,5 +1,10 @@
 # Change log
 
+## 3.1.0 (2020-04-28)
+
+* Added
+  * `js2joi`: `resolveBundledJSONSchema` to support generate bundled JSON Schema file (only including internal $ref)
+
 ## 3.0.1 (2019-12-24)
 
 * Fixed:

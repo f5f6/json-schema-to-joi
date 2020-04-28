@@ -13,6 +13,8 @@ import { resolveJSONSchema, generateJoiStatement, formatJoi } from './joi';
 const stdin = require('stdin');
 import * as _ from 'lodash';
 import * as prettier from 'prettier';
+import { resolveBundledJSONSchema } from './joi/resolve';
+import { JoiStatement } from './joi/generate';
 
 // tslint:disable: no-console
 
@@ -129,23 +131,13 @@ async function main(): Promise<void> {
         throw new Error(`batch mode: no ${batch} SECTION in the root of the JSON schema`);
       }
 
-      _.keys(definitions).forEach((key) => {
-        const schema: JSONSchema4 = definitions[key];
-        if (!schema.title) {
-          schema.title = key;
-        }
-        const joiSchema = resolveJSONSchema(schema, {
-          rootSchema: schema,
-          subSchemas,
-          useExtendedJoi: !!extendedJoiName,
-          useDeprecatedJoi,
-        });
-        const joiStatement = generateJoiStatement(joiSchema, true);
-        const joiTypeScriptCode = formatJoi(joiStatement, {
-          joiName, extendedJoiName,
-        });
-        allOutput += 'export ' + joiTypeScriptCode + ';\n\n';
+      const joiSchemas = resolveBundledJSONSchema(schemas);
+      const joiStats: JoiStatement[] = [];
+      joiSchemas.forEach((subSchema) => {
+        joiStats.push(...generateJoiStatement(subSchema, true));
       });
+
+      allOutput = formatJoi(joiStats, { withExport: true, });
     } else {
       if (!schemas.title && title) {
         schemas.title = title;

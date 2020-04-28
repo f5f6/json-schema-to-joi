@@ -1,6 +1,8 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
 import { ResolveOptions } from './options';
+import { JoiReference } from './types';
+import { JoiStatement, openJoi, JoiSpecialChar, closeJoi, generateAnyJoi } from './generate';
 
 // ref is like [uri]#/definitions/xxxx
 export function resolveReference(ref: string, options: ResolveOptions): JSONSchema4 | undefined {
@@ -35,4 +37,15 @@ export function resolveReference(ref: string, options: ResolveOptions): JSONSche
   });
 
   return fragment;
+}
+
+export function generateReferenceJoi(schema: JoiReference): JoiStatement[] {
+  const content = openJoi([
+    JoiSpecialChar.REFERENCE,
+    schema.$ref,
+  ]);
+
+  content.push(...generateAnyJoi(schema));
+
+  return closeJoi(content);
 }

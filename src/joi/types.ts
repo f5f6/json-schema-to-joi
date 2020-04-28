@@ -1,5 +1,5 @@
 export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
-  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf' | 'oneOf';
+  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf' | 'oneOf' | 'reference';
 
 export type JoiSchema =
   JoiAny | JoiArray | JoiDate | JoiNumber |
@@ -120,6 +120,10 @@ export interface JoiAllOf extends JoiBase {
 
 export interface JoiOneOf extends JoiBase {
   items?: JoiSchema[];
+}
+
+export interface JoiReference extends JoiAny {
+  $ref: string;
 }
 
 export function createJoiItem(type: JoiType): JoiSchema {
