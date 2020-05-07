@@ -1,7 +1,7 @@
 import { resolveJoiObjectSchema, generateObjectJoi } from '../../src/joi/object';
 import { createLogger, TestItem, runTest } from './common';
 
-const logger = createLogger('test-string');
+const logger = createLogger('test-object');
 
 const testItems: TestItem[] = [{
   title: 'object',
@@ -13,17 +13,12 @@ const testItems: TestItem[] = [{
     valid: true,
   }, {
     target: {
-      Sun: 1.9891e30,
-      Jupiter: 1.8986e27,
-      Saturn: 5.6846e26,
-      Neptune: 10.243e25,
-      Uranus: 8.6810e25,
-      Earth: 5.9736e24,
-      Venus: 4.8685e24,
-      Mars: 6.4185e23,
-      Mercury: 3.3022e23,
-      Moon: 7.349e22,
-      Pluto: 1.25e22
+      Sun: 1.9891e30, Jupiter: 1.8986e27,
+      Saturn: 5.6846e26, Neptune: 10.243e25,
+      Uranus: 8.6810e25, Earth: 5.9736e24,
+      Venus: 4.8685e24, Mars: 6.4185e23,
+      Mercury: 3.3022e23, Moon: 7.349e22,
+      Pluto: 1.25e22,
     },
     valid: true,
   }, {
@@ -53,15 +48,9 @@ const testItems: TestItem[] = [{
     }
   },
   targetJoiString:
-    'Joi.object()\n' +
-    '  .keys({\n' +
-    '    number: Joi.number(),\n' +
-    '    street_name: Joi.string()\n' +
-    '      .min(0)\n' +
-    '      .allow(...[\'\']),\n' +
-    '    street_type: Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
-    '  })\n' +
-    '  .unknown()',
+    'Joi.object()\n  .keys({\n    number: Joi.number(),\n    street_name: Joi.string()\n      .min(0)\n' +
+    '      .allow(...[\'\']),\n    street_type: Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
+    '  })\n  .unknown()',
   joiUnitTests: [{
     target: { number: 1600, street_name: 'Pennsylvania', street_type: 'Avenue' },
     valid: true,
@@ -101,15 +90,9 @@ const testItems: TestItem[] = [{
     },
   },
   targetJoiString:
-    'Joi.object()\n' +
-    '  .keys({\n' +
-    '    number: Joi.number(),\n' +
-    '    street_name: Joi.string()\n' +
-    '      .min(0)\n' +
-    '      .allow(...[\'\']),\n' +
-    '    street_type: Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
-    '  })\n' +
-    '  .unknown(false)',
+    'Joi.object()\n  .keys({\n    number: Joi.number(),\n    street_name: Joi.string()\n' +
+    '      .min(0)\n      .allow(...[\'\']),\n    street_type: Joi.string().valid(...[\'Street\', \'Avenue\', \'Boulevard\']),\n' +
+    '  })\n  .unknown(false)',
   joiUnitTests: [{
     target: { number: 1600, street_name: 'Pennsylvania', street_type: 'Avenue' },
     valid: true,
@@ -123,9 +106,7 @@ const testItems: TestItem[] = [{
     target: {},
     valid: true,
   }, {
-    target: {
-      number: 1600, street_name: 'Pennsylvania', street_type: 'Avenue', direction: 'NW'
-    },
+    target: { number: 1600, street_name: 'Pennsylvania', street_type: 'Avenue', direction: 'NW' },
     valid: false,
   }],
 }, {
@@ -151,38 +132,22 @@ const testItems: TestItem[] = [{
     unknown: true,
   },
   targetJoiString:
-    'Joi.object()\n' +
-    '  .keys({\n' +
-    '    name: Joi.string()\n' +
-    '      .min(0)\n' +
-    '      .allow(...[\'\'])\n' +
-    '      .required(),\n' +
-    '    email: Joi.string()\n' +
-    '      .min(0)\n' +
-    '      .allow(...[\'\'])\n' +
-    '      .required(),\n' +
-    '    address: Joi.string()\n' +
-    '      .min(0)\n' +
-    '      .allow(...[\'\']),\n' +
-    '    telephone: Joi.string()\n' +
-    '      .min(0)\n' +
-    '      .allow(...[\'\']),\n' +
-    '  })\n' +
-    '  .unknown()',
+    'Joi.object()\n  .keys({\n' +
+    '    name: Joi.string()\n      .min(0)\n      .allow(...[\'\'])\n      .required(),\n' +
+    '    email: Joi.string()\n      .min(0)\n      .allow(...[\'\'])\n      .required(),\n' +
+    '    address: Joi.string()\n      .min(0)\n      .allow(...[\'\']),\n' +
+    '    telephone: Joi.string()\n      .min(0)\n      .allow(...[\'\']),\n  })\n  .unknown()',
   joiUnitTests: [{
     target: { name: 'William Shakespeare', email: 'bill@stratford-upon-avon.co.uk' }, valid: true,
   }, {
     target: {
-      name: 'William Shakespeare',
-      email: 'bill@stratford-upon-avon.co.uk',
-      address: 'Henley Street, Stratford-upon-Avon, Warwickshire, England',
-      authorship: 'in question'
+      name: 'William Shakespeare', email: 'bill@stratford-upon-avon.co.uk',
+      address: 'Henley Street, Stratford-upon-Avon, Warwickshire, England', authorship: 'in question'
     },
     valid: true,
   }, {
     target: {
-      name: 'William Shakespeare',
-      address: 'Henley Street, Stratford-upon-Avon, Warwickshire, England',
+      name: 'William Shakespeare', address: 'Henley Street, Stratford-upon-Avon, Warwickshire, England',
     },
     valid: false,
   }]
@@ -219,12 +184,8 @@ const testItems: TestItem[] = [{
   targetJoiSchema: {
     type: 'object',
     keys: {
-      name: {
-        type: 'any', required: true,
-      },
-      email: {
-        type: 'any', required: true,
-      },
+      name: { type: 'any', required: true, },
+      email: { type: 'any', required: true, },
     },
     unknown: true,
   },
@@ -236,36 +197,27 @@ const testItems: TestItem[] = [{
   title: 'properties, required some properties but properties don\'t cover them',
   schema: {
     properties: {
-      a: { type: 'integer' },
-      b: { type: 'string' },
+      a: { type: 'integer' }, b: { type: 'string' },
     },
     required: ['name', 'email'],
   },
   targetJoiSchema: {
     type: 'object',
     keys: {
-      name: {
-        type: 'any', required: true,
-      },
-      email: {
-        type: 'any', required: true,
-      },
+      name: { type: 'any', required: true, },
+      email: { type: 'any', required: true, },
       a: { type: 'number', integer: true },
       b: { type: 'string', min: 0, allow: [''] },
     },
     unknown: true,
   },
   targetJoiString:
-    'Joi.object()\n' +
-    '  .keys({\n' +
+    'Joi.object()  .keys({\n' +
     '    a: Joi.number().integer(),\n' +
-    '    b: Joi.string()\n' +
-    '      .min(0)\n' +
-    '      .allow(...[\'\']),\n' +
+    '    b: Joi.string()\n      .min(0)\n      .allow(...[\'\']),\n' +
     '    name: Joi.any().required(),\n' +
     '    email: Joi.any().required(),\n' +
-    '  })\n' +
-    '  .unknown()',
+    '  })\n  .unknown()',
 }, {
   title: 'property dependencies',
   schema: {
@@ -289,14 +241,10 @@ const testItems: TestItem[] = [{
         allow: [''],
         required: true,
       },
-      credit_card: {
-        type: 'number',
-      },
+      credit_card: { type: 'number', },
       billing_address: { type: 'string', min: 0, allow: [''] },
     },
-    with: {
-      credit_card: ['billing_address'],
-    },
+    with: { credit_card: ['billing_address'], },
     unknown: true,
   },
   targetJoiString:
@@ -328,9 +276,7 @@ const testItems: TestItem[] = [{
     required: ['name'],
     dependencies: {
       credit_card: {
-        properties: {
-          billing_address: { type: 'string' }
-        },
+        properties: { billing_address: { type: 'string' } },
         required: ['billing_address']
       }
     }
@@ -344,9 +290,7 @@ const testItems: TestItem[] = [{
         allow: [''],
         required: true,
       },
-      credit_card: {
-        type: 'number',
-      },
+      credit_card: { type: 'number', },
       billing_address: { type: 'string', min: 0, allow: [''] },
     },
     with: {
@@ -404,9 +348,7 @@ const testItems: TestItem[] = [{
   targetJoiSchema: {
     type: 'object',
     keys: {
-      builtin: {
-        type: 'number'
-      }
+      builtin: { type: 'number' }
     },
     patterns: [{
       targetPattern: '^S_',
@@ -519,7 +461,115 @@ const testItems: TestItem[] = [{
 },
 ];
 
+const testItemsOneOf: TestItem[] = [
+  {
+    title: 'pattern properties',
+    schema: {
+      type: 'object',
+      properties: {
+        builtin: { oneOf: [{ type: 'string', }, { type: 'number' }] }
+      },
+      required: ['builtin'],
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        builtin: {
+          type: 'oneOf',
+          items: [{
+            type: 'string',
+            min: 0,
+            allow: ['']
+          }, {
+            type: 'number',
+          }
+          ],
+          required: true
+        }
+      },
+      unknown: true
+    },
+    targetJoiString:
+      'LJoi.object()\n' +
+      '  .keys({\n' +
+      '    builtin: extendedJoi\n' +
+      '      .oneOf()\n' +
+      '      .items([\n' +
+      '        LJoi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\']),\n' +
+      '        LJoi.number(),\n' +
+      '      ])\n' +
+      '      .required(),\n' +
+      '  })\n' +
+      '  .unknown()',
+    joiUnitTests: [{
+      target: { builtin: [] }, valid: false,
+    }, {
+      target: { builtin: 1 }, valid: true,
+    }, {
+      target: { builtin: '111' }, valid: true,
+    }]
+  }
+];
+
+const testItemsAlternatives: TestItem[] = [
+  {
+    title: 'pattern properties',
+    schema: {
+      type: 'object',
+      properties: {
+        builtin: { oneOf: [{ type: 'string', }, { type: 'number' }] }
+      },
+      required: ['builtin'],
+    },
+    targetJoiSchema: {
+      type: 'object',
+      keys: {
+        builtin: {
+          type: 'alternatives',
+          oneOf: [{
+            type: 'string',
+            min: 0,
+            allow: ['']
+          }, {
+            type: 'number',
+          }
+          ],
+          required: true
+        }
+      },
+      unknown: true
+    },
+    targetJoiString:
+      'Joi.object()\n' +
+      '  .keys({\n' +
+      '    builtin: Joi.alternatives()\n' +
+      '      .match(\'one\')\n' +
+      '      .try(\n' +
+      '        Joi.string()\n' +
+      '          .min(0)\n' +
+      '          .allow(...[\'\']),\n' +
+      '        Joi.number(),\n' +
+      '      )\n' +
+      '      .required(),\n' +
+      '  })\n' +
+      '  .unknown()',
+    joiUnitTests: [{
+      target: { builtin: [] }, valid: false,
+    }, {
+      target: { builtin: 1 }, valid: true,
+    }, {
+      target: { builtin: '111' }, valid: true,
+    }]
+  }
+];
+
 describe('joi object', () => {
   runTest(testItems, resolveJoiObjectSchema, generateObjectJoi, logger);
   runTest(testItems, resolveJoiObjectSchema, generateObjectJoi, logger, { useDeprecatedJoi: true, });
+  runTest(testItemsOneOf,
+    resolveJoiObjectSchema, generateObjectJoi, logger, { useDeprecatedJoi: true, useExtendedJoi: true });
+  runTest(testItemsAlternatives,
+    resolveJoiObjectSchema, generateObjectJoi, logger);
 });

@@ -9,8 +9,9 @@ import { JoiSchema, JoiAny } from '../../src/joi/types';
 import { formatJoi, resolveJSONSchema } from '../../src/joi';
 import { JoiStatement, generateJoiStatement } from '../../src/joi/generate';
 import { Logger } from '../../src/common/logger';
-import { ResolveOptions } from '../../src/joi/options';
+import { ResolveOptions, FormatOptions } from '../../src/joi/options';
 export { Logger, createLogger } from '../../src/common/logger';
+import * as prettier from 'prettier';
 
 export const expect = chai.expect;
 
@@ -29,6 +30,15 @@ export interface TestItem {
   joiUnitTests?: JoiUnitTest[];
 }
 
+const prettierOptions: prettier.Options = {
+  tabWidth: 2,
+  useTabs: false,
+  singleQuote: true,
+  trailingComma: 'all',
+  semi: true,
+  parser: 'typescript',
+};
+
 export function runTest(
   testItems: TestItem[],
   resolveFunc: (schema: JSONSchema4, options?: ResolveOptions) => JoiSchema,
@@ -46,7 +56,7 @@ export function runTest(
       const resultJoiSchemaGlobal = resolveJSONSchema(schema, options);
       const joiStatements = genJoiFunc(resultJoiSchema);
       const joiStatementsGlobal = generateJoiStatement(resultJoiSchemaGlobal);
-      let targetJoiString = item.targetJoiString;
+      let targetJoiString = prettier.format(item.targetJoiString, prettierOptions);
       let joiName = 'Joi';
 
       if (options && options.useDeprecatedJoi) {
@@ -54,9 +64,18 @@ export function runTest(
         targetJoiString = targetJoiString.replace(/(?<![A-Za-z])Joi/g, joiName);
       }
 
-      const formatOption = {
+      targetJoiString = prettier.format(targetJoiString, {
+        tabWidth: 2,
+        useTabs: false,
+        singleQuote: true,
+        trailingComma: 'all',
+        parser: 'typescript',
+      });
+
+      const formatOption: FormatOptions = {
         joiName,
         extendedJoiName: 'extendedJoi',
+        prettierOptions,
       };
       const resultJoiString = formatJoi(joiStatements, formatOption);
       const resultJoiStringGlobal = formatJoi(joiStatementsGlobal, formatOption);

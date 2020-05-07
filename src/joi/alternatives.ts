@@ -4,7 +4,7 @@ import { createJoiItem, JoiAlternatives, JoiAny } from './types';
 import { resolveJSONSchema } from './resolve';
 import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
 import { ResolveOptions } from './options';
-import * as _ from 'lodash';
+import { resolveJoiAnyMeta, generateAnyJoi } from './any';
 
 function resolveCombiningSchemas(
   schemas: JSONSchema4[], parentSchema: JSONSchema4,
@@ -17,20 +17,15 @@ function resolveCombiningSchemas(
   } else {
     joiSchema.anyOf = schemas.map((v) => resolveJSONSchema(v, options));
   }
-  // tslint:disable: no-unused-expression-chai
-  (!!parentSchema.description) && (joiSchema.description = parentSchema.description);
-  (!!parentSchema.title) && (joiSchema.label = _.camelCase(parentSchema.title));
-  // tslint:enable: no-unused-expression-chai
+
+  resolveJoiAnyMeta(joiSchema, parentSchema);
   return joiSchema;
 }
 
 function resolveNot(schema: JSONSchema4, parentSchema: JSONSchema4, options?: ResolveOptions): JoiAlternatives {
   const joiSchema = createJoiItem('alternatives') as JoiAlternatives;
   joiSchema.not = resolveJSONSchema(schema, options);
-  // tslint:disable: no-unused-expression-chai
-  (!!parentSchema.description) && (joiSchema.description = parentSchema.description);
-  (!!parentSchema.title) && (joiSchema.label = _.camelCase(parentSchema.title));
-  // tslint:enable: no-unused-expression-chai
+  resolveJoiAnyMeta(joiSchema, parentSchema);
   return joiSchema;
 }
 
@@ -39,10 +34,7 @@ function resolveAnyOf(schemas: JSONSchema4[], parentSchema: JSONSchema4, options
   joiSchema.anyOf = schemas.map((v) => {
     return resolveJSONSchema(v, options);
   });
-  // tslint:disable: no-unused-expression-chai
-  (!!parentSchema.description) && (joiSchema.description = parentSchema.description);
-  (!!parentSchema.title) && (joiSchema.label = _.camelCase(parentSchema.title));
-  // tslint:enable: no-unused-expression-chai
+  resolveJoiAnyMeta(joiSchema, parentSchema);
   return joiSchema;
 }
 
@@ -132,25 +124,22 @@ function generateCombineSchema(schemas: JoiAny[], mode: 'all' | 'one' | 'any'): 
 }
 
 export function generateAlternativesJoi(schema: JoiAlternatives): JoiStatement[] {
+  let content: JoiStatement[];
   if (schema.not) {
-    return generateNot(schema.not);
+    content = generateNot(schema.not);
+  } else if (schema.anyOf) {
+    content = generateCombineSchema(schema.anyOf, 'any');
+  } else if (schema.allOf) {
+    content = generateCombineSchema(schema.allOf, 'all');
+  } else if (schema.oneOf) {
+    content = generateCombineSchema(schema.oneOf, 'one');
+  } else {
+    content = openJoi([
+      JoiSpecialChar.IMPORTED_JOI_NAME,
+      'alternatives()'
+    ]);
   }
 
-  if (schema.anyOf) {
-    return generateCombineSchema(schema.anyOf, 'any');
-  }
-
-  if (schema.allOf) {
-    return generateCombineSchema(schema.allOf, 'all');
-  }
-
-  if (schema.oneOf) {
-    return generateCombineSchema(schema.oneOf, 'one');
-  }
-
-  const content: JoiStatement[] = openJoi([
-    JoiSpecialChar.IMPORTED_JOI_NAME,
-    'alternatives()'
-  ]);
+  content.push(...generateAnyJoi(schema));
   return closeJoi(content);
 }

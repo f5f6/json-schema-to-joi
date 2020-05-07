@@ -1,7 +1,6 @@
 import {
-  JoiSchema, JoiString, JoiAny, JoiNumber, JoiObject, JoiBoolean, JoiArray, JoiOneOf, JoiAllOf, JoiReference,
+  JoiSchema, JoiString, JoiNumber, JoiObject, JoiBoolean, JoiArray, JoiOneOf, JoiAllOf, JoiReference,
 } from './types';
-import * as _ from 'lodash';
 import { generateStringJoi } from './string';
 import { generateNumberJoi } from './number';
 import { generateObjectJoi } from './object';
@@ -11,6 +10,7 @@ import { generateAlternativesJoi } from './alternatives';
 import { generateOneOfJoi } from './oneOf';
 import { generateAllOfJoi } from './allOf';
 import { generateReferenceJoi } from './reference';
+import { generateAnyJoi } from './any';
 
 export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
@@ -86,47 +86,5 @@ export function generateJoiStatement(schema: JoiSchema, withTitle: boolean = fal
     content.push(JoiSpecialChar.SEMI);
     return closeJoi(content);
   }
-  return content;
-}
-
-export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
-  let content: JoiStatement[]
-    = (schema.type === 'any') ? openJoi([JoiSpecialChar.IMPORTED_JOI_NAME, 'any()']) : [];
-  if (schema.allow) {
-    content.push(`.allow(...${JSON.stringify(schema.allow)})`);
-  }
-  if (schema.valid) {
-    content.push(`.valid(...${JSON.stringify(schema.valid)})`);
-  }
-  if (schema.invalid) {
-    content.push(`.invalid(...${JSON.stringify(schema.invalid)})`);
-  }
-
-  if (schema.default) {
-    content.push(`.default(${JSON.stringify(schema.default)})`);
-  }
-
-  content = generateBooleanKeys(schema, content);
-
-  // tslint:disable-next-line: no-commented-code
-  // TODO
-  // if (schema.description) {
-  //   content.push(`.description(${JSON.stringify(schema.description)})`);
-  // }
-
-  return (schema.type === 'any') ? closeJoi(content) : content;
-}
-
-export function generateBooleanKeys(schema: JoiAny, content: JoiStatement[]): JoiStatement[] {
-  _.keys(schema).forEach((key) => {
-    if (key !== 'default') {
-      if (schema[key] === true) {
-        content.push(`.${key}()`);
-      } else if (schema[key] === false) {
-        content.push(`.${key}(false)`);
-      }
-    }
-  });
-
   return content;
 }

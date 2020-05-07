@@ -1,7 +1,8 @@
 import { createJoiItem, JoiString, JoiAny } from './types';
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { generateAnyJoi, JoiStatement, openJoi, closeJoi, JoiSpecialChar } from './generate';
+import { JoiStatement, openJoi, closeJoi, JoiSpecialChar } from './generate';
+import { resolveJoiAnyMeta, generateAnyJoi } from './any';
 
 export const dateRegex = '(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])';
 export const timeRegex = '([01][0-9]|2[0-3]):([0-5][0-9]):'
@@ -95,6 +96,7 @@ export function resolveJoiStringSchema(schema: JSONSchema4): JoiString | JoiAny 
     joiSchema.min = 0;
     joiSchema.allow = [''];
   }
+  resolveJoiAnyMeta(joiSchema, schema);
   return joiSchema;
 }
 

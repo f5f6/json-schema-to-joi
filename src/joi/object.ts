@@ -4,8 +4,9 @@ import { createJoiItem, JoiObject, JoiSchema } from './types';
 import { JSONSchema4 } from 'json-schema';
 import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
-import { generateAnyJoi, generateJoiStatement, JoiStatement, JoiSpecialChar, openJoi, closeJoi } from './generate';
+import { generateJoiStatement, JoiStatement, JoiSpecialChar, openJoi, closeJoi } from './generate';
 import { ResolveOptions } from './options';
+import { resolveJoiAnyMeta, generateAnyJoi } from './any';
 
 function resolveProperties(schema: JSONSchema4, options?: ResolveOptions): { [k: string]: JoiSchema } | undefined {
   const properties = schema.properties;
@@ -124,6 +125,8 @@ export function resolveJoiObjectSchema(schema: JSONSchema4, options?: ResolveOpt
       schema: resolveJSONSchema(schema.additionalProperties, options),
     });
   }
+
+  resolveJoiAnyMeta(joiSchema, schema);
 
   return joiSchema;
 }
