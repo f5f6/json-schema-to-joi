@@ -3,14 +3,12 @@ export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
 
 export type JoiSchema =
   JoiAny | JoiArray | JoiDate | JoiNumber |
-  JoiObject | JoiString | JoiAlternatives;
+  JoiObject | JoiString | JoiAlternatives | JoiReference;
 
-export interface JoiBase {
+export interface JoiAny {
   type: JoiType;
   description?: string;
   label?: string;
-}
-export interface JoiAny extends JoiBase {
   allow?: any[];
   valid?: any[];
   invalid?: any[];
@@ -114,11 +112,11 @@ export interface JoiString extends JoiAny {
   isoDate?: boolean;
 }
 
-export interface JoiAllOf extends JoiBase {
+export interface JoiAllOf extends JoiAny {
   items?: JoiSchema[];
 }
 
-export interface JoiOneOf extends JoiBase {
+export interface JoiOneOf extends JoiAny {
   items?: JoiSchema[];
 }
 

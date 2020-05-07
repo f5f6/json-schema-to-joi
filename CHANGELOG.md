@@ -1,5 +1,15 @@
 # Change log
 
+## 4.0.0 (2020-05-07)
+
+* Breaking changed
+  * Only support bundled/dereferenced JSONSchema4.
+
+## 3.2.0 (2020-04-30)
+
+* Added
+  * Support reference to avoid circular references  
+
 ## 3.1.0 (2020-04-28)
 
 * Added
@@ -18,7 +28,7 @@
 * Fixed:
   * `joi`: `boolean` doesn't extend `any` properties.
   * `js2joi`: get version from `package.json` directly.
- 
+
 ## 2.0.1 (2019-11-05)
 
 * Fixed

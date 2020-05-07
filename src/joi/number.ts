@@ -1,8 +1,9 @@
 import { JoiNumber, createJoiItem } from './types';
 // tslint:disable-next-line:no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { generateAnyJoi, JoiStatement, openJoi, closeJoi, JoiSpecialChar } from './generate';
+import { JoiStatement, openJoi, closeJoi, JoiSpecialChar } from './generate';
 import * as _ from 'lodash';
+import { generateAnyJoi, resolveJoiAnyMeta } from './any';
 
 export function resolveJoiNumberSchema(schema: JSONSchema4): JoiNumber {
   const joiSchema = createJoiItem('number') as JoiNumber;
@@ -21,6 +22,7 @@ export function resolveJoiNumberSchema(schema: JSONSchema4): JoiNumber {
   // https://json-schema.org/understanding-json-schema/reference/numeric.html#multiples
   _.isNumber(schema.multipleOf) && (joiSchema.multiple = schema.multipleOf);
   // tslint:enable:no-unused-expression-chai
+  resolveJoiAnyMeta(joiSchema, schema);
   return joiSchema;
 }
 

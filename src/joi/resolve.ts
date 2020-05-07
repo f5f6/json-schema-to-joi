@@ -4,7 +4,6 @@ import { JoiSchema } from './types';
 import { resolveType } from './resolveType';
 import { ResolveOptions } from './options';
 import { resolveJoiAlternativesSchema } from './alternatives';
-import { resolveReference } from './reference';
 import * as _ from 'lodash';
 import { resolveJoiOneOfSchema } from './oneOf';
 import { resolveJoiAllOfSchema } from './allOf';
@@ -14,7 +13,7 @@ export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveO
   const ret: JoiSchema[] = [];
   if (schema.definitions) {
     _.forIn(schema.definitions, (subSchema, key) => {
-      const joiSchema = resolveJSONSchema(subSchema, _.assign({}, options, { deRefer: false }));
+      const joiSchema = resolveJSONSchema(subSchema, _.assign({}, options, { rootSchema: schema }));
       joiSchema.label = key;
       ret.push(joiSchema);
     });
@@ -26,19 +25,22 @@ export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveO
 export function resolveJSONSchema(schema: JSONSchema4, options?: ResolveOptions): JoiSchema {
   const realOptions: ResolveOptions = _.defaults(options, {
     useDeprecatedJoi: false,
+    useExtendedJoi: false,
   });
   // deal with $ref firstly
   if (schema.$ref) {
-    if (realOptions.deRefer) {
-      const ref = resolveReference(schema.$ref, realOptions);
-      if (ref) {
-        return resolveJSONSchema(ref, realOptions);
-      }
-    } else {
+    const $ref = schema.$ref;
+    const paths = $ref.split('/');
+    if (paths.length === 3) { // '#/definitions/xxx'
       return {
         type: 'reference',
-        $ref: schema.$ref,
+        $ref: paths[2],
+        label: schema.title,
+        description: schema.description,
       };
+    } else if (paths.length > 3) { // '#/definitions/xxx/properties/yyy'
+      const rootSchema = realOptions.rootSchema ? realOptions.rootSchema : schema;
+      return resolveJSONSchema(<JSONSchema4>_.get(rootSchema, paths.slice(1).join('.')), options);
     }
   }
 
@@ -46,6 +48,8 @@ export function resolveJSONSchema(schema: JSONSchema4, options?: ResolveOptions)
     return {
       type: 'any',
       valid: schema.enum,
+      label: schema.title,
+      description: schema.description,
     };
   }
 

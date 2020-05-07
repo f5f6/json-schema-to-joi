@@ -3,8 +3,9 @@ import { createJoiItem, JoiArray, JoiSchema } from './types';
 import { JSONSchema4 } from 'json-schema';
 import * as _ from 'lodash';
 import { resolveJSONSchema } from './resolve';
-import { JoiStatement, openJoi, generateAnyJoi, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
+import { JoiStatement, openJoi, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
 import { ResolveOptions } from './options';
+import { resolveJoiAnyMeta, generateAnyJoi } from './any';
 
 function resolveAsArray(schema: JSONSchema4 | JSONSchema4[], options?: ResolveOptions): JoiSchema[] {
   if (_.isArray(schema)) {
@@ -44,6 +45,8 @@ export function resolveJoiArraySchema(schema: JSONSchema4, options?: ResolveOpti
   _.isNumber(schema.maxItems) && (joiSchema.max = schema.maxItems);
   _.isBoolean(schema.uniqueItems) && (joiSchema.unique = schema.uniqueItems);
   // tslint:enable: no-unused-expression-chai
+
+  resolveJoiAnyMeta(joiSchema, schema);
 
   return joiSchema;
 }

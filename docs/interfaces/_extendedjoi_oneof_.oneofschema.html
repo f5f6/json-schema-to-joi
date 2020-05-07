@@ -163,7 +163,7 @@
 					<a name="allow" class="tsd-anchor"></a>
 					<h3>allow</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">allow<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">allow<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">allow<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
@@ -174,15 +174,10 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:282</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Whitelists a value</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -218,14 +213,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:291</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>By default, some Joi methods to function properly need to rely on the Joi instance they are attached to because
-										they use <code>this</code> internally.
-										So <code>Joi.string()</code> works but if you extract the function from it and call <code>string()</code> it won&#39;t.
-									<code>bind()</code> creates a new Joi instance where all the functions relying on <code>this</code> are bound to the Joi instance.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
@@ -244,11 +231,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:397</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns a new type that is the result of adding the rules of one type to another.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -263,7 +245,7 @@
 					<a name="default" class="tsd-anchor"></a>
 					<h3>default</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">default<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">default<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -273,30 +255,10 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:392</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets a default value if the original value is undefined.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">any</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>the value.
-											value supports references.
-											value may also be a function which returns the default value.
-											If value is specified as a function that accepts a single parameter, that parameter will be a context
-											object that can be used to derive the resulting value. This clones the object however, which incurs some
-											overhead so if you don&#39;t need access to the context define your method so that it does not accept any
-											parameters.
-											Without any value, default has no effect, except for object that will then create nested defaults
-										(applying inner defaults of that object).</p>
-										<p>Note that if value is an object, any changes to the object after default() is called will change the
-										reference and any future assignment.</p>
-										<p>Additionally, when specifying a method you must either have a description property on your method or the
-										second parameter is required.</p>
-									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> description: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
@@ -320,11 +282,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:444</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns a plain object representing the schema&#39;s rules and properties</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Description</span></h4>
 						</li>
 					</ul>
@@ -343,11 +300,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:337</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Annotates the key</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -362,7 +314,7 @@
 					<a name="disallow" class="tsd-anchor"></a>
 					<h3>disallow</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">disallow<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">disallow<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">disallow<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
@@ -376,7 +328,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -402,7 +354,7 @@
 					<a name="empty" class="tsd-anchor"></a>
 					<h3>empty</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">empty<span class="tsd-signature-symbol">(</span>schema<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">SchemaLike</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">empty<span class="tsd-signature-symbol">(</span>schema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SchemaLike</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -412,18 +364,10 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:419</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Considers anything that matches the schema to be empty (undefined).</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> schema: <span class="tsd-signature-type">SchemaLike</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>any object or joi schema to match. An undefined schema unsets that rule.</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -434,7 +378,7 @@
 					<a name="equal" class="tsd-anchor"></a>
 					<h3>equal</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">equal<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">equal<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">equal<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
@@ -448,7 +392,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -474,7 +418,7 @@
 					<a name="error" class="tsd-anchor"></a>
 					<h3>error</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">(</span>err<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ValidationErrorFunction</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ErrorOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">(</span>err<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ValidationErrorFunction</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ErrorOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -484,31 +428,10 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:439</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Overrides the default joi error with a custom error if the rule fails where:</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>err: <span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ValidationErrorFunction</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>can be:
-											an instance of <code>Error</code> - the override error.
-											a <code>function(errors)</code>, taking an array of errors as argument, where it must either:
-											return a <code>string</code> - substitutes the error message with this text
-											return a single <code>object</code> or an <code>Array</code> of it, where:
-											<code>type</code> - optional parameter providing the type of the error (eg. <code>number.min</code>).
-											<code>message</code> - optional parameter if <code>template</code> is provided, containing the text of the error.
-											<code>template</code> - optional parameter if <code>message</code> is provided, containing a template string, using the same format as usual joi language errors.
-											<code>context</code> - optional parameter, to provide context to your error if you are using the <code>template</code>.
-										return an <code>Error</code> - same as when you directly provide an <code>Error</code>, but you can customize the error message based on the errors.</p>
-										<p>Note that if you provide an <code>Error</code>, it will be returned as-is, unmodified and undecorated with any of the
-											normal joi error properties. If validation fails and another error is found before the error
-											override, that error will be returned and the override will be ignored (unless the <code>abortEarly</code>
-										option has been set to <code>false</code>).</p>
-									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">ErrorOptions</span></h5>
@@ -532,11 +455,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:357</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Annotates the key with an example value, must be valid.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -579,11 +497,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:327</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Marks a key as forbidden which will not allow any value except undefined. Used to explicitly forbid keys.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
@@ -592,7 +505,7 @@
 					<a name="invalid" class="tsd-anchor"></a>
 					<h3>invalid</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">invalid<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">invalid<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">invalid<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
@@ -603,15 +516,10 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:306</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Blacklists a value</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -643,7 +551,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/2c33b46/src/extendedJoi/oneOf.ts#L4">extendedJoi/oneOf.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/6b665bf/src/extendedJoi/oneOf.ts#L4">extendedJoi/oneOf.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -670,11 +578,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:408</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Overrides the key name in error messages.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -699,11 +602,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:352</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Attaches metadata to the key.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -718,7 +616,7 @@
 					<a name="not" class="tsd-anchor"></a>
 					<h3>not</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">not<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">not<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">not<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
@@ -732,7 +630,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -768,11 +666,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:342</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Annotates the key</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -787,7 +680,7 @@
 					<a name="only" class="tsd-anchor"></a>
 					<h3>only</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">only<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">only<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">only<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
@@ -801,7 +694,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -837,11 +730,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:322</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Marks a key as optional which will allow undefined as values. Used to annotate the schema for readability as all keys are optional by default.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
@@ -860,11 +748,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:367</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Overrides the global validate() options for the current key and any sub-key.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -879,7 +762,7 @@
 					<a name="raw" class="tsd-anchor"></a>
 					<h3>raw</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">raw<span class="tsd-signature-symbol">(</span>isRaw<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">raw<span class="tsd-signature-symbol">(</span>isRaw<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -889,11 +772,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:413</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Outputs the original untouched value instead of the casted value.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -918,11 +796,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:316</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Marks a key as required which will not allow undefined as value. All keys are optional by default.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
@@ -931,7 +804,7 @@
 					<a name="strict" class="tsd-anchor"></a>
 					<h3>strict</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">strict<span class="tsd-signature-symbol">(</span>isStrict<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">strict<span class="tsd-signature-symbol">(</span>isStrict<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -941,11 +814,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:372</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the options.convert options to false which prevent type casting for the current key and any child keys.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -970,11 +838,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:332</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Marks a key to be removed from a resulting object or array after validation. Used to sanitize output.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
@@ -993,11 +856,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:347</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Annotates the key</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -1022,11 +880,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:362</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Annotates the key with an unit name.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -1041,7 +894,7 @@
 					<a name="valid" class="tsd-anchor"></a>
 					<h3>valid</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">valid<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">valid<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">valid<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
@@ -1052,15 +905,10 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:296</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Adds the provided values into the allowed whitelist and marks them as the only valid values allowed.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -1086,7 +934,7 @@
 					<a name="validate" class="tsd-anchor"></a>
 					<h3>validate</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">validate&lt;T&gt;<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ValidationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ValidationResult</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">validate&lt;T&gt;<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ValidationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ValidationResult</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 						<li class="tsd-signature tsd-kind-icon">validate&lt;T, R&gt;<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">R</span></li>
 						<li class="tsd-signature tsd-kind-icon">validate&lt;T, R&gt;<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ValidationOptions</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">R</span></li>
 					</ul>
@@ -1098,11 +946,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:275</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Validates a value using the schema and options.</p>
-								</div>
-							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
@@ -1236,11 +1079,6 @@
 									<li>Defined in /mnt/c/Users/emmayyg/OpenSources/f5f6/json-schema-to-joi/node_modules/@types/joi/index.d.ts:402</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Converts the type into an alternatives type where the conditions are merged into the type definition where:</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -1294,6 +1132,9 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_joi_alternatives_.html">"joi/alternatives"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_joi_any_.html">"joi/any"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_joi_array_.html">"joi/array"</a>

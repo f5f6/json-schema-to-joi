@@ -1,7 +1,7 @@
-export { 
-  resolveJSONSchema, resolveBundledJSONSchema, 
+export {
+  resolveJSONSchema, resolveBundledJSONSchema,
   generateJoiStatement, JoiStatement,
-  formatJoi, Options, SubSchemas, 
+  formatJoi, ResolveOptions, FormatOptions,
 } from './joi';
 import * as Joi from './extendedJoi';
 export { Joi };

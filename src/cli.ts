@@ -4,10 +4,10 @@ import * as minimist from 'minimist';
 import * as minimistOptions from 'minimist-options';
 import { whiteBright } from 'cli-color';
 import { fs } from 'mz';
-import { resolve, join } from 'path';
+import { resolve } from 'path';
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { traverseDir } from './utils';
+import * as $RefParser from '@apidevtools/json-schema-ref-parser';
 import { resolveJSONSchema, generateJoiStatement, formatJoi } from './joi';
 // tslint:disable-next-line: no-require-imports
 const stdin = require('stdin');
@@ -71,8 +71,9 @@ const argOptions = minimistOptions.default({
     alias: 't',
   },
   batch: {
-    type: 'string',
-    alias: 'b'
+    type: 'boolean',
+    alias: 'b',
+    default: true,
   },
   banner: {
     type: 'string',
@@ -95,7 +96,7 @@ async function main(): Promise<void> {
   const banner = <string | undefined>args.banner || '';
   const batch = <string | undefined>args.batch;
   const title = !batch ? (<string | undefined>args.title || '') : '';
-  const cwd = <string>args.cwd;
+
   const joiName = <string>args.joiName;
   const extendedJoiName = <string>args.extendedJoiName;
   const useDeprecatedJoi = <boolean>args.useDeprecatedJoi;
@@ -109,26 +110,12 @@ async function main(): Promise<void> {
 
   let allOutput = banner + '\n\n' + importStatement.join('\n') + '\n\n';
   try {
-    const schemas: JSONSchema4 = <JSONSchema4>JSON.parse(await readInput(input));
-    const subSchemas: JSONSchema4Definitions = {};
+    const schemas: JSONSchema4 = <JSONSchema4>await $RefParser.bundle(<JSONSchema4>JSON.parse(await readInput(input)));
 
-    if (cwd) {
-      await traverseDir(cwd, async (fileName: string, dir: string): Promise<void> => {
-        if (fileName.endsWith('.json')) {
-          const fullFileName = join(dir, fileName);
-          let fileId = fullFileName.substr(cwd.length);
-          if (fileId.startsWith('/')) {
-            fileId = fileId.substr(1);
-          }
-          subSchemas[fileId] = <JSONSchema4>JSON.parse(await readInput(fullFileName));
-          return;
-        }
-      });
-    }
     if (batch) {
-      const definitions = <JSONSchema4Definitions>_.get(schemas, batch);
+      const definitions = <JSONSchema4Definitions>_.get(schemas, 'definitions');
       if (!definitions) {
-        throw new Error(`batch mode: no ${batch} SECTION in the root of the JSON schema`);
+        throw new Error(`batch mode: no "definitions" SECTION in the root of the JSON schema`);
       }
 
       const joiSchemas = resolveBundledJSONSchema(schemas);
@@ -144,7 +131,6 @@ async function main(): Promise<void> {
       }
       const joiSchema = resolveJSONSchema(schemas, {
         rootSchema: schemas,
-        subSchemas,
         useExtendedJoi: !!extendedJoiName,
         useDeprecatedJoi,
       });
@@ -237,10 +223,7 @@ function printHelp(): void {
     --useDeprecatedJoi          If the option is true, the prog will use deprecated library 'joi'
                                 instead of '@hapi/joi'
                                   Default: false.
-    --batch SECTION             Use the SECTION of the INPUT to generate a batch of JSON schemas.
-                                  Example:
-                                    "definitions" for standard JSON schema files.
-                                    "components.schemas" for OpenAPI 3.x files.
+    --batch                     Convert the "definitions" section to generate multiple
     -b, --banner BANNER         Add BANNER in the beginning of the output.
     -i, --input  INPUT          The input JSON schema file.
     -o, --output OUTPUT         The output source file including generated Joi schema(s).

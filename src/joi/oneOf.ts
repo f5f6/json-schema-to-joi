@@ -4,7 +4,7 @@ import { createJoiItem, JoiOneOf } from './types';
 import { resolveJSONSchema } from './resolve';
 import { openJoi, JoiStatement, closeJoi, JoiSpecialChar, generateJoiStatement } from './generate';
 import { ResolveOptions } from './options';
-import * as _ from 'lodash';
+import { resolveJoiAnyMeta, generateAnyJoi } from './any';
 
 export function resolveJoiOneOfSchema(schema: JSONSchema4, options?: ResolveOptions): JoiOneOf {
   const joiSchema = createJoiItem('oneOf') as JoiOneOf;
@@ -16,10 +16,7 @@ export function resolveJoiOneOfSchema(schema: JSONSchema4, options?: ResolveOpti
     return resolveJSONSchema(item, options);
   });
 
-  // tslint:disable:no-unused-expression-chai
-  (!!schema.description) && (joiSchema.description = schema.description);
-  (!!schema.title) && (joiSchema.label = _.camelCase(schema.title));
-  // tslint:enable:no-unused-expression-chai
+  resolveJoiAnyMeta(joiSchema, schema);
   return joiSchema;
 }
 
@@ -46,6 +43,7 @@ export function generateOneOfJoi(schema: JoiOneOf): JoiStatement[] {
   content.push(...[
     JoiSpecialChar.CLOSE_BRACKET,
     JoiSpecialChar.CLOSE_PAREN,
+    ...generateAnyJoi(schema),
   ]);
 
   return closeJoi(content);

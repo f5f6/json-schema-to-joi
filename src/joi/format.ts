@@ -52,7 +52,7 @@ export function formatJoi(statements: JoiStatement[], options?: FormatOptions): 
           if (typeof referKey !== 'string') {
             throw new Error('reference has no key');
           }
-          result += referKey.substr(14) + 'JoiSchema'; // 14 is the length of '#/definitions/'
+          result += referKey + 'JoiSchema'; // 14 is the length of '#/definitions/'
           break;
       }
     }
@@ -67,7 +67,8 @@ export function formatJoi(statements: JoiStatement[], options?: FormatOptions): 
     trailingComma: 'all',
     semi,
     parser: 'typescript',
+    printWidth: 80,
   });
 
-  return prettier.format(result, prettierOptions).trim();
+  return prettier.format(result, prettierOptions);
 }
