@@ -1,5 +1,10 @@
 # Change log
 
+## 4.0.1 (2020-05-08)
+
+* Fixed
+  * The output bundled Joi Schemas are sorted according to their dependency relations.
+
 ## 4.0.0 (2020-05-07)
 
 * Breaking changed
