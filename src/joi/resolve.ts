@@ -1,6 +1,6 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import { JSONSchema4 } from 'json-schema';
-import { JoiSchema } from './types';
+import { JoiSchema, JoiReference, JoiAny } from './types';
 import { resolveType } from './resolveType';
 import { ResolveOptions } from './options';
 import { resolveJoiAlternativesSchema } from './alternatives';
@@ -11,13 +11,55 @@ import { resolveJoiAllOfSchema } from './allOf';
 // tslint:disable-next-line:naming-convention
 export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveOptions): JoiSchema[] {
   const ret: JoiSchema[] = [];
+  const map: Map<string, { joiSchema: JoiSchema; dependencies: string[]; }> = new Map();
+  let keyOnList: string[] = [];
+  const keyDone: string[] = [];
   if (schema.definitions) {
     _.forIn(schema.definitions, (subSchema, key) => {
       const joiSchema = resolveJSONSchema(subSchema, _.assign({}, options, { rootSchema: schema }));
       joiSchema.label = key;
-      ret.push(joiSchema);
+      map.set(key, {
+        joiSchema,
+        dependencies: extractDependency(joiSchema),
+      });
+      keyOnList.push(key);
     });
+
+    while (keyOnList.length > 0) {
+      const keysToBeRemoved: string[] = [];
+      map.forEach((value, key) => {
+        value.dependencies = value.dependencies.filter((v) => keyDone.indexOf(v) === -1);
+        if (value.dependencies.length === 0 || // All dependencies have been done
+          (value.dependencies.length === 1 && value.dependencies[0] === key)) { // Only depends on itself
+          ret.push(value.joiSchema);
+          keyDone.push(key);
+          keyOnList = keyOnList.filter((v) => v !== key);
+          keysToBeRemoved.push(key);
+        }
+      });
+      keysToBeRemoved.forEach((key) => {
+        map.delete(key);
+      });
+    }
   }
+  return ret;
+}
+
+function extractDependency(joiSchema: any): string[] {
+  const ret: string[] = [];
+  if ((<JoiAny>joiSchema).type === 'reference' && (<JoiReference>joiSchema).$ref) {
+    ret.push((<JoiReference>joiSchema).$ref);
+  }
+
+  _.forIn(joiSchema, (value) => {
+    if (_.isArray(value)) {
+      value.forEach((item) => {
+        ret.push(...extractDependency(item));
+      });
+    } else if (_.isObject(value)) {
+      ret.push(...extractDependency(value));
+    }
+  });
   return ret;
 }
 
