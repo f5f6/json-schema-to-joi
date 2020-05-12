@@ -106,8 +106,7 @@ async function main(): Promise<void> {
 
   let allOutput = banner + '\n\n' + importStatement.join('\n') + '\n\n';
   try {
-    const schemas
-      = <JSONSchema4 | Partial<OpenAPIV3.Document>>
+    const schemas =
       await $RefParser.bundle(<JSONSchema4>JSON.parse(await readInput(input)));
 
     if (batch) {
@@ -121,7 +120,7 @@ async function main(): Promise<void> {
       const joiSchemas = resolveBundledJSONSchema(
         definitions,
         {
-          useDeprecatedJoi, useExtendedJoi: !!extendedJoiName, rootSchema: schemas
+          useDeprecatedJoi, useExtendedJoi: !!extendedJoiName, rootSchema: <JSONSchema4 | OpenAPIV3.Document>schemas
         });
       const joiStats: JoiStatement[] = [];
       joiSchemas.forEach((subSchema) => {
@@ -133,8 +132,8 @@ async function main(): Promise<void> {
       if (!schemas.title && title) {
         schemas.title = title;
       }
-      const joiSchema = resolveJSONSchema(schemas, {
-        rootSchema: schemas,
+      const joiSchema = resolveJSONSchema(<JSONSchema4>schemas, {
+        rootSchema: <JSONSchema4>schemas,
         useExtendedJoi: !!extendedJoiName,
         useDeprecatedJoi,
       });
