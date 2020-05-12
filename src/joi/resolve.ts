@@ -30,9 +30,7 @@ export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveO
     while (keyOnList.length > 0) {
       const keysToBeRemoved: string[] = [];
       map.forEach((value, key) => {
-        console.log({ key, value });
         value.dependencies = value.dependencies.filter((v) => keyDone.indexOf(v) === -1);
-        console.log({ xxx: value.dependencies });
         if (value.dependencies.length === 0 || // All dependencies have been done
           (value.dependencies.length === 1 && _.camelCase(value.dependencies[0]) === key)) { // Only depends on itself
           if (value.dependencies.length === 1) {
