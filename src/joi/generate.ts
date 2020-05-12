@@ -16,6 +16,8 @@ export const enum JoiSpecialChar {
   OPEN_JOI, CLOSE_JOI, // indicate the opening and closing of a Joi object
   OPEN_TITLE, CLOSE_TITLE, //
   REFERENCE,
+  LAZY,
+  LINK,
   OPEN_BRACE = '{',     // {
   OPEN_BRACKET = '[',   // [
   OPEN_PAREN = '(',     // (
@@ -75,6 +77,8 @@ export function generateJoiStatement(schema: JoiSchema, withTitle: boolean = fal
       content.push(...generateAllOfJoi(schema as JoiAllOf));
       break;
     case 'reference':
+    case 'link':
+    case 'lazy':
       content.push(...generateReferenceJoi(schema as JoiReference));
       break;
     case 'any':

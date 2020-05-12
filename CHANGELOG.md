@@ -1,5 +1,15 @@
 # Change log
 
+## 4.1.1 (2020-05-12)
+
+* Fixed
+  * Force the label in camel case.
+
+## 4.1.0 (2020-05-09)
+
+* Added
+  * Recursive dependency uses `Joi.link` or `Joi.lazy`
+
 ## 4.0.1 (2020-05-08)
 
 * Fixed
@@ -147,7 +157,7 @@
 * Fixed
   * joi: follow the JSONSchema Draft 4
     * `string`
-    * `number` 
+    * `number`
 
 ## 0.1.0 (2019-01-23)
 

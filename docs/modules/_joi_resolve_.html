@@ -73,6 +73,8 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_resolve_.html#extractdependency" class="tsd-kind-icon">extract<wbr>Dependency</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_joi_resolve_.html#replacerecursivereference" class="tsd-kind-icon">replace<wbr>Recursive<wbr>Reference</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_joi_resolve_.html#resolvebundledjsonschema" class="tsd-kind-icon">resolve<wbr>BundledJSONSchema</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_joi_resolve_.html#resolvejsonschema" class="tsd-kind-icon">resolveJSONSchema</a></li>
 							</ul>
@@ -82,6 +84,58 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="extractdependency" class="tsd-anchor"></a>
+					<h3>extract<wbr>Dependency</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">extract<wbr>Dependency<span class="tsd-signature-symbol">(</span>joiSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/a0616a3/src/joi/resolve.ts#L74">joi/resolve.ts:74</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>joiSchema: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="replacerecursivereference" class="tsd-anchor"></a>
+					<h3>replace<wbr>Recursive<wbr>Reference</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">replace<wbr>Recursive<wbr>Reference<span class="tsd-signature-symbol">(</span>joiSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, useDeprecatedJoi<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/a0616a3/src/joi/resolve.ts#L58">joi/resolve.ts:58</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>joiSchema: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> useDeprecatedJoi: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="resolvebundledjsonschema" class="tsd-anchor"></a>
 					<h3>resolve<wbr>BundledJSONSchema</h3>
@@ -92,7 +146,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/6b665bf/src/joi/resolve.ts#L12">joi/resolve.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/a0616a3/src/joi/resolve.ts#L12">joi/resolve.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -118,7 +172,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/6b665bf/src/joi/resolve.ts#L25">joi/resolve.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/f5f6/json-schema-to-joi/blob/a0616a3/src/joi/resolve.ts#L93">joi/resolve.ts:93</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -206,6 +260,12 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_joi_resolve_.html#extractdependency" class="tsd-kind-icon">extract<wbr>Dependency</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_joi_resolve_.html#replacerecursivereference" class="tsd-kind-icon">replace<wbr>Recursive<wbr>Reference</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_joi_resolve_.html#resolvebundledjsonschema" class="tsd-kind-icon">resolve<wbr>BundledJSONSchema</a>
 					</li>

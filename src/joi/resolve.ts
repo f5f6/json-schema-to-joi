@@ -17,20 +17,30 @@ export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveO
   if (schema.definitions) {
     _.forIn(schema.definitions, (subSchema, key) => {
       const joiSchema = resolveJSONSchema(subSchema, _.assign({}, options, { rootSchema: schema }));
-      joiSchema.label = key;
-      map.set(key, {
+      joiSchema.label = _.camelCase(key);
+      map.set(joiSchema.label, {
         joiSchema,
         dependencies: extractDependency(joiSchema),
       });
-      keyOnList.push(key);
+      keyOnList.push(joiSchema.label);
     });
+
+    const useDeprecatedJoi = options ? options.useDeprecatedJoi : false;
 
     while (keyOnList.length > 0) {
       const keysToBeRemoved: string[] = [];
       map.forEach((value, key) => {
+        console.log({ key, value });
         value.dependencies = value.dependencies.filter((v) => keyDone.indexOf(v) === -1);
+        console.log({ xxx: value.dependencies });
         if (value.dependencies.length === 0 || // All dependencies have been done
-          (value.dependencies.length === 1 && value.dependencies[0] === key)) { // Only depends on itself
+          (value.dependencies.length === 1 && _.camelCase(value.dependencies[0]) === key)) { // Only depends on itself
+          if (value.dependencies.length === 1) {
+            replaceRecursiveReference(value.joiSchema, key, useDeprecatedJoi);
+            if (!useDeprecatedJoi) {
+              value.joiSchema.id = key;
+            }
+          }
           ret.push(value.joiSchema);
           keyDone.push(key);
           keyOnList = keyOnList.filter((v) => v !== key);
@@ -45,10 +55,26 @@ export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveO
   return ret;
 }
 
+function replaceRecursiveReference(joiSchema: any, key: string, useDeprecatedJoi: boolean = false): void {
+  if (((<JoiReference>joiSchema).type === 'reference' && (<JoiReference>joiSchema).$ref === key)) {
+    (<JoiReference>joiSchema).type = useDeprecatedJoi ? 'lazy' : 'link';
+  }
+
+  _.forIn(joiSchema, (value) => {
+    if (_.isArray(value)) {
+      value.forEach((item) => {
+        replaceRecursiveReference(item, key, useDeprecatedJoi);
+      });
+    } else if (_.isObject(value)) {
+      replaceRecursiveReference(value, key, useDeprecatedJoi);
+    }
+  });
+}
+
 function extractDependency(joiSchema: any): string[] {
   const ret: string[] = [];
   if ((<JoiAny>joiSchema).type === 'reference' && (<JoiReference>joiSchema).$ref) {
-    ret.push((<JoiReference>joiSchema).$ref);
+    ret.push(_.camelCase((<JoiReference>joiSchema).$ref));
   }
 
   _.forIn(joiSchema, (value) => {
@@ -76,7 +102,7 @@ export function resolveJSONSchema(schema: JSONSchema4, options?: ResolveOptions)
     if (paths.length === 3) { // '#/definitions/xxx'
       return {
         type: 'reference',
-        $ref: paths[2],
+        $ref: _.camelCase(paths[2]),
         label: schema.title,
         description: schema.description,
       };

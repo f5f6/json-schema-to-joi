@@ -7,7 +7,7 @@ A utility to convert JSON schema (draft 4) to Joi validation schema.
 ### Client
 
 ```bash
-json-schema-to-joi 3.0.0
+json-schema-to-joi 4.1.0
   Usage: json2joi [--banner, -b] [BANNER] [--batch] [SECTION]
           [--title] [TITLE] [--cwd] [CWD] [--useDeprecatedJoi] [--useExtendedJoi]
           [--importStatement] [IMPORT]

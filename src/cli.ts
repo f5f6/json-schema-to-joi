@@ -118,7 +118,7 @@ async function main(): Promise<void> {
         throw new Error(`batch mode: no "definitions" SECTION in the root of the JSON schema`);
       }
 
-      const joiSchemas = resolveBundledJSONSchema(schemas);
+      const joiSchemas = resolveBundledJSONSchema(schemas, { useDeprecatedJoi, useExtendedJoi: !!extendedJoiName, });
       const joiStats: JoiStatement[] = [];
       joiSchemas.forEach((subSchema) => {
         joiStats.push(...generateJoiStatement(subSchema, true));
