@@ -1,5 +1,10 @@
 # Change log
 
+## 5.0.0 (2020-05-12)
+
+* Changed:
+  * (Breaking change) `resolveBundledJSONSchema`: support OpenAPI v3 Document 'components.schemas'
+
 ## 4.1.1 (2020-05-12)
 
 * Fixed
@@ -17,8 +22,8 @@
 
 ## 4.0.0 (2020-05-07)
 
-* Breaking changed
-  * Only support bundled/dereferenced JSONSchema4.
+* Changed
+  * (Breaking change) Only support bundled/dereferenced JSONSchema4.
 
 ## 3.2.0 (2020-04-30)
 

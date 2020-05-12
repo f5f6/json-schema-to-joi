@@ -8,15 +8,20 @@ import * as _ from 'lodash';
 import { resolveJoiOneOfSchema } from './oneOf';
 import { resolveJoiAllOfSchema } from './allOf';
 
+// tslint:disable-next-line: naming-convention
+export interface JSONSchema4Definitions {
+  [k: string]: JSONSchema4;
+}
+
 // tslint:disable-next-line:naming-convention
-export function resolveBundledJSONSchema(schema: JSONSchema4, options?: ResolveOptions): JoiSchema[] {
+export function resolveBundledJSONSchema(definitions: JSONSchema4Definitions, options?: ResolveOptions): JoiSchema[] {
   const ret: JoiSchema[] = [];
   const map: Map<string, { joiSchema: JoiSchema; dependencies: string[]; }> = new Map();
   let keyOnList: string[] = [];
   const keyDone: string[] = [];
-  if (schema.definitions) {
-    _.forIn(schema.definitions, (subSchema, key) => {
-      const joiSchema = resolveJSONSchema(subSchema, _.assign({}, options, { rootSchema: schema }));
+  if (definitions) {
+    _.forIn(definitions, (subSchema, key) => {
+      const joiSchema = resolveJSONSchema(subSchema, options);
       joiSchema.label = _.camelCase(key);
       map.set(joiSchema.label, {
         joiSchema,
@@ -96,18 +101,20 @@ export function resolveJSONSchema(schema: JSONSchema4, options?: ResolveOptions)
   // deal with $ref firstly
   if (schema.$ref) {
     const $ref = schema.$ref;
+    const standardJsonSchema = $ref.startsWith('#/definitions'); // '#/definitions' or '#/components/schemas/'
     const paths = $ref.split('/');
-    if (paths.length === 3) { // '#/definitions/xxx'
+    if ((standardJsonSchema && paths.length === 3)
+      || (!standardJsonSchema && paths.length === 4)) {
       return {
         type: 'reference',
-        $ref: _.camelCase(paths[2]),
+        $ref: _.camelCase(paths[standardJsonSchema ? 2 : 3]),
         label: schema.title,
         description: schema.description,
       };
-    } else if (paths.length > 3) { // '#/definitions/xxx/properties/yyy'
-      const rootSchema = realOptions.rootSchema ? realOptions.rootSchema : schema;
-      return resolveJSONSchema(<JSONSchema4>_.get(rootSchema, paths.slice(1).join('.')), options);
     }
+
+    const rootSchema = realOptions.rootSchema ? realOptions.rootSchema : schema;
+    return resolveJSONSchema(<JSONSchema4>_.get(rootSchema, paths.slice(1).join('.')), options);
   }
 
   if (schema.enum && !schema.type && !schema.format) {
