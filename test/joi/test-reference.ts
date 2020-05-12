@@ -4,9 +4,50 @@ import { generateJoiStatement, formatJoi } from '../../src/joi';
 import { createLogger } from '../../src/common/logger';
 import { expect } from './common';
 import { resolveBundledJSONSchema } from '../../src/joi/resolve';
-import { JoiStatement } from '../../src/joi/generate';
+import * as _ from 'lodash';
+import { OpenAPIV3 } from 'openapi-types';
 
 const logger = createLogger('test-reference');
+
+// tslint:disable-next-line: naming-convention
+const bundledSchemaOAS3: Partial<OpenAPIV3.Document> = {
+  components: {
+    schemas: {
+      address: {
+        type: 'object',
+        properties: {
+          street_address: { type: 'string' },
+          city: { type: 'string' },
+          state: { type: 'string' }
+        },
+        required: ['street_address', 'city', 'state']
+      },
+      billing_address: { $ref: '#/components/schemas/address' },
+      shipping_address: { $ref: '#/components/schemas/address' },
+      complicatedAddress: {
+        type: 'object',
+        properties: {
+          addressTypeA: {
+            $ref: '#/components/schemas/billing_address'
+          },
+          addressTypeB: {
+            $ref: '#/components/schemas/complicatedAddress'
+          },
+          addressTypeC: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/address/properties/city',
+            },
+          },
+          addressTypeD: {
+            $ref: '#/components/schemas/address/properties/street_address',
+          }
+        },
+        required: ['addressTypeA'],
+      }
+    },
+  }
+};
 
 const bundledSchema: JSONSchema4 = {
   definitions: {
@@ -116,13 +157,32 @@ const complicatedAddressJoiSchema = Joi.object()
 
 describe('test reference', () => {
   it('resolveBundledJSONSchema', () => {
-    const bundledJoiSchemas = resolveBundledJSONSchema(bundledSchema);
-    const total: JoiStatement[] = [];
-    bundledJoiSchemas.forEach((subJoiSchema) => {
-      const joiStatements = generateJoiStatement(subJoiSchema, true);
-      total.push(...joiStatements);
-      total.push(';');
+    const bundledJoiSchemas = resolveBundledJSONSchema(bundledSchema.definitions!, { rootSchema: bundledSchema });
+    const total = _.flattenDeep(bundledJoiSchemas.map(
+      (subJoiSchema) => [generateJoiStatement(subJoiSchema, true), ';']));
+
+    const joiString = formatJoi(total, {
+      prettierOptions: {
+        tabWidth: 2,
+        useTabs: false,
+        singleQuote: true,
+        trailingComma: 'all',
+        parser: 'typescript',
+        semi: true,
+      }
+    }).trim();
+    expect(joiString).to.be.equal(bundledJoiString.trim());
+    logger.debug({
+      bundledSchema, bundledJoiSchemas,
+      joiString, bundledJoiString,
     });
+  });
+
+  it('resolveBundledJSONSchema OAS3', () => {
+    const bundledJoiSchemas = resolveBundledJSONSchema(
+      bundledSchemaOAS3.components!.schemas!, { rootSchema: bundledSchemaOAS3 });
+    const total = _.flattenDeep(bundledJoiSchemas.map(
+      (subJoiSchema) => [generateJoiStatement(subJoiSchema, true), ';']));
 
     const joiString = formatJoi(total, {
       prettierOptions: {
@@ -142,13 +202,35 @@ describe('test reference', () => {
   });
 
   it('resolveBundledJSONSchema Legacy', () => {
-    const bundledJoiSchemas = resolveBundledJSONSchema(bundledSchema, { useDeprecatedJoi: true });
-    const total: JoiStatement[] = [];
-    bundledJoiSchemas.forEach((subJoiSchema) => {
-      const joiStatements = generateJoiStatement(subJoiSchema, true);
-      total.push(...joiStatements);
-      total.push(';');
+    const bundledJoiSchemas = resolveBundledJSONSchema(
+      bundledSchema.definitions!, { useDeprecatedJoi: true, rootSchema: bundledSchema });
+
+    const total = _.flattenDeep(bundledJoiSchemas.map(
+      (subJoiSchema) => [generateJoiStatement(subJoiSchema, true), ';']));
+
+    const joiString = formatJoi(total, {
+      prettierOptions: {
+        tabWidth: 2,
+        useTabs: false,
+        singleQuote: true,
+        trailingComma: 'all',
+        parser: 'typescript',
+        semi: true,
+      }
+    }).trim();
+    expect(joiString).to.be.equal(bundledJoiStringLegacy.trim());
+    logger.debug({
+      bundledSchema, bundledJoiSchemas,
+      joiString, bundledJoiString,
     });
+  });
+
+  it('resolveBundledJSONSchema OAS3 Legacy', () => {
+    const bundledJoiSchemas = resolveBundledJSONSchema(
+      bundledSchemaOAS3.components!.schemas!, { useDeprecatedJoi: true, rootSchema: bundledSchemaOAS3 });
+
+    const total = _.flattenDeep(bundledJoiSchemas.map(
+      (subJoiSchema) => [generateJoiStatement(subJoiSchema, true), ';']));
 
     const joiString = formatJoi(total, {
       prettierOptions: {

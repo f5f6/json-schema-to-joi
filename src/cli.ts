@@ -13,15 +13,11 @@ import { resolveJSONSchema, generateJoiStatement, formatJoi } from './joi';
 const stdin = require('stdin');
 import * as _ from 'lodash';
 import * as prettier from 'prettier';
-import { resolveBundledJSONSchema } from './joi/resolve';
+import { resolveBundledJSONSchema, JSONSchema4Definitions } from './joi/resolve';
 import { JoiStatement } from './joi/generate';
+import { OpenAPIV3 } from 'openapi-types';
 
 // tslint:disable: no-console
-
-// tslint:disable-next-line: naming-convention
-interface JSONSchema4Definitions {
-  [k: string]: JSONSchema4;
-}
 
 const defaultImportStatement = 'import * as Joi from \'@hapi/joi\';';
 const legacyImportStatement = 'import * as Joi from \'joi\';';
@@ -110,15 +106,23 @@ async function main(): Promise<void> {
 
   let allOutput = banner + '\n\n' + importStatement.join('\n') + '\n\n';
   try {
-    const schemas: JSONSchema4 = <JSONSchema4>await $RefParser.bundle(<JSONSchema4>JSON.parse(await readInput(input)));
+    const schemas
+      = <JSONSchema4 | Partial<OpenAPIV3.Document>>
+      await $RefParser.bundle(<JSONSchema4>JSON.parse(await readInput(input)));
 
     if (batch) {
-      const definitions = <JSONSchema4Definitions>_.get(schemas, 'definitions');
+      const definitions =
+        <JSONSchema4Definitions>_.get(schemas, 'definitions') ||
+        <Partial<OpenAPIV3.Document>>_.get(schemas, 'components.schemas');
       if (!definitions) {
-        throw new Error(`batch mode: no "definitions" SECTION in the root of the JSON schema`);
+        throw new Error(`batch mode: no "definitions" or "components/schemas" SECTION in the root of the JSON schema`);
       }
 
-      const joiSchemas = resolveBundledJSONSchema(schemas, { useDeprecatedJoi, useExtendedJoi: !!extendedJoiName, });
+      const joiSchemas = resolveBundledJSONSchema(
+        definitions,
+        {
+          useDeprecatedJoi, useExtendedJoi: !!extendedJoiName, rootSchema: schemas
+        });
       const joiStats: JoiStatement[] = [];
       joiSchemas.forEach((subSchema) => {
         joiStats.push(...generateJoiStatement(subSchema, true));
