@@ -1,5 +1,7 @@
 export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
-  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf' | 'oneOf' | 'reference';
+  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf' | 'oneOf' | JoiReferenceType;
+
+export type JoiReferenceType = 'reference' | 'link' | 'lazy';
 
 export type JoiSchema =
   JoiAny | JoiArray | JoiDate | JoiNumber |
@@ -17,6 +19,7 @@ export interface JoiAny {
   forbidden?: boolean;
   strip?: boolean;
   default?: any;
+  id?: string;
   [k: string]: any;
 }
 

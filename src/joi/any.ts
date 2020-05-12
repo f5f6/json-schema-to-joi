@@ -31,6 +31,10 @@ export function generateAnyJoi(schema: JoiAny): JoiStatement[] {
 
   content = generateBooleanKeys(schema, content);
 
+  if (schema.id) {
+    content.push(`.id(${JSON.stringify(schema.id)})`);
+  }
+
   // tslint:disable-next-line: no-commented-code
   // if (schema.description) {
   //   content.push(`.description(${JSON.stringify(schema.description)})`);

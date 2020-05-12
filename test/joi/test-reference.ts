@@ -35,6 +35,9 @@ const bundledSchema: JSONSchema4 = {
           items: {
             $ref: '#/definitions/address/properties/city',
           },
+        },
+        addressTypeD: {
+          $ref: '#/definitions/address/properties/street_address',
         }
       },
       required: ['addressTypeA'],
@@ -59,17 +62,55 @@ const bundledJoiString =
       .required(),
   })
   .unknown();
-const billing_addressJoiSchema = addressJoiSchema;
-const shipping_addressJoiSchema = addressJoiSchema;
+const billingAddressJoiSchema = addressJoiSchema;
+const shippingAddressJoiSchema = addressJoiSchema;
 const complicatedAddressJoiSchema = Joi.object()
   .keys({
-    addressTypeA: billing_addressJoiSchema.required(),
-    addressTypeB: complicatedAddressJoiSchema,
+    addressTypeA: billingAddressJoiSchema.required(),
+    addressTypeB: Joi.link(\'#complicatedAddress\'),
     addressTypeC: Joi.array().items(
       Joi.string()
         .min(0)
         .allow(...[\'\']),
     ),
+    addressTypeD: Joi.string()
+      .min(0)
+      .allow(...['']),
+  })
+  .unknown()
+  .id(\'complicatedAddress\');`;
+
+const bundledJoiStringLegacy =
+  `const addressJoiSchema = Joi.object()
+  .keys({
+    street_address: Joi.string()
+      .min(0)
+      .allow(...[''])
+      .required(),
+    city: Joi.string()
+      .min(0)
+      .allow(...[''])
+      .required(),
+    state: Joi.string()
+      .min(0)
+      .allow(...[''])
+      .required(),
+  })
+  .unknown();
+const billingAddressJoiSchema = addressJoiSchema;
+const shippingAddressJoiSchema = addressJoiSchema;
+const complicatedAddressJoiSchema = Joi.object()
+  .keys({
+    addressTypeA: billingAddressJoiSchema.required(),
+    addressTypeB: Joi.lazy(() => complicatedAddressJoiSchema),
+    addressTypeC: Joi.array().items(
+      Joi.string()
+        .min(0)
+        .allow(...[\'\']),
+    ),
+    addressTypeD: Joi.string()
+      .min(0)
+      .allow(...['']),
   })
   .unknown();`;
 
@@ -94,6 +135,32 @@ describe('test reference', () => {
       }
     }).trim();
     expect(joiString).to.be.equal(bundledJoiString.trim());
+    logger.debug({
+      bundledSchema, bundledJoiSchemas,
+      joiString, bundledJoiString,
+    });
+  });
+
+  it('resolveBundledJSONSchema Legacy', () => {
+    const bundledJoiSchemas = resolveBundledJSONSchema(bundledSchema, { useDeprecatedJoi: true });
+    const total: JoiStatement[] = [];
+    bundledJoiSchemas.forEach((subJoiSchema) => {
+      const joiStatements = generateJoiStatement(subJoiSchema, true);
+      total.push(...joiStatements);
+      total.push(';');
+    });
+
+    const joiString = formatJoi(total, {
+      prettierOptions: {
+        tabWidth: 2,
+        useTabs: false,
+        singleQuote: true,
+        trailingComma: 'all',
+        parser: 'typescript',
+        semi: true,
+      }
+    }).trim();
+    expect(joiString).to.be.equal(bundledJoiStringLegacy.trim());
     logger.debug({
       bundledSchema, bundledJoiSchemas,
       joiString, bundledJoiString,

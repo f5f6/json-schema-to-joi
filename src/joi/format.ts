@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 
 export function formatJoi(statements: JoiStatement[], options?: FormatOptions): string {
   let title: string = '';
-  let referKey;
   let result = '';
   let skipStringForTitleOrRefer = false;
   const semi = false;
@@ -47,12 +46,22 @@ export function formatJoi(statements: JoiStatement[], options?: FormatOptions): 
           result += importedExtendedJoiName + '.';
           break;
         case JoiSpecialChar.REFERENCE:
-          referKey = all[i + 1];
+        case JoiSpecialChar.LAZY:
+        case JoiSpecialChar.LINK:
+          let referKey = all[i + 1];
           skipStringForTitleOrRefer = true;
           if (typeof referKey !== 'string') {
             throw new Error('reference has no key');
           }
-          result += referKey + 'JoiSchema'; // 14 is the length of '#/definitions/'
+          const id = JSON.stringify('#' + referKey);
+          referKey += 'JoiSchema';
+          if (statement === JoiSpecialChar.LAZY) {
+            result += `${importedJoiName}.lazy(() => ${referKey})`;
+          } else if (statement === JoiSpecialChar.LINK) {
+            result += `${importedJoiName}.link(${id})`;
+          } else {
+            result += referKey;
+          }
           break;
       }
     }
