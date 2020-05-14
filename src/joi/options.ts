@@ -15,4 +15,5 @@ export interface FormatOptions {
   extendedJoiName?: string;
   withExport?: boolean;
   prettierOptions?: prettier.Options;
+  withTypeDeclaration?: boolean;
 }

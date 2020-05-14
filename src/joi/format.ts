@@ -2,21 +2,23 @@ import * as prettier from 'prettier';
 import { JoiStatement, JoiSpecialChar } from './generate';
 import { FormatOptions } from './options';
 import * as _ from 'lodash';
+import { getJoiTsType, JoiType } from './types';
 
 export function formatJoi(statements: JoiStatement[], options?: FormatOptions): string {
   let title: string = '';
   let result = '';
-  let skipStringForTitleOrRefer = false;
+  let skipStringCount = 0;
   const semi = false;
 
   const importedJoiName = (options ? options.joiName : 'Joi') || 'Joi';
   const importedExtendedJoiName = (options ? options.extendedJoiName : 'extendedJoi') || 'extendedJoi';
   const withExport = options ? options.withExport : false;
+  const withTypeDeclaration = options ? options.withTypeDeclaration : false;
 
   statements.forEach((statement, i, all) => {
     if (typeof statement === 'string') {
-      if (skipStringForTitleOrRefer) {
-        skipStringForTitleOrRefer = false; // Reset as it is possible to have multiple references
+      if (skipStringCount) {
+        skipStringCount--; // Reset as it is possible to have multiple references
         // or one tile plus reference
         return;
       }
@@ -28,16 +30,24 @@ export function formatJoi(statements: JoiStatement[], options?: FormatOptions): 
         case JoiSpecialChar.CLOSE_JOI:
           break;
         case JoiSpecialChar.OPEN_TITLE:
-          skipStringForTitleOrRefer = true;
+          skipStringCount += 2;
           title = <string>all[i + 1];
-          const close = all[i + 2];
+          const type = <JoiType>all[i + 2];
+          const close = all[i + 3];
+
+          let typeString = '';
           if (typeof title !== 'string' || close !== JoiSpecialChar.CLOSE_TITLE) {
             throw new Error('title not exist');
           }
-          result += `${withExport ? 'export' : ''} const ${title}JoiSchema = `;
+
+          if (withTypeDeclaration) {
+            typeString = getJoiTsType(type);
+          }
+
+          result += `${withExport ? 'export' : ''} ` +
+            `const ${title}JoiSchema${typeString ? ': ' + importedJoiName + '.' + typeString : ''} = `;
           break;
         case JoiSpecialChar.CLOSE_TITLE:
-          skipStringForTitleOrRefer = false;
           break;
         case JoiSpecialChar.IMPORTED_JOI_NAME:
           result += importedJoiName + '.';
@@ -49,7 +59,7 @@ export function formatJoi(statements: JoiStatement[], options?: FormatOptions): 
         case JoiSpecialChar.LAZY:
         case JoiSpecialChar.LINK:
           let referKey = all[i + 1];
-          skipStringForTitleOrRefer = true;
+          skipStringCount += 1;
           if (typeof referKey !== 'string') {
             throw new Error('reference has no key');
           }

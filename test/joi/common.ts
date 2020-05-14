@@ -75,6 +75,7 @@ export function runTest(
       const formatOption: FormatOptions = {
         joiName,
         extendedJoiName: 'extendedJoi',
+        withTypeDeclaration: true,
         prettierOptions,
       };
       const resultJoiString = formatJoi(joiStatements, formatOption);
