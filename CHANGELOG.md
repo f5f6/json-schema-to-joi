@@ -1,5 +1,10 @@
 # Change log
 
+## 5.1.0 (2020-05-14)
+
+* Added
+  * Add `withTypeDeclaration` for `format`
+
 ## 5.0.0 (2020-05-12)
 
 * Changed:

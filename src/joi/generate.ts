@@ -49,7 +49,7 @@ export function closeJoi(statement: JoiStatement[]): JoiStatement[] {
 export function generateJoiStatement(schema: JoiSchema, withTitle: boolean = false): JoiStatement[] {
   const content: JoiStatement[] = withTitle ?
     openJoi([
-      JoiSpecialChar.OPEN_TITLE, schema.label!, JoiSpecialChar.CLOSE_TITLE
+      JoiSpecialChar.OPEN_TITLE, schema.label!, schema.type, JoiSpecialChar.CLOSE_TITLE
     ]) : [];
   switch (schema.type) {
     case 'object':

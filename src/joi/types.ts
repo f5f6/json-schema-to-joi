@@ -1,7 +1,18 @@
+import * as _ from 'lodash';
+
 export type JoiType = 'any' | 'array' | 'boolean' | 'binary'
-  | 'date' | 'func' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf' | 'oneOf' | JoiReferenceType;
+  | 'date' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'alternatives' | 'allOf' | 'oneOf'
+  | JoiReferenceType;
 
 export type JoiReferenceType = 'reference' | 'link' | 'lazy';
+
+export function getJoiTsType(joiType: JoiType): string {
+  if (joiType === 'reference') {
+    return '';
+  }
+
+  return _.upperFirst(joiType) + 'Schema';
+}
 
 export type JoiSchema =
   JoiAny | JoiArray | JoiDate | JoiNumber |

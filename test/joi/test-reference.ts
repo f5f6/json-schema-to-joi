@@ -87,7 +87,7 @@ const bundledSchema: JSONSchema4 = {
 };
 
 const bundledJoiString =
-  `const addressJoiSchema = Joi.object()
+  `const addressJoiSchema: Joi.ObjectSchema = Joi.object()
   .keys({
     street_address: Joi.string()
       .min(0)
@@ -105,7 +105,7 @@ const bundledJoiString =
   .unknown();
 const billingAddressJoiSchema = addressJoiSchema;
 const shippingAddressJoiSchema = addressJoiSchema;
-const complicatedAddressJoiSchema = Joi.object()
+const complicatedAddressJoiSchema: Joi.ObjectSchema = Joi.object()
   .keys({
     addressTypeA: billingAddressJoiSchema.required(),
     addressTypeB: Joi.link(\'#complicatedAddress\'),
@@ -162,6 +162,7 @@ describe('test reference', () => {
       (subJoiSchema) => [generateJoiStatement(subJoiSchema, true), ';']));
 
     const joiString = formatJoi(total, {
+      withTypeDeclaration: true,
       prettierOptions: {
         tabWidth: 2,
         useTabs: false,
@@ -185,6 +186,7 @@ describe('test reference', () => {
       (subJoiSchema) => [generateJoiStatement(subJoiSchema, true), ';']));
 
     const joiString = formatJoi(total, {
+      withTypeDeclaration: true,
       prettierOptions: {
         tabWidth: 2,
         useTabs: false,
